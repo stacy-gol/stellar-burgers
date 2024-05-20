@@ -1,0 +1,55 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.scrollable {
+  overflow-y: auto;
+  max-height: 45vh;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+}
+
+.price {
+  display: flex;
+  align-items: center;
+  margin-left: 40px;
+  margin-top: 40px;
+}
+
+.priceSpan {
+  margin-right: 10px;
+}
+
+.totalSpan {
+  margin-left: 10px;
+}
+
+.ingredientIcon {
+  width: 13px;
+  height: 18.31px;
+  margin-right: 12px;
+}
+
+.bunTop,
+.bunBottom {
+  display: flex;
+  margin-left: 25px;
+}
+
+.ingredientRow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  margin-top: 4px;
+  margin-right: 15px;
+}

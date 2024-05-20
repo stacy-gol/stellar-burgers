@@ -1,0 +1,62 @@
+.tab {
+  display: flex;
+}
+
+.ingredientsContainer {
+  flex-grow: 1;
+  overflow-y: auto;
+  min-height: 0;
+  overflow-x: hidden;
+  height: 600px;
+}
+
+.typeContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.ingredient {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-basis: calc(50% - 12px);
+  margin-bottom: 20px;
+}
+
+.ingredientImage {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+}
+
+.ingredientPrice, .ingredientName {
+  text-align: center;
+}
+
+.typeTitle {
+  margin-top: 40px;
+}
+
+.modalImage {
+  display: block; 
+  max-width: 100%; 
+  height: auto; 
+  margin: 0 auto;
+}
+
+.modalText {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.modalList {
+  display: flex;
+  text-align: center;
+  justify-content: space-around;
+  list-style-type: none;
+  padding: 0;
+  margin-top: 20px;
+}
+
