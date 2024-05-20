@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   ConstructorElement,
   CurrencyIcon,
@@ -6,9 +6,20 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import ConstructorSyles from "./burger-constructor.module.css";
 import ingridienticon from "../../images/list-icon.png";
+import Modal from "../modal/modal";
+import OrderDetails from "../order/order";
 
 function BurgerConstructor({ data }) {
-  const [ingredients] = useState(data);
+  const [ingredients, setIngredients] = useState(data);
+
+  useEffect(() => {
+    setIngredients(data);
+  }, [data]);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   const bun = ingredients.find((item) => item.type === "bun");
 
@@ -64,10 +75,15 @@ function BurgerConstructor({ data }) {
           <CurrencyIcon type="primary" />
           <span className={ConstructorSyles.totalSpan}>{total}</span>
         </p>
-        <Button type="primary" size="large">
+        <Button type="primary" size="large" onClick={openModal}>
           Оформить заказ
         </Button>
       </div>
+      {isModalOpen && 
+      <Modal isOpen={isModalOpen} onClose={closeModal}>
+      <OrderDetails/>
+      </Modal>
+      }
     </div>
   );
 }

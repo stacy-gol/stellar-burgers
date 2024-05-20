@@ -32,15 +32,14 @@ const Modal = ({ isOpen, onClose, children }) => {
   const modalContent = (
     <ModalOverlay onClick={handleOverlayClick}>
       <div className={modalStyles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={`${modalStyles.modalHeader} mt-10 ml-10 mr-10`}>
-          <p className="text text_type_main-large">Детали ингредиента</p>
-          <img
+        <div className={modalStyles.modalHeader}>
+        </div>
+        <img
             onClick={onClose}
             className={modalStyles.closeIcon}
             src={closeButton}
             alt="Закрыть"
           />
-        </div>
         <div className={modalStyles.modalContent}>
           {children}
         </div>
