@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import modalStyles from './modal.module.css'; 
 import ModalOverlay from '../modal-overlay/modal-overlay';
 import closeButton from '../../../src/images/close-icon.png'
+import { modalTypes } from '../../utils/types'
+
 
 const Modal = ({ isOpen, onClose, children }) => {
   useEffect(() => {
@@ -49,5 +51,7 @@ const Modal = ({ isOpen, onClose, children }) => {
 
   return ReactDOM.createPortal(modalContent, modalRoot);
 };
+
+Modal.propTypes = modalTypes;
 
 export default Modal;

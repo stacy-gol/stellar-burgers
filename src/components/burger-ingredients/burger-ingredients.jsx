@@ -2,6 +2,8 @@ import React, { useState, useMemo, useRef, useCallback } from "react";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import burgerIngredientsStyles from "./burger-ingredients.module.css";
 import Modal from "../modal/modal";
+import { burgerIngredientsTypes } from '../../utils/types';
+
 
 const groupIngredients = (data) => {
   return data.reduce((acc, item) => {
@@ -149,5 +151,8 @@ function BurgerIngredients({ data }) {
     </div>
   );
 }
+
+BurgerIngredients.propTypes = burgerIngredientsTypes;
+
 
 export default BurgerIngredients;

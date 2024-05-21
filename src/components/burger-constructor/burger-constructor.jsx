@@ -8,6 +8,7 @@ import ConstructorSyles from "./burger-constructor.module.css";
 import ingridienticon from "../../images/list-icon.png";
 import Modal from "../modal/modal";
 import OrderDetails from "../order/order";
+import { constructorTypes } from '../../utils/types'
 
 function BurgerConstructor({ data }) {
   const [ingredients, setIngredients] = useState(data);
@@ -87,5 +88,8 @@ function BurgerConstructor({ data }) {
     </div>
   );
 }
+
+BurgerConstructor.propTypes = constructorTypes;
+
 
 export default BurgerConstructor;
