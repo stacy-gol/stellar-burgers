@@ -8,7 +8,7 @@ import ConstructorSyles from "./burger-constructor.module.css";
 import ingridienticon from "../../images/list-icon.png";
 import Modal from "../modal/modal";
 import OrderDetails from "../order/order";
-import { constructorTypes } from '../../utils/types'
+import { constructorTypes } from "../../utils/types";
 
 function BurgerConstructor({ data }) {
   const [ingredients, setIngredients] = useState(data);
@@ -46,17 +46,21 @@ function BurgerConstructor({ data }) {
       </div>
 
       <div className={`${ConstructorSyles.scrollable} container`}>
-  {nonBunIngredients.map((ingredient) => (
-    <div className={ConstructorSyles.ingredientRow} key={ingredient._id}>
-      <img src={ingridienticon} className={ConstructorSyles.ingredientIcon} alt="Ingredient" />
-      <ConstructorElement
-        text={ingredient.name}
-        price={ingredient.price}
-        thumbnail={ingredient.image}
-      />
-    </div>
-  ))}
-</div>
+        {nonBunIngredients.map((ingredient) => (
+          <div className={ConstructorSyles.ingredientRow} key={ingredient._id}>
+            <img
+              src={ingridienticon}
+              className={ConstructorSyles.ingredientIcon}
+              alt="Фото ингредиента"
+            />
+            <ConstructorElement
+              text={ingredient.name}
+              price={ingredient.price}
+              thumbnail={ingredient.image}
+            />
+          </div>
+        ))}
+      </div>
 
       <div className={ConstructorSyles.bunBottom}>
         {bun && (
@@ -76,20 +80,19 @@ function BurgerConstructor({ data }) {
           <CurrencyIcon type="primary" />
           <span className={ConstructorSyles.totalSpan}>{total}</span>
         </p>
-        <Button type="primary" size="large" onClick={openModal}>
+        <Button type="primary" htmlType='submit' size="large" onClick={openModal}>
           Оформить заказ
         </Button>
       </div>
-      {isModalOpen && 
-      <Modal isOpen={isModalOpen} onClose={closeModal}>
-      <OrderDetails/>
-      </Modal>
-      }
+      {isModalOpen && (
+        <Modal isOpen={isModalOpen} onClose={closeModal}>
+          <OrderDetails />
+        </Modal>
+      )}
     </div>
   );
 }
 
 BurgerConstructor.propTypes = constructorTypes;
-
 
 export default BurgerConstructor;

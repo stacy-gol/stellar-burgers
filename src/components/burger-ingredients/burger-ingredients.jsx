@@ -2,8 +2,8 @@ import React, { useState, useMemo, useRef, useCallback } from "react";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import burgerIngredientsStyles from "./burger-ingredients.module.css";
 import Modal from "../modal/modal";
-import { burgerIngredientsTypes } from '../../utils/types';
-
+import { burgerIngredientsTypes } from "../../utils/types";
+import IngredientDetails from "../ingredient-details/ingredient-details";
 
 const groupIngredients = (data) => {
   return data.reduce((acc, item) => {
@@ -34,7 +34,7 @@ function BurgerIngredients({ data }) {
   };
 
   const groupedIngredients = useMemo(() => groupIngredients(data), [data]);
-  
+
   const handleTabClick = useCallback(
     (value, type) => {
       setCurrent(value);
@@ -65,7 +65,7 @@ function BurgerIngredients({ data }) {
               >
                 <img
                   src={ingredient.image}
-                  alt={ingredient.name}
+                  alt="Картинка ингредиента"
                   className={burgerIngredientsStyles.ingredientImage}
                 />
                 <p className={burgerIngredientsStyles.ingredientPrice}>
@@ -84,16 +84,9 @@ function BurgerIngredients({ data }) {
   );
 
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        width: "37%",
-        marginTop: "40px",
-      }}
-    >
+    <div className={burgerIngredientsStyles.burgerContainer}>
       <h1>Соберите бургер</h1>
-      <div style={{ display: "flex", flexDirection: "row", marginTop: "20px" }}>
+      <div className={burgerIngredientsStyles.tabsContainer}>
         <Tab
           value="one"
           active={current === "one"}
@@ -124,28 +117,12 @@ function BurgerIngredients({ data }) {
         )}
       </div>
       {isModalOpen && currentIngredient && (
-        <Modal isOpen={isModalOpen} onClose={closeModal}>
-          <div>
-          <h2 className=" text text_type_main-large mt-10 ml-10 mr-10">
-				Детали ингредиента
-			</h2>
-            <img
-              className={
-                burgerIngredientsStyles.modalImage
-              } 
-              src={currentIngredient.image_large}
-              alt={currentIngredient.name}
-            />
-            <p className={`${burgerIngredientsStyles.modalText} text text_type_main-medium mb-8 mt-4`}>
-            {currentIngredient.name}
-            </p>
-            <ul className={`${burgerIngredientsStyles.modalList} text text_type_main-default text_color_inactive mb-15`}>
-              <li className="ml-5">Калории, ккал<br/>{currentIngredient.calories}</li>
-              <li className="ml-5">Белки, г<br/>{currentIngredient.proteins}</li>
-              <li>Жиры, г<br/>{currentIngredient.fat}</li>
-              <li className="mr-5">Углеводы, г<br/>{currentIngredient.carbohydrates}</li>
-            </ul>
-          </div>
+        <Modal
+          isOpen={isModalOpen}
+          onClose={closeModal}
+          title="Детали ингредиента"
+        >
+          <IngredientDetails currentIngredient={currentIngredient} />
         </Modal>
       )}
     </div>
@@ -153,6 +130,5 @@ function BurgerIngredients({ data }) {
 }
 
 BurgerIngredients.propTypes = burgerIngredientsTypes;
-
 
 export default BurgerIngredients;

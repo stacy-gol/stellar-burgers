@@ -18,7 +18,7 @@
   .modalHeader {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
     padding-bottom: 15px;
   }
   
@@ -26,7 +26,7 @@
     padding-top: 15px;
   }
   
-  .closeIcon {
+  .closeButtonContainer {
     cursor: pointer;
     width: 24px;
     height: 24px;

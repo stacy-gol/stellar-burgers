@@ -17,6 +17,19 @@
   gap: 24px;
 }
 
+.burgerContainer {
+  display: flex;
+  flex-direction: column;
+  width: 37%;
+  margin-top: 40px;
+}
+
+.tabsContainer {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+}
+
 .ingredient {
   display: flex;
   flex-direction: column;
