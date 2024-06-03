@@ -1,23 +1,22 @@
-import React, { useState, useMemo, useRef, useCallback } from "react";
+import React, { useState, useMemo, useRef, useCallback, useEffect } from "react";
+import { useSelector, useDispatch } from 'react-redux';
+import { fetchIngredients } from '../../services/ingredients/ingredientsSlice';
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import burgerIngredientsStyles from "./burger-ingredients.module.css";
 import Modal from "../modal/modal";
 import { burgerIngredientsTypes } from "../../utils/types";
 import IngredientDetails from "../ingredient-details/ingredient-details";
 
-const groupIngredients = (data) => {
-  return data.reduce((acc, item) => {
-    if (!acc[item.type]) {
-      acc[item.type] = [];
-    }
-    acc[item.type].push(item);
-    return acc;
-  }, {});
-};
-
-function BurgerIngredients({ data }) {
+function BurgerIngredients() {
+  const dispatch = useDispatch();
+  const { allIngredients, loading, error } = useSelector((state) => state.ingredients);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentIngredient, setCurrentIngredient] = useState(null);
+
+  useEffect(() => {
+    dispatch(fetchIngredients());
+  }, [dispatch]);
+  
   const openModal = (ingredient) => {
     setCurrentIngredient(ingredient);
     setIsModalOpen(true);
@@ -33,7 +32,18 @@ function BurgerIngredients({ data }) {
     main: useRef(null),
   };
 
-  const groupedIngredients = useMemo(() => groupIngredients(data), [data]);
+  const groupedIngredients = useMemo(() => {
+    if (!loading && allIngredients.length > 0) {
+      return allIngredients.reduce((acc, item) => {
+        if (!acc[item.type]) {
+          acc[item.type] = [];
+        }
+        acc[item.type].push(item);
+        return acc;
+      }, {});
+    }
+    return {};
+  }, [loading, allIngredients]);
 
   const handleTabClick = useCallback(
     (value, type) => {
@@ -52,6 +62,14 @@ function BurgerIngredients({ data }) {
       };
 
       const typeName = ingredientTypeNames[type] || type;
+
+      if (loading) {
+        return <p>Загрузка...</p>;
+      }
+    
+      if (error) {
+        return <p>Ошибка: {error}</p>;
+      }
 
       return (
         <div key={type} ref={ingredientRefs[type]}>
