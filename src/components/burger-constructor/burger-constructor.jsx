@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useCallback } from "react";
 import { useSelector, useDispatch } from 'react-redux';
 import {
   addIngredient,
@@ -15,16 +15,22 @@ import ingridienticon from "../../images/list-icon.png";
 import Modal from "../modal/modal";
 import OrderDetails from "../order/order";
 import { constructorTypes } from "../../utils/types";
+import { createOrder } from '../../services/order/orderSlice';
 
 function BurgerConstructor() {
   const dispatch = useDispatch();
   const { bun, ingredients } = useSelector((state) => state.burgerConstructor);
-  console.log('ingredients', ingredients);
+  const { order, orderRequest } = useSelector((state) => state.order);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const ingredientIds = ingredients.map(ingredient => ingredient._id); 
+  if (bun) {
+    ingredientIds.unshift(bun._id);
+    ingredientIds.push(bun._id);
+  }
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const handleCreateOrder = () => {
+    dispatch(createOrder(ingredientIds));
+  };
 
   const handleAddIngredient = useCallback((ingredient) => {
     dispatch(addIngredient(ingredient));
@@ -92,12 +98,12 @@ function BurgerConstructor() {
           <CurrencyIcon type="primary" />
           <span className={ConstructorSyles.totalSpan}>{total}</span>
         </p>
-        <Button type="primary" htmlType='submit' size="large" onClick={openModal}>
+        <Button type="primary" htmlType='submit' size="large" onClick={handleCreateOrder} disabled={orderRequest}>
           Оформить заказ
         </Button>
       </div>
-      {isModalOpen && (
-        <Modal isOpen={isModalOpen} onClose={closeModal}>
+      {order && (
+        <Modal isOpen={!!order} onClose={closeModal}>
           <OrderDetails />
         </Modal>
       )}

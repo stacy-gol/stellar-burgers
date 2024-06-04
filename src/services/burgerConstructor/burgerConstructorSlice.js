@@ -1,43 +1,43 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { v4 as uuidv4 } from 'uuid';
-
+import { v4 as uuidv4 } from "uuid";
 
 const initialState = {
   bun: null,
-  otherIngredients: [],
+  ingredients: [],
 };
 
 export const burgerConstructorSlice = createSlice({
   name: "burgerConstructor",
   initialState,
   reducers: {
-    addIngredient: (state, action) => {
-      const ingredient = action.payload;
-      if (ingredient.type === "bun") {
-        state.bun = ingredient;
-      } else {
-        state.otherIngredients.push(ingredient);
+    addIngredient: {
+      reducer: (state, action) => {
+        const { type, uniqueKey } = action.payload;
+        if (type === 'bun') {
+          state.bun = action.payload;
+        } else {
+          state.ingredients.push({ ...action.payload, uniqueKey });
+        }
+      },
+      prepare: (ingredient) => {
+        return { payload: { ...ingredient, uniqueKey: uuidv4() } };
       }
     },
     removeIngredient: (state, action) => {
-      if (action.payload.type === "bun") {
-        state.bun = null;
-      } else {
-        state.otherIngredients = state.otherIngredients.filter(
-          (ingredient) => ingredient.id !== action.payload.id
-        );
-      }
+      const { uniqueKey } = action.payload;
+      state.ingredients = state.ingredients.filter(
+        (ingredient) => ingredient.uniqueKey !== uniqueKey
+      );
     },
     moveIngredient: (state, action) => {
-      const { dragIndex, hoverIndex } = action.payload;
-      const draggedIngredient = state.otherIngredients[dragIndex];
-      state.otherIngredients.splice(dragIndex, 1);
-      state.otherIngredients.splice(hoverIndex, 0, draggedIngredient);
+      const { fromIndex, toIndex } = action.payload;
+      const ingredients = [...state.ingredients];
+      ingredients.splice(toIndex, 0, ingredients.splice(fromIndex, 1)[0]);
+      state.ingredients = ingredients;
     },
   },
 });
 
-export const { addIngredient, removeIngredient, moveIngredient } =
-  burgerConstructorSlice.actions;
+export const { addIngredient, removeIngredient, moveIngredient } = burgerConstructorSlice.actions;
 
 export default burgerConstructorSlice.reducer;

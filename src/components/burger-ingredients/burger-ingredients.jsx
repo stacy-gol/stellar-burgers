@@ -6,23 +6,23 @@ import burgerIngredientsStyles from "./burger-ingredients.module.css";
 import Modal from "../modal/modal";
 import { burgerIngredientsTypes } from "../../utils/types";
 import IngredientDetails from "../ingredient-details/ingredient-details";
+import { setIngredient, clearIngredient } from "../../services/currentIngredient/currentIngredientSlice";
+
 
 function BurgerIngredients() {
   const dispatch = useDispatch();
   const { allIngredients, loading, error } = useSelector((state) => state.ingredients);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentIngredient, setCurrentIngredient] = useState(null);
+  const currentIngredient = useSelector((state) => state.burgerConstructor.currentIngredient);
 
   useEffect(() => {
     dispatch(fetchIngredients());
   }, [dispatch]);
   
   const openModal = (ingredient) => {
-    setCurrentIngredient(ingredient);
-    setIsModalOpen(true);
+    dispatch(setIngredient(ingredient)); 
   };
   const closeModal = () => {
-    setIsModalOpen(false);
+    dispatch(clearIngredient());
   };
 
   const [current, setCurrent] = useState("one");
@@ -134,9 +134,9 @@ function BurgerIngredients() {
           renderIngredientsByType(groupedIngredients[type], type)
         )}
       </div>
-      {isModalOpen && currentIngredient && (
+      {currentIngredient && (
         <Modal
-          isOpen={isModalOpen}
+          isOpen={!!currentIngredient}
           onClose={closeModal}
           title="Детали ингредиента"
         >
