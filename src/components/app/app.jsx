@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import Header from "../app-header/app-header";
 import BurgerIngredients from "../burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../burger-constructor/burger-constructor";
+import { DndProvider } from 'react-dnd';
+import { HTML5Backend } from 'react-dnd-html5-backend';
 
 import AppStyles from "./app.module.css";
 
@@ -32,6 +34,7 @@ function App() {
 
 
   return (
+    <DndProvider backend={HTML5Backend}>
     <div>
       <Header />
       <main className={AppStyles.app}>
@@ -39,6 +42,7 @@ function App() {
         <BurgerConstructor data={ingredients} />
       </main>
     </div>
+    </DndProvider>
   );
 }
 

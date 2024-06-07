@@ -16,11 +16,13 @@ import Modal from "../modal/modal";
 import OrderDetails from "../order/order";
 import { constructorTypes } from "../../utils/types";
 import { createOrder } from '../../services/order/orderSlice';
+import { openModal, closeModal } from '../../services/modal/modalSlice';
+
 
 function BurgerConstructor() {
   const dispatch = useDispatch();
   const { bun, ingredients } = useSelector((state) => state.burgerConstructor);
-  const { order, orderRequest } = useSelector((state) => state.order);
+  const { order, orderRequest, isOrderModalOpen } = useSelector((state) => state.order);
 
   const ingredientIds = ingredients.map(ingredient => ingredient._id); 
   if (bun) {
@@ -30,6 +32,11 @@ function BurgerConstructor() {
 
   const handleCreateOrder = () => {
     dispatch(createOrder(ingredientIds));
+    dispatch(openModal());
+  };
+  
+  const handleCloseModal = () => {
+    dispatch(closeModal());
   };
 
   const handleAddIngredient = useCallback((ingredient) => {
@@ -64,7 +71,7 @@ function BurgerConstructor() {
       </div>
 
       <div className={`${ConstructorSyles.scrollable} container`}>
-        {nonBunIngredients.map((ingredient) => (
+        {ingredients.map((ingredient) => (
           <div className={ConstructorSyles.ingredientRow} key={ingredient._id}>
             <img
               src={ingridienticon}
@@ -103,8 +110,8 @@ function BurgerConstructor() {
         </Button>
       </div>
       {order && (
-        <Modal isOpen={!!order} onClose={closeModal}>
-          <OrderDetails />
+        <Modal isOpen={isOrderModalOpen} onClose={handleCloseModal}>
+      <OrderDetails />
         </Modal>
       )}
     </div>

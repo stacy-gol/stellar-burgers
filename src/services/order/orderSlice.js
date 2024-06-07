@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import ENDPOINT from "../../utils/api"
+import { ENDPOINT } from "../../utils/api";
 
 export const createOrder = createAsyncThunk(
   'order/createOrder',
@@ -60,7 +60,7 @@ export const orderSlice = createSlice({
 });
 
 export const {
-  clearOrder,
+  clearOrder
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

@@ -6,23 +6,27 @@ import burgerIngredientsStyles from "./burger-ingredients.module.css";
 import Modal from "../modal/modal";
 import { burgerIngredientsTypes } from "../../utils/types";
 import IngredientDetails from "../ingredient-details/ingredient-details";
-import { setIngredient, clearIngredient } from "../../services/currentIngredient/currentIngredientSlice";
-
+import { openModal, closeModal } from '../../services/modal/modalSlice';
+import { setIngredient, clearIngredient } from '../../services/currentIngredient/currentIngredientSlice';
 
 function BurgerIngredients() {
   const dispatch = useDispatch();
   const { allIngredients, loading, error } = useSelector((state) => state.ingredients);
-  const currentIngredient = useSelector((state) => state.burgerConstructor.currentIngredient);
+  const currentIngredient = useSelector((state) => state.currentIngredient.currentIngredient);
+  const isModalOpen = useSelector((state) => state.modal.isModalOpen);
 
   useEffect(() => {
     dispatch(fetchIngredients());
   }, [dispatch]);
   
-  const openModal = (ingredient) => {
-    dispatch(setIngredient(ingredient)); 
+  const openIngredientModal = (ingredient) => {
+    dispatch(setIngredient(ingredient));
+    dispatch(openModal());
   };
-  const closeModal = () => {
+  
+  const closeIngredientModal = () => {
     dispatch(clearIngredient());
+    dispatch(closeModal());
   };
 
   const [current, setCurrent] = useState("one");
@@ -79,7 +83,7 @@ function BurgerIngredients() {
               <div
                 key={ingredient._id}
                 className={burgerIngredientsStyles.ingredient}
-                onClick={() => openModal(ingredient)}
+                onClick={() => openIngredientModal(ingredient)}
               >
                 <img
                   src={ingredient.image}
@@ -136,10 +140,10 @@ function BurgerIngredients() {
       </div>
       {currentIngredient && (
         <Modal
-          isOpen={!!currentIngredient}
-          onClose={closeModal}
-          title="Детали ингредиента"
-        >
+        isOpen={isModalOpen}
+        onClose={closeIngredientModal}
+        title="Детали ингредиента"
+      >
           <IngredientDetails currentIngredient={currentIngredient} />
         </Modal>
       )}
