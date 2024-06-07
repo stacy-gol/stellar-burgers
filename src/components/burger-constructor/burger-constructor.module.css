@@ -4,7 +4,8 @@
   gap: 10px;
 }
 
-.scrollable {
+.scrollable,
+.ingredientPlaceholder {
   overflow-y: auto;
   max-height: 45vh;
   display: flex;
@@ -41,7 +42,8 @@
 }
 
 .bunTop,
-.bunBottom {
+.bunBottom,
+.bunPlaceholder {
   display: flex;
   margin-left: 25px;
 }
@@ -52,4 +54,9 @@
   margin-bottom: 8px;
   margin-top: 4px;
   margin-right: 15px;
+}
+
+.placeholderText {
+  text-align: center;
+  width: 100%;
 }

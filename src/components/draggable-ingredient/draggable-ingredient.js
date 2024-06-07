@@ -1,7 +1,8 @@
 import { useDrag } from "react-dnd";
+import burgerIngredientsStyles from "../burger-ingredients/burger-ingredients.module.css";
 
-function DraggableIngredient({ ingredient }) {
-    const [{ isDragging }, drag, preview] = useDrag(() => ({
+function DraggableIngredient({ ingredient, onClick }) {
+  const [{ isDragging }, drag, preview] = useDrag(() => ({
       type: 'ingredient',
       item: { ...ingredient },
       collect: (monitor) => ({
@@ -14,6 +15,7 @@ function DraggableIngredient({ ingredient }) {
         ref={drag} 
         className={burgerIngredientsStyles.ingredient}
         style={{ opacity: isDragging ? 0.5 : 1 }}
+        onClick={() => onClick(ingredient)}
       >
         <img
           src={ingredient.image}

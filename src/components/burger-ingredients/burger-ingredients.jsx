@@ -2,12 +2,13 @@ import React, { useState, useMemo, useRef, useCallback, useEffect } from "react"
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchIngredients } from '../../services/ingredients/ingredientsSlice';
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
-import burgerIngredientsStyles from "./burger-ingredients.module.css";
+import burgerIngredientsStyles from "../burger-ingredients/burger-ingredients.module.css";
 import Modal from "../modal/modal";
 import { burgerIngredientsTypes } from "../../utils/types";
 import IngredientDetails from "../ingredient-details/ingredient-details";
 import { openModal, closeModal } from '../../services/modal/modalSlice';
 import { setIngredient, clearIngredient } from '../../services/currentIngredient/currentIngredientSlice';
+import DraggableIngredient from "../draggable-ingredient/draggable-ingredient";
 
 function BurgerIngredients() {
   const dispatch = useDispatch();
@@ -64,9 +65,9 @@ function BurgerIngredients() {
         main: "Начинки",
         sauce: "Соусы",
       };
-
+  
       const typeName = ingredientTypeNames[type] || type;
-
+  
       if (loading) {
         return <p>Загрузка...</p>;
       }
@@ -74,35 +75,23 @@ function BurgerIngredients() {
       if (error) {
         return <p>Ошибка: {error}</p>;
       }
-
+  
       return (
         <div key={type} ref={ingredientRefs[type]}>
           <h3 className={burgerIngredientsStyles.typeTitle}>{typeName}</h3>
           <div className={burgerIngredientsStyles.typeContainer}>
             {ingredients.map((ingredient) => (
-              <div
+              <DraggableIngredient
                 key={ingredient._id}
-                className={burgerIngredientsStyles.ingredient}
-                onClick={() => openIngredientModal(ingredient)}
-              >
-                <img
-                  src={ingredient.image}
-                  alt="Картинка ингредиента"
-                  className={burgerIngredientsStyles.ingredientImage}
-                />
-                <p className={burgerIngredientsStyles.ingredientPrice}>
-                  {ingredient.price} ₽
-                </p>
-                <p className={burgerIngredientsStyles.ingredientName}>
-                  {ingredient.name}
-                </p>
-              </div>
+                ingredient={ingredient}
+                onClick={openIngredientModal}
+              />
             ))}
           </div>
         </div>
       );
     },
-    [ingredientRefs]
+    [loading, error, ingredientRefs]
   );
 
   return (
