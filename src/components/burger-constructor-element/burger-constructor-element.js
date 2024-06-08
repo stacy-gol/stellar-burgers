@@ -2,7 +2,7 @@ import React, { useRef } from "react";
 import { useDrag, useDrop } from 'react-dnd';
 import { ConstructorElement } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useDispatch } from 'react-redux';
-import { moveIngredient } from '../../services/burgerConstructor/burgerConstructorSlice';
+import { removeIngredient, moveIngredient } from '../../services/burgerConstructor/burgerConstructorSlice';
 
 const BurgerConstructorElement = ({ ingredient, index }) => {
   const dispatch = useDispatch();
@@ -33,6 +33,10 @@ const BurgerConstructorElement = ({ ingredient, index }) => {
 
   drag(drop(ref));
 
+  const handleDeleteClick = () => {
+    dispatch(removeIngredient({ uniqueKey: ingredient.uniqueKey }));
+  }
+
   return (
     <div ref={ref}>
       <ConstructorElement
@@ -41,6 +45,7 @@ const BurgerConstructorElement = ({ ingredient, index }) => {
         text={ingredient.name}
         price={ingredient.price}
         thumbnail={ingredient.image}
+        handleClose={handleDeleteClick} 
       />
     </div>
   );

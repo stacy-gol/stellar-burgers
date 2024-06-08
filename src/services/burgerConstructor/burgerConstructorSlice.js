@@ -14,9 +14,14 @@ export const burgerConstructorSlice = createSlice({
       reducer: (state, action) => {
         const { type, uniqueKey } = action.payload;
         if (type === 'bun') {
-          state.bun = action.payload;
-        } else {
-          state.ingredients.push({ ...action.payload, uniqueKey });
+          return {
+            ...state,
+            bun: action.payload,
+          };
+        } else
+          return {
+            ...state,
+            ingredients: [...state.ingredients, action.payload]
         }
       },
       prepare: (ingredient) => {

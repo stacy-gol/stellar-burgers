@@ -4,8 +4,7 @@
   gap: 10px;
 }
 
-.scrollable,
-.ingredientPlaceholder {
+.scrollable {
   overflow-y: auto;
   max-height: 45vh;
   display: flex;
@@ -42,10 +41,8 @@
 }
 
 .bunTop,
-.bunBottom,
-.bunPlaceholder {
+.bunBottom {
   display: flex;
-  margin-left: 25px;
 }
 
 .ingredientRow {
@@ -59,4 +56,78 @@
 .placeholderText {
   text-align: center;
   width: 100%;
+}
+
+.placeholder {
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.08
+  );
+  color: rgba(255, 255, 255, 0.7);
+  justify-content: center;
+  border: 1px dashed rgba(255, 255, 255, 0.5);
+  border-radius: var(--common-border-radius-s);
+  padding: 16px 24px;
+  display: inline-block;
+  background: var(--background-element);
+  width: 536px;
+  min-height: 80px;
+  font-family: "Jet Brains Mono";
+  font-size: 16px;
+  line-height: 24px;
+  color: #f2f2f3;
+  flex-grow: 1;
+  box-sizing: border-box;
+}
+
+.bunTopPlaceholder {
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.08
+  );
+  color: rgba(255, 255, 255, 0.7);
+  justify-content: center;
+  border: 1px dashed rgba(255, 255, 255, 0.5);
+  padding: 16px 24px;
+  display: inline-block;
+  background: var(--background-element);
+  max-width: 536px;
+  width: 100%;
+  min-height: 80px;
+  font-family: "Jet Brains Mono";
+  font-size: 16px;
+  line-height: 24px;
+  color: #f2f2f3;
+  flex-grow: 1;
+  box-sizing: border-box;
+  border-radius: var(--top-constructor-item-border-radius);
+}
+
+.bunBottomPlaceholder {
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.08
+  );
+  color: rgba(255, 255, 255, 0.7);
+  justify-content: center;
+  border: 1px dashed rgba(255, 255, 255, 0.5);
+  padding: 16px 24px;
+  display: inline-block;
+  background: var(--background-element);
+  max-width: 536px;
+  width: 100%;
+  min-height: 80px;
+  font-family: "Jet Brains Mono";
+  font-size: 16px;
+  line-height: 24px;
+  color: #f2f2f3;
+  flex-grow: 1;
+  box-sizing: border-box;
+  border-radius: var(--bottom-constructor-item-border-radius);
 }

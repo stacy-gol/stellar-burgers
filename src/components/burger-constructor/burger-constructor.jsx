@@ -1,5 +1,6 @@
 import React, { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useDrop } from "react-dnd";
 import {
   addIngredient,
   removeIngredient,
@@ -19,8 +20,13 @@ import { constructorTypes } from "../../utils/types";
 import { createOrder } from "../../services/order/orderSlice";
 import { openModal, closeModal } from "../../services/modal/modalSlice";
 
-const Placeholder = ({ text, type }) => (
-  <div className={`${ConstructorStyles.ingredientRow} ${type === 'bun' ? ConstructorStyles.bunPlaceholder : ConstructorStyles.ingredientPlaceholder}`}>
+const Placeholder = ({ text, type, position }) => (
+  <div
+    className={`${ConstructorStyles.ingredientRow}
+      ${type === 'ingredient' ? ConstructorStyles.placeholder : ""} 
+      ${position === "top" ? ConstructorStyles.bunTopPlaceholder : ""} 
+      ${position === "bottom" ? ConstructorStyles.bunBottomPlaceholder : ""}`}
+  >
     <p className={ConstructorStyles.placeholderText}>{text}</p>
   </div>
 );
@@ -31,6 +37,57 @@ function BurgerConstructor() {
   const { order, orderRequest, isOrderModalOpen } = useSelector(
     (state) => state.order
   );
+
+  const bunTop = bun && (
+    <div>
+      <ConstructorElement
+        type="top"
+        isLocked
+        text={bun.name + " (верх)"}
+        price={bun.price}
+        thumbnail={bun.image}
+      />
+    </div>
+  );
+
+  const bunBottom = bun && (
+    <div>
+      <ConstructorElement
+        type="bottom"
+        isLocked
+        text={bun.name + " (низ)"}
+        price={bun.price}
+        thumbnail={bun.image}
+      />
+    </div>
+  );
+
+  const [{}, dropBunTopTarget] = useDrop({
+    accept: "ingredient",
+    drop(item) {
+      if (item.type === "bun") {
+        dispatch(addIngredient({ ...item, position: "top" }))
+      }
+    },
+  });
+  
+  const [{},dropBunBottomTarget] = useDrop({
+    accept: "ingredient",
+    drop(item) {
+      if (item.type === "bun") {
+        dispatch(addIngredient({ ...item, position: "bottom" }));
+      }
+    },
+  });
+  
+  const [, dropIngredientTarget] = useDrop({
+    accept: "ingredient",
+    drop(item) {
+      if (item.type !== "bun") {
+        dispatch(addIngredient(item));
+      }
+    },
+  });
 
   const ingredientIds = ingredients.map((ingredient) => ingredient._id);
   if (bun) {
@@ -47,24 +104,6 @@ function BurgerConstructor() {
     dispatch(closeModal());
   };
 
-  const handleAddIngredient = useCallback(
-    (ingredient) => {
-      dispatch(addIngredient(ingredient));
-    },
-    [dispatch]
-  );
-
-  const handleRemoveIngredient = useCallback(
-    (ingredientId) => {
-      dispatch(removeIngredient(ingredientId));
-    },
-    [dispatch]
-  );
-
-  const handleMoveIngredient = useCallback(() => {
-    dispatch(moveIngredient());
-  }, [dispatch]);
-
   const total = ingredients.reduce(
     (acc, item) => acc + item.price,
     bun ? bun.price * 2 : 0
@@ -72,39 +111,37 @@ function BurgerConstructor() {
 
   return (
     <div className={ConstructorStyles.container + " mt-25 ml-16"}>
-      <div className={ConstructorStyles.bunTop}>
+      <div className={ConstructorStyles.bunTop} ref={dropBunTopTarget}>
         {bun ? (
-          <BurgerConstructorElement
-            ingredient={{ ...bun, type: "top" }}
-            isLocked={true}
-          />
+          bunTop
         ) : (
-          <Placeholder text="Перетащите булку сверху" type="bun"/>
+          <Placeholder text="Перетащите булку сверху" position="top" />
         )}
       </div>
 
-      <div className={`${ConstructorStyles.scrollable} container`}>
+      <div
+        className={`${ConstructorStyles.scrollable} container`}
+        ref={dropIngredientTarget}
+      >
         {ingredients.length ? (
           ingredients.map((ingredient, index) => (
-            <div className={ConstructorStyles.ingredientRow} key={ingredient._id}>
-            <BurgerConstructorElement
-              ingredient={ingredient}
-            />
+            <div
+              className={ConstructorStyles.ingredientRow}
+              key={ingredient._id}
+            >
+              <BurgerConstructorElement ingredient={ingredient} />
             </div>
           ))
         ) : (
-          <Placeholder text="Перетащите начинку" type="ingredient"/>
+          <Placeholder text="Перетащите начинку" type="ingredient" />
         )}
       </div>
 
-      <div className={ConstructorStyles.bunBottom}>
+      <div className={ConstructorStyles.bunBottom} ref={dropBunBottomTarget}>
         {bun ? (
-          <BurgerConstructorElement
-            ingredient={{ ...bun, type: "bottom" }}
-            isLocked={true}
-          />
+          bunBottom
         ) : (
-          <Placeholder text="Перетащите булку снизу" type="bun"/>
+          <Placeholder text="Перетащите булку снизу" position="bottom" />
         )}
       </div>
 
