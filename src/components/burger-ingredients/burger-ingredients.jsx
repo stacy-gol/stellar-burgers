@@ -1,30 +1,44 @@
-import React, { useState, useMemo, useRef, useCallback, useEffect } from "react";
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchIngredients } from '../../services/ingredients/ingredientsSlice';
+import React, {
+  useState,
+  useMemo,
+  useRef,
+  useCallback,
+  useEffect,
+} from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchIngredients } from "../../services/ingredients/ingredientsSlice";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import burgerIngredientsStyles from "../burger-ingredients/burger-ingredients.module.css";
 import Modal from "../modal/modal";
 import { burgerIngredientsTypes } from "../../utils/types";
 import IngredientDetails from "../ingredient-details/ingredient-details";
-import { openModal, closeModal } from '../../services/modal/modalSlice';
-import { setIngredient, clearIngredient } from '../../services/currentIngredient/currentIngredientSlice';
+import { openModal, closeModal } from "../../services/modal/modalSlice";
+import {
+  setIngredient,
+  clearIngredient,
+} from "../../services/currentIngredient/currentIngredientSlice";
 import DraggableIngredient from "../draggable-ingredient/draggable-ingredient";
 
 function BurgerIngredients() {
   const dispatch = useDispatch();
-  const { allIngredients, loading, error } = useSelector((state) => state.ingredients);
-  const currentIngredient = useSelector((state) => state.currentIngredient.currentIngredient);
+  const { allIngredients, loading, error } = useSelector(
+    (state) => state.ingredients
+  );
+  const { bun, ingredients } = useSelector((state) => state.burgerConstructor);
+  const currentIngredient = useSelector(
+    (state) => state.currentIngredient.currentIngredient
+  );
   const isModalOpen = useSelector((state) => state.modal.isModalOpen);
 
   useEffect(() => {
     dispatch(fetchIngredients());
   }, [dispatch]);
-  
+
   const openIngredientModal = (ingredient) => {
     dispatch(setIngredient(ingredient));
     dispatch(openModal());
   };
-  
+
   const closeIngredientModal = () => {
     dispatch(clearIngredient());
     dispatch(closeModal());
@@ -36,6 +50,17 @@ function BurgerIngredients() {
     sauce: useRef(null),
     main: useRef(null),
   };
+
+  const ingredientCounts = useMemo(() => {
+    const counts = {};
+    if (bun) {
+      counts[bun._id] = 2;
+    }
+    ingredients.forEach((ingredient) => {
+      counts[ingredient._id] = (counts[ingredient._id] || 0) + 1;
+    });
+    return counts;
+  }, [bun, ingredients]);
 
   const groupedIngredients = useMemo(() => {
     if (!loading && allIngredients.length > 0) {
@@ -65,27 +90,32 @@ function BurgerIngredients() {
         main: "Начинки",
         sauce: "Соусы",
       };
-  
+
       const typeName = ingredientTypeNames[type] || type;
-  
+
       if (loading) {
         return <p>Загрузка...</p>;
       }
-    
+
       if (error) {
         return <p>Ошибка: {error}</p>;
       }
-  
+
       return (
         <div key={type} ref={ingredientRefs[type]}>
           <h3 className={burgerIngredientsStyles.typeTitle}>{typeName}</h3>
           <div className={burgerIngredientsStyles.typeContainer}>
             {ingredients.map((ingredient) => (
-              <DraggableIngredient
+              <div
                 key={ingredient._id}
-                ingredient={ingredient}
-                onClick={openIngredientModal}
-              />
+                className={burgerIngredientsStyles.ingredient}
+              >
+                <DraggableIngredient
+                  ingredient={ingredient}
+                  onClick={() => openIngredientModal(ingredient)}
+                  orderCount={ingredientCounts[ingredient._id]}
+                />
+              </div>
             ))}
           </div>
         </div>
@@ -129,10 +159,10 @@ function BurgerIngredients() {
       </div>
       {currentIngredient && (
         <Modal
-        isOpen={isModalOpen}
-        onClose={closeIngredientModal}
-        title="Детали ингредиента"
-      >
+          isOpen={isModalOpen}
+          onClose={closeIngredientModal}
+          title="Детали ингредиента"
+        >
           <IngredientDetails currentIngredient={currentIngredient} />
         </Modal>
       )}

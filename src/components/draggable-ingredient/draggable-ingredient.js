@@ -1,7 +1,8 @@
 import { useDrag } from "react-dnd";
 import burgerIngredientsStyles from "../burger-ingredients/burger-ingredients.module.css";
+import { Counter } from "@ya.praktikum/react-developer-burger-ui-components";
 
-function DraggableIngredient({ ingredient, onClick }) {
+function DraggableIngredient({ ingredient, onClick, orderCount }) {
   const [{ isDragging }, drag, preview] = useDrag(() => ({
       type: 'ingredient',
       item: { ...ingredient },
@@ -17,6 +18,7 @@ function DraggableIngredient({ ingredient, onClick }) {
         style={{ opacity: isDragging ? 0.5 : 1 }}
         onClick={() => onClick(ingredient)}
       >
+        {orderCount > 0 && <Counter count={orderCount} size="default" />}
         <img
           src={ingredient.image}
           alt={ingredient.name}

@@ -36,6 +36,8 @@
   align-items: center;
   flex-basis: calc(50% - 12px);
   margin-bottom: 20px;
+  position: relative;
+  max-width: 290px;
 }
 
 .ingredientImage {
@@ -73,3 +75,6 @@
   margin-top: 20px;
 }
 
+/* .ingredientWrapper {
+  position: relative;
+} */
