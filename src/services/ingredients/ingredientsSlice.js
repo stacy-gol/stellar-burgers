@@ -1,11 +1,11 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { ENDPOINT } from '../../utils/api';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { ENDPOINT } from "../../utils/api";
 
 export const fetchIngredients = createAsyncThunk(
-  'ingredients/fetchIngredients',
+  "ingredients/fetchIngredients",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await fetch((`${ENDPOINT}/api/ingredients`));
+      const response = await fetch(`${ENDPOINT}/api/ingredients`);
       const data = await response.json();
       if (response.ok) {
         return data.data;
@@ -25,7 +25,7 @@ const initialState = {
 };
 
 const ingredientsSlice = createSlice({
-  name: 'ingredients',
+  name: "ingredients",
   initialState,
   reducers: {
     resetIngredientsState: (state) => {
@@ -37,11 +37,11 @@ const ingredientsSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchIngredients.pending, (state) => {
-        state.loading = true; 
+        state.loading = true;
         state.error = null;
       })
       .addCase(fetchIngredients.fulfilled, (state, action) => {
-        state.allIngredients = action.payload; 
+        state.allIngredients = action.payload;
         state.loading = false;
       })
       .addCase(fetchIngredients.rejected, (state, action) => {

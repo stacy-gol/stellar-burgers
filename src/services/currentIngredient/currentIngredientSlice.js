@@ -1,11 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   currentIngredient: null,
 };
 
 export const currentIngredientSlice = createSlice({
-  name: 'currentIngredient',
+  name: "currentIngredient",
   initialState,
   reducers: {
     setIngredient: (state, action) => {
@@ -17,9 +17,7 @@ export const currentIngredientSlice = createSlice({
   },
 });
 
-export const {
-  setIngredient,
-  clearIngredient,
-} = currentIngredientSlice.actions;
+export const { setIngredient, clearIngredient } =
+  currentIngredientSlice.actions;
 
 export default currentIngredientSlice.reducer;

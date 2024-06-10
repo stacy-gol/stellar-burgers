@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 import burgerIngredientsStyles from "../burger-ingredients/burger-ingredients.module.css";
 
 function IngredientDetails({ currentIngredient }) {

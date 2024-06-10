@@ -13,7 +13,7 @@ export const burgerConstructorSlice = createSlice({
     addIngredient: {
       reducer: (state, action) => {
         const { type } = action.payload;
-        if (type === 'bun') {
+        if (type === "bun") {
           return {
             ...state,
             bun: action.payload,
@@ -21,12 +21,12 @@ export const burgerConstructorSlice = createSlice({
         } else
           return {
             ...state,
-            ingredients: [...state.ingredients, action.payload]
-        }
+            ingredients: [...state.ingredients, action.payload],
+          };
       },
       prepare: (ingredient) => {
         const uniqueKey = uuidv4();
-        return { payload: { ...ingredient, uniqueKey }};
+        return { payload: { ...ingredient, uniqueKey } };
       },
     },
     removeIngredient: (state, action) => {
@@ -37,7 +37,7 @@ export const burgerConstructorSlice = createSlice({
     },
     moveIngredient: (state, action) => {
       const { fromIndex, toIndex } = action.payload;
-          if (fromIndex !== toIndex) {
+      if (fromIndex !== toIndex) {
         const movedIngredient = state.ingredients[fromIndex];
         state.ingredients.splice(fromIndex, 1);
         state.ingredients.splice(toIndex, 0, movedIngredient);
@@ -46,6 +46,7 @@ export const burgerConstructorSlice = createSlice({
   },
 });
 
-export const { addIngredient, removeIngredient, moveIngredient } = burgerConstructorSlice.actions;
+export const { addIngredient, removeIngredient, moveIngredient } =
+  burgerConstructorSlice.actions;
 
 export default burgerConstructorSlice.reducer;

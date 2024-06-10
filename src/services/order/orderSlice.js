@@ -1,16 +1,16 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { ENDPOINT } from "../../utils/api";
 
 export const createOrder = createAsyncThunk(
-  'order/createOrder',
+  "order/createOrder",
   async (ingredientIds, { rejectWithValue }) => {
     try {
       const response = await fetch(`${ENDPOINT}/api/orders`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ingredients: ingredientIds })
+        body: JSON.stringify({ ingredients: ingredientIds }),
       });
 
       const data = await response.json();
@@ -32,7 +32,7 @@ const initialState = {
 };
 
 export const orderSlice = createSlice({
-  name: 'order',
+  name: "order",
   initialState,
   reducers: {
     clearOrder: (state) => {
@@ -59,8 +59,6 @@ export const orderSlice = createSlice({
   },
 });
 
-export const {
-  clearOrder
-} = orderSlice.actions;
+export const { clearOrder } = orderSlice.actions;
 
 export default orderSlice.reducer;

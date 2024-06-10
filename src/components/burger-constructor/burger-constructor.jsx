@@ -1,11 +1,7 @@
 import React, { useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useDrop } from "react-dnd";
-import {
-  addIngredient,
-  removeIngredient,
-  moveIngredient,
-} from "../../services/burgerConstructor/burgerConstructorSlice";
+import { addIngredient } from "../../services/burgerConstructor/burgerConstructorSlice";
 import {
   ConstructorElement,
   CurrencyIcon,
@@ -23,7 +19,7 @@ import { openModal, closeModal } from "../../services/modal/modalSlice";
 const Placeholder = ({ text, type, position }) => (
   <div
     className={`${ConstructorStyles.ingredientRow}
-      ${type === 'ingredient' ? ConstructorStyles.placeholder : ""} 
+      ${type === "ingredient" ? ConstructorStyles.placeholder : ""} 
       ${position === "top" ? ConstructorStyles.bunTopPlaceholder : ""} 
       ${position === "bottom" ? ConstructorStyles.bunBottomPlaceholder : ""}`}
   >
@@ -34,7 +30,6 @@ const Placeholder = ({ text, type, position }) => (
 function BurgerConstructor() {
   const dispatch = useDispatch();
   const { bun, ingredients } = useSelector((state) => state.burgerConstructor);
-  console.log('ingredients', ingredients);
   const { order, orderRequest, isOrderModalOpen } = useSelector(
     (state) => state.order
   );
@@ -66,27 +61,22 @@ function BurgerConstructor() {
   const [{}, dropBunTopTarget] = useDrop({
     accept: "ingredient",
     drop(item) {
-      if (item.type === "bun") {
-        dispatch(addIngredient({ ...item, position: "top" }))
-      }
+      dispatch(addIngredient({ ...item, position: "top" }));
     },
   });
-  
-  const [{},dropBunBottomTarget] = useDrop({
+
+  const [{}, dropBunBottomTarget] = useDrop({
     accept: "ingredient",
     drop(item) {
-      if (item.type === "bun") {
-        dispatch(addIngredient({ ...item, position: "bottom" }));
-      }
+      dispatch(addIngredient({ ...item, position: "bottom" }));
     },
   });
-  
+
   const [, dropIngredientTarget] = useDrop({
     accept: "ingredient",
     drop(item) {
-      if (item.type !== "bun") {
+      if (item.type !== "bun" && !item.isExistingIngredient) {
         dispatch(addIngredient(item));
-        console.log("item", item);
       }
     },
   });
@@ -129,7 +119,7 @@ function BurgerConstructor() {
           ingredients.map((ingredient, index) => (
             <div
               className={ConstructorStyles.ingredientRow}
-              key={ingredient._id}
+              key={ingredient.uniqueKey}
             >
               <BurgerConstructorElement ingredient={ingredient} index={index} />
             </div>
