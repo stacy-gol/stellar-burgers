@@ -21,13 +21,10 @@ import DraggableIngredient from "../draggable-ingredient/draggable-ingredient";
 
 function BurgerIngredients() {
   const dispatch = useDispatch();
-  const { allIngredients, loading, error } = useSelector(
-    (state) => state.ingredients
-  );
+  const { allIngredients, loading, error } = useSelector((state) => state.ingredients);
   const { bun, ingredients } = useSelector((state) => state.burgerConstructor);
-  const currentIngredient = useSelector(
-    (state) => state.currentIngredient.currentIngredient
-  );
+  console.log('ingredients BI', ingredients);
+  const currentIngredient = useSelector((state) => state.currentIngredient.currentIngredient);
   const isModalOpen = useSelector((state) => state.modal.isModalOpen);
 
   useEffect(() => {
@@ -51,17 +48,6 @@ function BurgerIngredients() {
     main: useRef(null),
   };
 
-  const ingredientCounts = useMemo(() => {
-    const counts = {};
-    if (bun) {
-      counts[bun._id] = 2;
-    }
-    ingredients.forEach((ingredient) => {
-      counts[ingredient._id] = (counts[ingredient._id] || 0) + 1;
-    });
-    return counts;
-  }, [bun, ingredients]);
-
   const groupedIngredients = useMemo(() => {
     if (!loading && allIngredients.length > 0) {
       return allIngredients.reduce((acc, item) => {
@@ -74,6 +60,32 @@ function BurgerIngredients() {
     }
     return {};
   }, [loading, allIngredients]);
+
+  // const ingredientCounts = useMemo(() => {
+  //   const counts = {};
+  //   if (bun) {
+  //     counts[bun._id] = 2;
+  //   }
+  //   ingredients.forEach((ingredient) => {
+  //     counts[ingredient._id] = (counts[ingredient._id] || 0) + 1;
+  //   });
+  //   return counts;
+  // }, [bun, ingredients]);
+
+  const ingredientCounts = useMemo(() => {
+    const counts = {};
+    if (bun && bun._id) { // Добавлена проверка на наличие bun._id
+      counts[bun._id] = 2;
+    }
+    ingredients.forEach((ingredient) => {
+      if (ingredient && ingredient._id) { // Добавлена проверка на наличие ingredient._id
+        counts[ingredient._id] = (counts[ingredient._id] || 0) + 1;
+      } else {
+        console.error('Ошибка: ingredient не содержит свойства _id', ingredient);
+      }
+    });
+    return counts;
+  }, [bun, ingredients]);
 
   const handleTabClick = useCallback(
     (value, type) => {

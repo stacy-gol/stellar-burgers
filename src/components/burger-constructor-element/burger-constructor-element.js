@@ -9,33 +9,67 @@ const BurgerConstructorElement = ({ ingredient, index }) => {
 
   const type = ingredient.type === 'bun' ? 'bun' : 'ingredient';
 
-  const ref = useRef(null);
+  // const ref = useRef(null);
 
-  const [{ isDragging }, drag] = useDrag({
-    type: type,
-    item: { id: ingredient._id, index },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging(),
-    }),
-  });
+  // const [{ isDragging }, drag] = useDrag({
+  //   type: type,
+  //   item: { id: ingredient._id, index },
+  //   collect: (monitor) => ({
+  //     isDragging: monitor.isDragging(),
+  //   }),
+  // });
 
-  const [, drop] = useDrop({
-    accept: type,
-    drop(item) {
-      if (item.index !== index) {
-        dispatch(moveIngredient({ fromIndex: item.index, toIndex: index }));
+  // const [, drop] = useDrop({
+  //   accept: type,
+  //   drop(item) {
+  //     if (item.index !== index) {
+  //       dispatch(moveIngredient({ fromIndex: item.index, toIndex: index }));
+  //     }
+  //   },
+  //   collect: (monitor) => ({
+  //     isOver: monitor.isOver(),
+  //   }),
+  // });
+
+  // drag(drop(ref));
+
+  // const handleDeleteClick = () => {
+  //   dispatch(removeIngredient({ uniqueKey: ingredient.uniqueKey }));
+  // }
+
+  
+    const ref = useRef(null);
+    
+    const [, drop] = useDrop({
+      accept: "ingredient",
+      hover(item) {
+        if (item.id !== ingredient._id && item.type !== 'bun') {
+          dispatch(moveIngredient({ fromIndex: item.index, toIndex: index }));
+        }
       }
-    },
-    collect: (monitor) => ({
-      isOver: monitor.isOver(),
-    }),
-  });
-
-  drag(drop(ref));
-
-  const handleDeleteClick = () => {
-    dispatch(removeIngredient({ uniqueKey: ingredient.uniqueKey }));
-  }
+    });
+  
+    const [{ isDragging }, drag] = useDrag({
+      type: "ingredient",
+      item: () => {
+        return { id: ingredient._id, index };
+      },
+      collect: (monitor) => ({
+        isDragging: monitor.isDragging(),
+      }),
+      end: (item, monitor) => {
+        const dropResult = monitor.getDropResult();
+        if (!dropResult) {
+          dispatch(moveIngredient({ fromIndex: index, toIndex: index }));
+        }
+      },
+    });
+  
+    drag(drop(ref));
+  
+    const handleDeleteClick = () => {
+      dispatch(removeIngredient({ uniqueKey: ingredient.uniqueKey }));
+    };
 
   return (
     <div ref={ref}>

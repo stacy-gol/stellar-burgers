@@ -34,6 +34,7 @@ const Placeholder = ({ text, type, position }) => (
 function BurgerConstructor() {
   const dispatch = useDispatch();
   const { bun, ingredients } = useSelector((state) => state.burgerConstructor);
+  console.log('ingredients', ingredients);
   const { order, orderRequest, isOrderModalOpen } = useSelector(
     (state) => state.order
   );
@@ -85,6 +86,7 @@ function BurgerConstructor() {
     drop(item) {
       if (item.type !== "bun") {
         dispatch(addIngredient(item));
+        console.log("item", item);
       }
     },
   });
@@ -129,7 +131,7 @@ function BurgerConstructor() {
               className={ConstructorStyles.ingredientRow}
               key={ingredient._id}
             >
-              <BurgerConstructorElement ingredient={ingredient} />
+              <BurgerConstructorElement ingredient={ingredient} index={index} />
             </div>
           ))
         ) : (
