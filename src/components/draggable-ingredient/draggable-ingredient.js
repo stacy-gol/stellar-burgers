@@ -1,6 +1,8 @@
 import { useDrag } from "react-dnd";
 import burgerIngredientsStyles from "../burger-ingredients/burger-ingredients.module.css";
 import { Counter } from "@ya.praktikum/react-developer-burger-ui-components";
+import { draggableIngredientTypes } from "../../utils/types";
+
 
 function DraggableIngredient({ ingredient, onClick, orderCount }) {
   const [{ isDragging }, drag, preview] = useDrag(() => ({
@@ -33,5 +35,8 @@ function DraggableIngredient({ ingredient, onClick, orderCount }) {
     </div>
   );
 }
+
+DraggableIngredient.propTypes = draggableIngredientTypes;
+
 
 export default DraggableIngredient;

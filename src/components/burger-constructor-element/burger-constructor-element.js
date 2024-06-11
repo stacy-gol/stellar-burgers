@@ -6,6 +6,8 @@ import {
   removeIngredient,
   moveIngredient,
 } from "../../services/burgerConstructor/burgerConstructorSlice";
+import { burgerConstructorElementTypes } from "../../utils/types";
+
 
 const BurgerConstructorElement = ({ ingredient, index }) => {
   const dispatch = useDispatch();
@@ -80,5 +82,8 @@ const BurgerConstructorElement = ({ ingredient, index }) => {
     </div>
   );
 };
+
+BurgerConstructorElement.propTypes = burgerConstructorElementTypes;
+
 
 export default BurgerConstructorElement;
