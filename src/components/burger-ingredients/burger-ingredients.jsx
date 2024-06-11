@@ -12,7 +12,7 @@ import burgerIngredientsStyles from "../burger-ingredients/burger-ingredients.mo
 import Modal from "../modal/modal";
 import { burgerIngredientsTypes } from "../../utils/types";
 import IngredientDetails from "../ingredient-details/ingredient-details";
-import { openModal, closeModal } from "../../services/modal/modalSlice";
+import { openIngredientModal, closeIngredientModal } from "../../services/modal/modalSlice";
 import {
   setIngredient,
   clearIngredient,
@@ -28,20 +28,20 @@ function BurgerIngredients() {
   const currentIngredient = useSelector(
     (state) => state.currentIngredient.currentIngredient
   );
-  const isModalOpen = useSelector((state) => state.modal.isModalOpen);
+  const isModalOpen = useSelector((state) => state.modal.ingredientModal.isOpen);
 
   useEffect(() => {
     dispatch(fetchIngredients());
   }, [dispatch]);
 
-  const openIngredientModal = (ingredient) => {
+  const handleOpenIngredientModal = (ingredient) => {
     dispatch(setIngredient(ingredient));
-    dispatch(openModal());
+    dispatch(openIngredientModal());
   };
 
-  const closeIngredientModal = () => {
+  const handleCloseIngredientModal = () => {
     dispatch(clearIngredient());
-    dispatch(closeModal());
+    dispatch(closeIngredientModal());
   };
 
   const [current, setCurrent] = useState("one");
@@ -75,21 +75,6 @@ function BurgerIngredients() {
     return counts;
   }, [bun, ingredients]);
 
-  // const ingredientCounts = useMemo(() => {
-  //   const counts = {};
-  //   if (bun && bun._id) {
-  //     counts[bun._id] = 2;
-  //   }
-  //   ingredients.forEach((ingredient) => {
-  //     if (ingredient && ingredient._id) {
-  //       counts[ingredient._id] = (counts[ingredient._id] || 0) + 1;
-  //     } else {
-  //       console.error('Ошибка: ingredient не содержит свойства _id', ingredient);
-  //     }
-  //   });
-  //   return counts;
-  // }, [bun, ingredients]);
-
   const handleTabClick = useCallback(
     (value, type) => {
       setCurrent(value);
@@ -97,6 +82,45 @@ function BurgerIngredients() {
     },
     [ingredientRefs]
   );
+
+  const getClosestHeading = () => {
+    const headings = {
+      bun: ingredientRefs.bun.current,
+      sauce: ingredientRefs.sauce.current,
+      main: ingredientRefs.main.current,
+    };
+    let closest = "bun";
+    let minDistance = Infinity;
+
+    Object.keys(headings).forEach((key) => {
+      const heading = headings[key];
+      if (heading) {
+        const distance = heading.getBoundingClientRect().top;
+        if (distance >= 0 && distance < minDistance) {
+          closest = key;
+          minDistance = distance;
+        }
+      }
+    });
+
+    return closest;
+  };
+
+  useEffect(() => {
+    const onScroll = () => {
+      const closest = getClosestHeading();
+      setCurrent(closest);
+    };
+
+    const containerElement = document.querySelector(
+      `.${burgerIngredientsStyles.ingredientsContainer}`
+    );
+    containerElement.addEventListener("scroll", onScroll);
+
+    return () => {
+      containerElement.removeEventListener("scroll", onScroll);
+    };
+  }, []);
 
   const renderIngredientsByType = useCallback(
     (ingredients, type) => {
@@ -127,7 +151,7 @@ function BurgerIngredients() {
               >
                 <DraggableIngredient
                   ingredient={ingredient}
-                  onClick={() => openIngredientModal(ingredient)}
+                  onClick={() => handleOpenIngredientModal(ingredient)}
                   orderCount={ingredientCounts[ingredient._id]}
                 />
               </div>
@@ -144,25 +168,25 @@ function BurgerIngredients() {
       <h1>Соберите бургер</h1>
       <div className={burgerIngredientsStyles.tabsContainer}>
         <Tab
-          value="one"
-          active={current === "one"}
-          onClick={() => handleTabClick("one", "bun")}
+          value="bun"
+          active={current === "bun"}
+          onClick={() => handleTabClick("bun", "bun")}
         >
           Булки
         </Tab>
         <Tab
-          value="two"
-          active={current === "two"}
-          onClick={() => handleTabClick("two", "sauce")}
-        >
-          Соусы
-        </Tab>
-        <Tab
-          value="three"
-          active={current === "three"}
-          onClick={() => handleTabClick("three", "main")}
+          value="main"
+          active={current === "main"}
+          onClick={() => handleTabClick("main", "main")}
         >
           Начинки
+        </Tab>
+        <Tab
+          value="sauce"
+          active={current === "sauce"}
+          onClick={() => handleTabClick("sauce", "sauce")}
+        >
+          Соусы
         </Tab>
       </div>
       <div
@@ -175,7 +199,7 @@ function BurgerIngredients() {
       {currentIngredient && (
         <Modal
           isOpen={isModalOpen}
-          onClose={closeIngredientModal}
+          onClose={handleCloseIngredientModal}
           title="Детали ингредиента"
         >
           <IngredientDetails currentIngredient={currentIngredient} />

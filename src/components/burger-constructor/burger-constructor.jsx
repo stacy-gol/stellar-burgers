@@ -14,7 +14,7 @@ import OrderDetails from "../order/order";
 import BurgerConstructorElement from "../burger-constructor-element/burger-constructor-element";
 import { constructorTypes } from "../../utils/types";
 import { createOrder } from "../../services/order/orderSlice";
-import { openModal, closeModal } from "../../services/modal/modalSlice";
+import { openOrderModal, closeOrderModal } from "../../services/modal/modalSlice";
 
 const Placeholder = ({ text, type, position }) => (
   <div
@@ -30,9 +30,11 @@ const Placeholder = ({ text, type, position }) => (
 function BurgerConstructor() {
   const dispatch = useDispatch();
   const { bun, ingredients } = useSelector((state) => state.burgerConstructor);
-  const { order, orderRequest, isOrderModalOpen } = useSelector(
+  const { order, orderRequest } = useSelector(
     (state) => state.order
   );
+  const isModalOpen = useSelector((state) => state.modal.orderModal.isOpen);
+
 
   const bunTop = bun && (
     <div>
@@ -89,11 +91,11 @@ function BurgerConstructor() {
 
   const handleCreateOrder = () => {
     dispatch(createOrder(ingredientIds));
-    dispatch(openModal());
+    dispatch(openOrderModal());
   };
 
   const handleCloseModal = () => {
-    dispatch(closeModal());
+    dispatch(closeOrderModal());
   };
 
   const total = ingredients.reduce(
@@ -154,7 +156,7 @@ function BurgerConstructor() {
         </Button>
       </div>
       {order && (
-        <Modal isOpen={isOrderModalOpen} onClose={handleCloseModal}>
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
           <OrderDetails />
         </Modal>
       )}
