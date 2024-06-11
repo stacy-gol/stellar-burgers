@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useDrop } from "react-dnd";
 import { addIngredient } from "../../services/burgerConstructor/burgerConstructorSlice";
@@ -6,13 +6,12 @@ import {
   ConstructorElement,
   CurrencyIcon,
   Button,
+  DragIcon
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import ConstructorStyles from "./burger-constructor.module.css";
-import ingridienticon from "../../images/list-icon.png";
 import Modal from "../modal/modal";
 import OrderDetails from "../order/order";
 import BurgerConstructorElement from "../burger-constructor-element/burger-constructor-element";
-import { constructorTypes } from "../../utils/types";
 import { createOrder } from "../../services/order/orderSlice";
 import { openOrderModal, closeOrderModal } from "../../services/modal/modalSlice";
 
@@ -123,6 +122,7 @@ function BurgerConstructor() {
               className={ConstructorStyles.ingredientRow}
               key={ingredient.uniqueKey}
             >
+              <DragIcon/>
               <BurgerConstructorElement ingredient={ingredient} index={index} />
             </div>
           ))
@@ -163,7 +163,5 @@ function BurgerConstructor() {
     </div>
   );
 }
-
-BurgerConstructor.propTypes = constructorTypes;
 
 export default BurgerConstructor;

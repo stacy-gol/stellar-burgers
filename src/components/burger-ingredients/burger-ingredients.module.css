@@ -74,3 +74,10 @@
   padding: 0;
   margin-top: 20px;
 }
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding-bottom: 15px;
+}

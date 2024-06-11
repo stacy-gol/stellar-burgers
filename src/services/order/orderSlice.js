@@ -1,27 +1,17 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { ENDPOINT } from "../../utils/api";
+import { request } from "../../utils/api";
 
 export const createOrder = createAsyncThunk(
   "order/createOrder",
   async (ingredientIds, { rejectWithValue }) => {
-    try {
-      const response = await fetch(`${ENDPOINT}/api/orders`, {
+      const response = await request("/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ ingredients: ingredientIds }),
       });
-
-      const data = await response.json();
-      if (!response.ok || !data.success) {
-        return rejectWithValue(data);
-      }
-
-      return data.order;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+      return response.order;
   }
 );
 
@@ -53,7 +43,7 @@ export const orderSlice = createSlice({
         state.orderFailed = null;
       })
       .addCase(createOrder.rejected, (state, action) => {
-        state.orderFailed = action.payload;
+        state.orderFailed = action.error.message; 
         state.orderRequest = false;
       });
   },

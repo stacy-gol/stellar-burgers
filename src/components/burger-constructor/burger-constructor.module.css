@@ -34,15 +34,10 @@
   margin-left: 10px;
 }
 
-.ingredientIcon {
-  width: 13px;
-  height: 18.31px;
-  margin-right: 12px;
-}
-
 .bunTop,
 .bunBottom {
   display: flex;
+  margin-left: 25px;
 }
 
 .ingredientRow {

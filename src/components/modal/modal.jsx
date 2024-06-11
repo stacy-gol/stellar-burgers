@@ -5,7 +5,7 @@ import ModalOverlay from "../modal-overlay/modal-overlay";
 import { modalTypes } from "../../utils/types";
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 
-const Modal = ({ isOpen, onClose, children }) => {
+const Modal = ({ isOpen, onClose, children, title }) => {
   useEffect(() => {
     const handleEsc = (event) => {
       if (event.key === "Escape") {
@@ -33,6 +33,8 @@ const Modal = ({ isOpen, onClose, children }) => {
     <ModalOverlay onClick={handleOverlayClick}>
       <div className={modalStyles.modal} onClick={(e) => e.stopPropagation()}>
         <div className={modalStyles.modalHeader}>
+        {title && <h1 className="text text_type_main-large ml-4">{title}</h1>}
+
           <div onClick={onClose} className={modalStyles.closeButtonContainer}>
             <CloseIcon />
           </div>

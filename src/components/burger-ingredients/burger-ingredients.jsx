@@ -6,11 +6,9 @@ import React, {
   useEffect,
 } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchIngredients } from "../../services/ingredients/ingredientsSlice";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import burgerIngredientsStyles from "../burger-ingredients/burger-ingredients.module.css";
 import Modal from "../modal/modal";
-import { burgerIngredientsTypes } from "../../utils/types";
 import IngredientDetails from "../ingredient-details/ingredient-details";
 import { openIngredientModal, closeIngredientModal } from "../../services/modal/modalSlice";
 import {
@@ -29,10 +27,6 @@ function BurgerIngredients() {
     (state) => state.currentIngredient.currentIngredient
   );
   const isModalOpen = useSelector((state) => state.modal.ingredientModal.isOpen);
-
-  useEffect(() => {
-    dispatch(fetchIngredients());
-  }, [dispatch]);
 
   const handleOpenIngredientModal = (ingredient) => {
     dispatch(setIngredient(ingredient));
@@ -208,7 +202,5 @@ function BurgerIngredients() {
     </div>
   );
 }
-
-BurgerIngredients.propTypes = burgerIngredientsTypes;
 
 export default BurgerIngredients;

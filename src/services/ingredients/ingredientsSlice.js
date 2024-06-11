@@ -1,20 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { ENDPOINT } from "../../utils/api";
+import { request } from "../../utils/api";
 
 export const fetchIngredients = createAsyncThunk(
   "ingredients/fetchIngredients",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await fetch(`${ENDPOINT}/api/ingredients`);
-      const data = await response.json();
-      if (response.ok) {
-        return data.data;
-      } else {
-        return rejectWithValue(data.error);
-      }
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
+  async (_,) => {
+    const response = await request("/api/ingredients");
+    return response.data;
   }
 );
 
@@ -46,7 +37,7 @@ const ingredientsSlice = createSlice({
       })
       .addCase(fetchIngredients.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload;
+        state.error = action.error.message; 
       });
   },
 });
