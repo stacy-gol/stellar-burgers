@@ -21,6 +21,14 @@
     align-items: flex-end;
     padding-bottom: 15px;
   }
+
+  .modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    padding-bottom: 15px;
+    margin-top: 40px;
+  }
   
   .modalContent {
     padding-top: 15px;
