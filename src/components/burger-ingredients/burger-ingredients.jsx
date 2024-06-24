@@ -6,6 +6,7 @@ import React, {
   useEffect,
 } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import burgerIngredientsStyles from "../burger-ingredients/burger-ingredients.module.css";
 import Modal from "../modal/modal";
@@ -19,6 +20,9 @@ import DraggableIngredient from "../draggable-ingredient/draggable-ingredient";
 
 function BurgerIngredients() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation(); 
+
   const { allIngredients, loading, error } = useSelector(
     (state) => state.ingredients
   );
@@ -26,17 +30,13 @@ function BurgerIngredients() {
   const currentIngredient = useSelector(
     (state) => state.currentIngredient.currentIngredient
   );
-  const isModalOpen = useSelector((state) => state.modal.ingredientModal.isOpen);
-
-  const handleOpenIngredientModal = (ingredient) => {
+  
+  const handleOpenIngredientModal = useCallback((ingredient) => {
     dispatch(setIngredient(ingredient));
     dispatch(openIngredientModal());
-  };
+    navigate(`/ingredients/${ingredient._id}`, { state: { backgroundLocation: location.pathname } });
+  }, [dispatch, navigate, location]);
 
-  const handleCloseIngredientModal = () => {
-    dispatch(clearIngredient());
-    dispatch(closeIngredientModal());
-  };
 
   const [current, setCurrent] = useState("one");
   const ingredientRefs = {
@@ -190,15 +190,6 @@ function BurgerIngredients() {
           renderIngredientsByType(groupedIngredients[type], type)
         )}
       </div>
-      {currentIngredient && (
-        <Modal
-          isOpen={isModalOpen}
-          onClose={handleCloseIngredientModal}
-          title="Детали ингредиента"
-        >
-          <IngredientDetails currentIngredient={currentIngredient} />
-        </Modal>
-      )}
     </div>
   );
 }

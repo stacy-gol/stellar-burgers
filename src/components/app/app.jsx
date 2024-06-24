@@ -8,7 +8,6 @@
 // import { fetchIngredients } from "../../services/ingredients/ingredientsSlice";
 // import AppStyles from "./app.module.css";
 
-
 // function App() {
 //   const dispatch = useDispatch();
 
@@ -31,18 +30,40 @@
 
 // export default App;
 
-
-import { Routes, Route } from 'react-router-dom';
-import { Home, Login, Register, ForgotPassword, ResetPassword } from '../../pages';
+import { Routes, Route, useLocation } from "react-router-dom";
+import {
+  Home,
+  Login,
+  Register,
+  ForgotPassword,
+  ResetPassword,
+  IngredientModal
+} from "../../pages";
 
 export default function App() {
+  const location = useLocation();
+  let background = location.state && location.state.backgroundLocation; 
+  console.log('location', location);
+
   return (
-      <Routes>
+    <div>
+      <Routes location={background || location}>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="ingredients/:ingredientId" element={<IngredientModal />} />
       </Routes>
+
+      {background && (
+        <Routes>
+          <Route
+            path="/ingredients/:ingredientId"
+            element={<IngredientModal />}
+          />
+        </Routes>
+      )}
+    </div>
   );
 }
