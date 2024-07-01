@@ -4,11 +4,14 @@ import burgerConstructorReducer from '../services/burgerConstructor/burgerConstr
 import currentIngredientReducer from '../services/currentIngredient/currentIngredientSlice';
 import orderReducer from '../services/order/orderSlice';
 import modalReducer from '../services/modal/modalSlice';
+import authReducer from '../services/authSlice';
+
 
 export const rootReducer = combineReducers({
   ingredients: ingredientsReducer,
   burgerConstructor: burgerConstructorReducer,
   currentIngredient: currentIngredientReducer,
   order: orderReducer,
-  modal: modalReducer
+  modal: modalReducer,
+  auth: authReducer
 });

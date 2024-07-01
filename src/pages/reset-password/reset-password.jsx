@@ -1,14 +1,30 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Input,
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import ResetPasswordStyles from "./reset-password.module.css";
+import { resetPassword } from '../../utils/api';
+
 
 export const ResetPassword = () => {
   const [password, setPassword] = useState("");
-  const [code, setCode] = useState("");
+  const [token, setToken] = useState("");
+  const navigate = useNavigate();
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      const response = await resetPassword(password, token);
+      if (response.success) {
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error('Ошибка при сбросе пароля:', error);
+    }
+  }
 
   return (
     <div className={ResetPasswordStyles.container}>
@@ -17,7 +33,7 @@ export const ResetPassword = () => {
       >
         Восстановление пароля
       </h1>
-      <form className={ResetPasswordStyles.formContainer}>
+      <form onSubmit={handleSubmit} className={ResetPasswordStyles.formContainer}>
         <Input
           type="password"
           placeholder="Введите новый пароль"
@@ -31,12 +47,12 @@ export const ResetPassword = () => {
         <Input
           type="text"
           placeholder="Введите код из письма"
-          onChange={(e) => setCode(e.target.value)}
-          value={code}
-          name="code"
+          onChange={(e) => setToken(e.target.value)}
+          value={token}
+          name="token"
           size="default"
         />
-        <Button type="primary" size="medium" extraClass="mt-6 mb-20">
+        <Button htmlType="submit" type="primary" size="medium" extraClass="mt-6 mb-20">
           Сохранить
         </Button>
       </form>
