@@ -4,8 +4,33 @@ import { getCookie, setCookie } from "../utils/cookies";
 import { refreshAccessToken } from "../utils/api";
 
 const initialState = {
-  user: null,
-  isAuthChecked: false
+  isAuthenticated: false,
+  isAuthChecked: false,
+  email: "",
+  name: "",
+  accessToken: "",
+  accessTokenExpired: false,
+  refreshToken: "",
+  isRegistrationInProcess: false,
+  isRegistrationSuccess: false,
+  isRegistrationFailed: false,
+  isAuthorizationInProcess: false,
+  isAuthorizationSuccess: false,
+  isAuthorizationFailed: false,
+
+  isPasswordRecoveryInProcess: false,
+  isPasswordRecoverySuccess: false,
+  isPasswordRecoveryFailed: false,
+
+  isPasswordUpdatingInProcess: false,
+  isPasswordUpdatingFailed: false,
+
+  getUserInfoInProcess: false,
+  getUserInfoSuccess: false,
+  getUserInfoFailed: false,
+
+  updateUserInfoInProcess: false,
+  updateUserInfoInFailed: false,
 };
 
 export const registerUser = createAsyncThunk(
@@ -69,8 +94,8 @@ export const refreshTokenThunk = createAsyncThunk(
     }
   );
 
-export const userSlice = createSlice({
-    name: "user",
+export const authSlice = createSlice({
+    name: "auth",
     initialState,
     reducers: {
       setUser: (state, action) => {
@@ -83,52 +108,28 @@ export const userSlice = createSlice({
     },
     extraReducers: (builder) => {
       builder
-        .addCase(loginUser.pending, (state) => {
-          state.error = null;
-        })
-        .addCase(loginUser.fulfilled, (state, action) => {
-          state.user = action.payload;
-          state.isAuthChecked = true;
-          state.error = null;
-        })
-        .addCase(loginUser.rejected, (state, action) => {
-          state.error = action.payload;
-        })
-        .addCase(logoutUser.pending, (state) => {
-          state.error = null;
-        })
-        .addCase(logoutUser.fulfilled, (state) => {
-          state.user = null;
-          state.isAuthChecked = false;
-          state.error = null;
-        })
-        .addCase(logoutUser.rejected, (state, action) => {
-          state.error = action.payload;
-        })
-        .addCase(registerUser.pending, (state) => {
-          state.error = null;
-        })
-        .addCase(registerUser.fulfilled, (state, action) => {
-          state.user = action.payload;
-          state.isAuthChecked = true;
-          state.error = null;
-        })
-        .addCase(registerUser.rejected, (state, action) => {
-          state.error = action.payload;
-        })
-        .addCase(refreshTokenThunk.fulfilled, (state, action) => {
-            state.accessToken = action.payload;
-          })
-        .addCase(refreshTokenThunk.pending, (state, action) => {
-            state.accessToken = action.payload;
-          })
-        .addCase(refreshTokenThunk.rejected, (state, action) => {
-            state.error = action.payload;
-          })
+      .addCase(loginUser.pending, (state) => {
+        state.isAuthorizationInProcess = true;
+        state.isAuthorizationFailed = false;
+        state.isAuthorizationSuccess = false;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.user = action.payload; 
+        state.isAuthorizationInProcess = false;
+        state.isAuthorizationSuccess = true;
+        state.isAuthenticated = true;
+        state.accessToken = action.payload.accessToken; 
+        state.email = action.payload.email;            
+        state.name = action.payload.name;
+        state.isAuthChecked = true;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.isAuthorizationInProcess = false;
+        state.isAuthorizationFailed = true;
+      })
     },
   });
 
-   
-  export const { setUser, setIsAuthChecked } = userSlice.actions; 
+  export const { setUser, setIsAuthChecked } = authSlice.actions; 
   
-  export default userSlice.reducer;
+  export default authSlice.reducer;

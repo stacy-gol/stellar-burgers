@@ -39,6 +39,8 @@ import {
   ResetPassword,
   IngredientModal
 } from "../../pages";
+import { ProtectedRouteElement } from "../protected-route/protected-route";
+
 
 export default function App() {
   const location = useLocation();
@@ -49,10 +51,11 @@ export default function App() {
     <div>
       <Routes location={background || location}>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/login" element={<ProtectedRouteElement><Login /></ProtectedRouteElement>} />
+        <Route path="/register" element={<ProtectedRouteElement><Register /></ProtectedRouteElement>} />
+        <Route path="/forgot-password" element={<ProtectedRouteElement><ForgotPassword /></ProtectedRouteElement>} />
+        <Route path="/reset-password" element={<ProtectedRouteElement><ResetPassword /></ProtectedRouteElement>} />
+        {/* <Route path="/profile" element={<ProtectedRouteElement><Profile /></ProtectedRouteElement>} /> */}
         <Route path="ingredients/:ingredientId" element={<IngredientModal />} />
       </Routes>
 
