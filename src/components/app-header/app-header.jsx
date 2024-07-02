@@ -5,6 +5,7 @@ import {
   ProfileIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import headerStyles from "./app-header.module.css";
+import { useNavigate } from "react-router-dom";
 const constructorStyle = {
   color: "#F2F2F3",
 };
@@ -13,6 +14,11 @@ const buttonsStyle = {
 };
 
 function Header() {
+  const navigate = useNavigate();
+
+    const onClick = () => {
+        navigate("/profile");
+    };
   return (
     <header className={headerStyles.header}>
       <section className={headerStyles.content}>
@@ -31,7 +37,7 @@ function Header() {
           </button>
         </nav>
         <Logo />
-        <button className={headerStyles.loginButton} type="button">
+        <button className={headerStyles.loginButton} type="button" onClick={onClick}>
           <ProfileIcon type="secondary" />
           <p className="text text_type_main-default" style={buttonsStyle}>
             Личный кабинет
