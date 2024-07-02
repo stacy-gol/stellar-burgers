@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import Header from "../../components/app-header/app-header";
 import BurgerIngredients from "../../components/burger-ingredients/burger-ingredients";
 import BurgerConstructor from "../../components/burger-constructor/burger-constructor";
 import { DndProvider } from "react-dnd";
@@ -18,7 +17,6 @@ export function Home() {
   return (
     <DndProvider backend={HTML5Backend}>
       <div>
-        <Header />
         <main className={HomeStyles.home}>
           <BurgerIngredients />
           <BurgerConstructor />

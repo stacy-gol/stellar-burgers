@@ -28,6 +28,7 @@ export const ForgotPassword = () => {
 
   return (
     <div className={ForgotPasswordStyles.container}>
+      <main>
       <h1
         className={`${ForgotPasswordStyles.title} text text_type_main-large mb-6`}
       >
@@ -53,6 +54,7 @@ export const ForgotPassword = () => {
           <Link to="/login">Войти</Link>
         </p>
       </div>
+      </main>
     </div>
   );
 };
