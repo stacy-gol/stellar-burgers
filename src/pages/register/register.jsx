@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { registerUser } from "../../services/authSlice";
 import {
   Input,
   Button,
@@ -10,6 +12,14 @@ export const Register = () => {
 const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+    dispatch(registerUser({ name, email, password }));
+    navigate('/login');
+  };
 
   return (
     <div className={RegisterStyles.registerContainer}>
@@ -18,9 +28,9 @@ const [name, setName] = useState("");
       >
         Регистрация
       </h1>
-      <form className={RegisterStyles.formContainer}>
+      <form className={RegisterStyles.formContainer} onSubmit={handleRegister}>
       <Input
-          type="name"
+          type="text"
           placeholder="Имя"
           onChange={(e) => setName(e.target.value)}
           value={name}

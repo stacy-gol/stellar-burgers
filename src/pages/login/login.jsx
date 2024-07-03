@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../../services/authSlice";
 import {
   Input,
   Button,
@@ -9,6 +11,17 @@ import LoginStyles from "./login.module.css";
 export const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const navigate = useNavigate()
+
+  const handleLogin = (e) => {
+    e.preventDefault();
+    dispatch(loginUser({ email, password })).then(({payload}) => {
+      if (payload && payload.isAuthenticated) {
+        navigate('/');
+      }
+    });
+  };
 
   return (
     <div className={LoginStyles.loginContainer}>
@@ -17,7 +30,7 @@ export const Login = () => {
       >
         Вход
       </h1>
-      <form className={LoginStyles.formContainer}>
+      <form className={LoginStyles.formContainer} onSubmit={handleLogin}>
         <Input
           type="email"
           placeholder="Email"
