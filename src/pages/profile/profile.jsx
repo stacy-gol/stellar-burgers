@@ -34,7 +34,6 @@ export const Profile = () => {
             <NavLink
               end
               to={`/profile/orders`}
-              //to="/profile/orders"
               className={
                 ProfileStyles.navElement + " text text_type_main-medium"
               }
@@ -47,7 +46,7 @@ export const Profile = () => {
           </div>
           <div className={ProfileStyles.navElement}>
             <NavLink
-              to="/profile"
+              to="/"
               className={
                 ProfileStyles.navElement + " text text_type_main-medium"
               }
