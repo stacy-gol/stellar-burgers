@@ -49,7 +49,7 @@ export const Login = () => {
           icon="ShowIcon"
           extraClass="mt-6 mb-6"
         />
-        <Button type="primary" size="medium" extraClass="mb-20">
+        <Button type="primary" htmlType="submit" size="medium" extraClass="mb-20">
           Войти
         </Button>
       </form>

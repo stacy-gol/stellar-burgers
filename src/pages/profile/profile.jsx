@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom"; 
-import { logout } from "../../utils/api";
+import { logoutUser } from "../../services/authSlice";
 import { useDispatch } from 'react-redux';
 import {
   Input,
@@ -22,9 +22,10 @@ export const Profile = () => {
             <NavLink
               end
               to={`/profile`}
-              className={`${ProfileStyles.navElement} text text_type_main-medium`}
-              activeClassName={
-                ProfileStyles.activeNavElement + " text text_type_main-medium"
+              className={({ isActive }) =>
+                isActive
+                  ? `${ProfileStyles.activeNavElement} text text_type_main-medium`
+                  : `${ProfileStyles.navElement} text text_type_main-medium`
               }
             >
               Профиль
@@ -34,11 +35,10 @@ export const Profile = () => {
             <NavLink
               end
               to={`/profile/orders`}
-              className={
-                ProfileStyles.navElement + " text text_type_main-medium"
-              }
-              activeClassName={
-                ProfileStyles.activeNavElement + " text text_type_main-medium"
+              className={({ isActive }) =>
+                isActive
+                  ? `${ProfileStyles.activeNavElement} text text_type_main-medium`
+                  : `${ProfileStyles.navElement} text text_type_main-medium`
               }
             >
               История заказов
@@ -50,7 +50,7 @@ export const Profile = () => {
               className={
                 ProfileStyles.navElement + " text text_type_main-medium"
               }
-              onClick={() => dispatch(logout())}
+              onClick={() => dispatch(logoutUser())}
             >
               Выход
             </NavLink>
