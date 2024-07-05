@@ -11,7 +11,7 @@ export function ProtectedRouteElement({ children }) {
   const location = useLocation();
 
   if (!isAuthenticated && location.pathname.startsWith('/profile')) {
-    return <Navigate to="/login" state={{ from: location.pathname }} />;
+    return <Navigate to="/login" state={{ from: location }} />;
   }
 
   if (isAuthenticated && ['/login', '/register', '/forgot-password', '/reset-password'].includes(location.pathname)) {

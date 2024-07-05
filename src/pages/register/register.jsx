@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { registerUser } from "../../services/authSlice";
 import {
@@ -14,11 +14,13 @@ const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
 
   const handleRegister = (e) => {
     e.preventDefault();
     dispatch(registerUser({ name, email, password }));
-    navigate('/login');
+    navigate(from, { replace: true });
   };
 
   return (

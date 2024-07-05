@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   Input,
   Button,
@@ -12,6 +12,8 @@ export const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/login';
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -19,7 +21,7 @@ export const ResetPassword = () => {
     try {
       const response = await resetPassword(password, token);
       if (response.success) {
-        navigate('/login');
+        navigate(from, { replace: true });
       }
     } catch (error) {
       console.error('Ошибка при сбросе пароля:', error);

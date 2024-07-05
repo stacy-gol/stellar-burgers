@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../services/authSlice";
 import {
@@ -13,12 +13,14 @@ export const Login = () => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
   const navigate = useNavigate()
+  const location = useLocation();
+  const from = location.state?.from?.pathname || '/';
 
   const handleLogin = (e) => {
     e.preventDefault();
     dispatch(loginUser({ email, password })).then(({payload}) => {
       if (payload && payload.isAuthenticated) {
-        navigate('/');
+        navigate(from, { replace: true });
       }
     });
   };
