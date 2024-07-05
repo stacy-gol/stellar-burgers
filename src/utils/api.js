@@ -14,7 +14,6 @@ export const request = async (endpoint, options) => {
     const response = await fetch(`${BASE_URL}${endpoint}`, options);
   return checkResponse(response);
 } catch (error) {
-  console.error("API request error:", error);
   throw error;
 }
 };

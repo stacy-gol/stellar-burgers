@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { login, logout, register } from "../utils/api";
+import { login, logout, register, refreshAccessToken, getUser } from "../utils/api";
 import { getCookie, setCookie } from "../utils/cookies";
-import { refreshAccessToken, getUser } from "../utils/api";
 
 const initialState = {
   isAuthenticated: false,
@@ -33,79 +32,56 @@ const initialState = {
   updateUserInfoInFailed: false,
 };
 
+const handleAsyncThunk = (asyncFunction) => async (args, { rejectWithValue }) => {
+  try {
+    const response = await asyncFunction(args);
+    return response;
+  } catch (err) {
+    return rejectWithValue(err.message);
+  }
+};
+
 export const registerUser = createAsyncThunk(
   "user/register",
-  async ({ email, password, name }, { rejectWithValue }) => {
-    try {
-      const response = await register(email, password, name);
-      return response;
-    } catch (err) {
-      return rejectWithValue(err.message);
-    }
-  }
+  handleAsyncThunk(({ email, password, name }) => register(email, password, name))
 );
 
 export const loginUser = createAsyncThunk(
   "user/login",
-  async (credentials, { rejectWithValue }) => {
-    try {
-      const response = await login(credentials);
-      return response;
-    } catch (err) {
-      return rejectWithValue(err.message); // Преобразуем ошибку в строку
-    }
-  }
+  handleAsyncThunk((credentials) => login(credentials))
 );
 
 export const logoutUser = createAsyncThunk(
   "user/logout",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await logout();
-      return response;
-    } catch (err) {
-      return rejectWithValue(err.message); // Преобразуем ошибку в строку
-    }
-  }
+  handleAsyncThunk(() => logout())
 );
 
 export const refreshTokenThunk = createAsyncThunk(
   "user/refreshToken",
-  async (_, { getState, rejectWithValue }) => {
+  handleAsyncThunk(async (_, { getState, rejectWithValue }) => {
     const refreshToken = getCookie("refreshToken");
     if (!refreshToken) {
       return rejectWithValue("No refreshToken available.");
     }
 
-    try {
-      const response = await refreshAccessToken(refreshToken);
-      if (response.success) {
-        setCookie("accessToken", response.accessToken, { expires: 3600 });
-        if (response.refreshToken) {
-          setCookie("refreshToken", response.refreshToken, {
-            expires: 7 * 24 * 3600,
-          });
-        }
-        return response.accessToken;
-      } else {
-        return rejectWithValue("Failed to refresh access token.");
+    const response = await refreshAccessToken(refreshToken);
+    if (response.success) {
+      setCookie("accessToken", response.accessToken, { expires: 3600 });
+      if (response.refreshToken) {
+        setCookie("refreshToken", response.refreshToken, {
+          expires: 7 * 24 * 3600,
+        });
       }
-    } catch (err) {
-      return rejectWithValue(err.message || 'Unknown error');
+      return response.accessToken;
+    } else {
+      return rejectWithValue("Failed to refresh access token.");
     }
-  }
+  })
 );
 
 export const checkAuthStatus = createAsyncThunk(
   "user/checkAuthStatus",
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await getUser();
-      return response;
-    } catch (err) {
-      return rejectWithValue(err.message); // Преобразуем ошибку в строку
-    }
-  }
+  handleAsyncThunk(() => getUser())
 );
 
 export const authSlice = createSlice({
@@ -153,6 +129,22 @@ export const authSlice = createSlice({
       })
       .addCase(checkAuthStatus.pending, (state) => {
         state.isAuthChecked = false;
+      })
+      .addCase(logoutUser.pending, (state) => {
+        state.isAuthorizationInProcess = true;
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.user = null;
+        state.isAuthenticated = false;
+        state.isAuthorizationInProcess = false;
+        state.isAuthorizationSuccess = false;
+        state.accessToken = null;
+        state.email = null;
+        state.name = null;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.isAuthorizationInProcess = false;
+        state.isAuthorizationFailed = true;
       });
   },
 });
