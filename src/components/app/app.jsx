@@ -12,8 +12,7 @@ import { ProtectedRouteElement } from "../protected-route/protected-route";
 import Header from "../app-header/app-header";
 import { useDispatch } from "react-redux";
 import { useEffect } from "react";
-import { checkAuthStatus } from "../../services/authSlice";
-import { refreshTokenThunk } from "../../services/authSlice";
+import { checkAuthStatus, refreshTokenThunk } from "../../services/authSlice";
 
 export default function App() {
   const location = useLocation();

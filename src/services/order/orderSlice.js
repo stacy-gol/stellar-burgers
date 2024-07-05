@@ -1,20 +1,37 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { request } from "../../utils/api";
+import { getCookie } from "../../utils/cookies";
 
 export const createOrder = createAsyncThunk(
   "order/createOrder",
   async (ingredientIds, { rejectWithValue }) => {
-      const response = await request("/api/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ ingredients: ingredientIds }),
-      });
-      return response.order;
-  }
+    const accessToken = getCookie("accessToken");
+//       const response = await request("/api/orders", {
+//         method: "POST",
+//         headers: {
+//           Authorization: `Bearer ${accessToken}`,
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({ ingredients: ingredientIds }),
+//       });
+//       return response.order;
+//   }
+// );
+try {
+  const response = await request("/api/orders", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ ingredients: ingredientIds }),
+  });
+  return response.order;
+} catch (error) {
+  return rejectWithValue(error.message);
+}
+}
 );
-
 const initialState = {
   order: null,
   orderRequest: false,
