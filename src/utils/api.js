@@ -18,13 +18,13 @@ export const request = async (endpoint, options) => {
 }
 };
 
-export async function resetPassword(data) {
-  return await request("/api/password-reset", {
+export async function resetPassword(password, token) {
+  return await request("/api/password-reset/reset", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify(data),
+    body: JSON.stringify({ password, token }),
   });
 }
 
@@ -41,7 +41,7 @@ export async function sendPasswordResetEmail(email) {
 export async function getUser() {
   const accessToken = getCookie("accessToken");
   if (!accessToken) {
-    throw new Error("No access token found"); // Добавьте проверку на наличие токена
+    throw new Error("No access token found"); 
   }
   return request("/api/auth/user", {
     method: "GET",

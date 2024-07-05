@@ -18,9 +18,9 @@ export function ProtectedRouteElement({ children }) {
     return <Navigate to="/" />;
   }
 
-  if (location.pathname === '/reset-password' && !hasPasswordResetStatement) {
-    return <Navigate to="/forgot-password" />;
-  }
+  // if (location.pathname === '/reset-password' && !hasPasswordResetStatement) {
+  //   return <Navigate to="/forgot-password" />;
+  // }
 
   return children;
 }
