@@ -1,29 +1,22 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Modal from '../../components/modal/modal';
 import IngredientDetails from '../../components/ingredient-details/ingredient-details';
-import { fetchIngredients } from '../../services/ingredients/ingredientsSlice'; 
 
 export const IngredientModal = () => {
   let { ingredientId } = useParams();
   let location = useLocation();
   let navigate = useNavigate();
+
   const background = location.state && location.state.backgroundLocation;
 
-  const dispatch = useDispatch();
   const { allIngredients, loading, error } = useSelector(
     (state) => state.ingredients
   );
   
   const ingredient = allIngredients.find((item) => item._id === ingredientId);
-
-  useEffect(() => {
-    if (allIngredients.length === 0 && !loading && !error) {
-      dispatch(fetchIngredients());
-    }
-  }, [dispatch, allIngredients.length, loading, error]);
 
   const handleClose = () => {
     navigate(-1);
@@ -38,7 +31,7 @@ export const IngredientModal = () => {
   }
 
   if (!ingredient) {
-    return <p>Ингредиент не на��ден</p>;
+    return <p>Ингредиент не найден</p>;
   }
 
   if (!background) {

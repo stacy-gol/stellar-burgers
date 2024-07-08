@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../services/authSlice";
@@ -7,10 +7,11 @@ import {
   Button,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import LoginStyles from "./login.module.css";
+import { useForm } from "../../hooks/useForm";
+
 
 export const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { values, handleChange, setValues } = useForm({ email: "", password: "" });
   const dispatch = useDispatch();
   const navigate = useNavigate()
   const location = useLocation();
@@ -18,7 +19,7 @@ export const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    dispatch(loginUser({ email, password })).then(({payload}) => {
+    dispatch(loginUser({ email: values.email, password: values.password })).then(({ payload }) => {
       if (payload && payload.isAuthenticated) {
         navigate(from, { replace: true });
       }
@@ -36,16 +37,16 @@ export const Login = () => {
         <Input
           type="email"
           placeholder="Email"
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
+          onChange={handleChange}
+          value={values.email}
           name="email"
           size="default"
         />
         <Input
           type="password"
           placeholder="Пароль"
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
+          onChange={handleChange}
+          value={values.password}
           name="password"
           size="default"
           icon="ShowIcon"

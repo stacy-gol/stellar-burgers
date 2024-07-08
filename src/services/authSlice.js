@@ -5,6 +5,7 @@ import { getCookie, setCookie } from "../utils/cookies";
 const initialState = {
   isAuthenticated: false,
   isAuthChecked: false,
+  isLoggedIn: false,
   email: "",
   name: "",
   accessToken: "",
@@ -107,7 +108,7 @@ export const authSlice = createSlice({
         state.user = action.payload;
         state.isAuthorizationInProcess = false;
         state.isAuthorizationSuccess = true;
-        state.isAuthenticated = true;
+        state.isLoggedIn = true;
         state.accessToken = action.payload.accessToken;
         state.email = action.payload.email;
         state.name = action.payload.name;
@@ -136,6 +137,7 @@ export const authSlice = createSlice({
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
         state.isAuthenticated = false;
+        state.isLoggedIn = false;
         state.isAuthorizationInProcess = false;
         state.isAuthorizationSuccess = false;
         state.accessToken = null;

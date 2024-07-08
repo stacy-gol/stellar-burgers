@@ -2,7 +2,7 @@ import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDrop } from "react-dnd";
-import { addIngredient } from "../../services/burgerConstructor/burgerConstructorSlice";
+import { addIngredient, clearConstructor } from "../../services/burgerConstructor/burgerConstructorSlice";
 import {
   ConstructorElement,
   CurrencyIcon,
@@ -16,7 +16,7 @@ import BurgerConstructorElement from "../burger-constructor-element/burger-const
 import Preloader from "../preloader/preloader";
 import { createOrder } from "../../services/order/orderSlice";
 import { openOrderModal, closeOrderModal } from "../../services/modal/modalSlice";
-const selectIsAuthenticated = state => state.auth.isAuthenticated;
+const selectIsLoggedIn = state => state.auth.isLoggedIn;
 
 
 const Placeholder = ({ text, type, position }) => (
@@ -39,7 +39,7 @@ function BurgerConstructor() {
     (state) => state.order
   );
   const isModalOpen = useSelector((state) => state.modal.orderModal.isOpen);
-  const isAuthenticated = useSelector(selectIsAuthenticated);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
 
   const bunTop = bun && (
@@ -96,12 +96,16 @@ function BurgerConstructor() {
   }
 
   const handleCreateOrder = () => {
-    if (!isAuthenticated) {
+    if (!isLoggedIn) {
       navigate('/login', { state: { from: location } });
       return;
     }
-    dispatch(createOrder(ingredientIds));
-    dispatch(openOrderModal());
+    dispatch(createOrder(ingredientIds)).then(({ payload }) => {
+      if (payload) {
+        dispatch(clearConstructor());
+        dispatch(openOrderModal());
+      }
+    });
   };
 
   const handleCloseModal = () => {
@@ -162,7 +166,7 @@ function BurgerConstructor() {
           htmlType="submit"
           size="large"
           onClick={handleCreateOrder}
-          disabled={orderRequest}
+          disabled={orderRequest || !bun}
         >
           Оформить заказ
         </Button>

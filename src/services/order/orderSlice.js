@@ -6,32 +6,18 @@ export const createOrder = createAsyncThunk(
   "order/createOrder",
   async (ingredientIds, { rejectWithValue }) => {
     const accessToken = getCookie("accessToken");
-//       const response = await request("/api/orders", {
-//         method: "POST",
-//         headers: {
-//           Authorization: `Bearer ${accessToken}`,
-//           "Content-Type": "application/json",
-//         },
-//         body: JSON.stringify({ ingredients: ingredientIds }),
-//       });
-//       return response.order;
-//   }
-// );
-try {
-  const response = await request("/api/orders", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ ingredients: ingredientIds }),
-  });
-  return response.order;
-} catch (error) {
-  return rejectWithValue(error.message);
-}
-}
+      const response = await request("/api/orders", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ ingredients: ingredientIds }),
+      });
+      return response.order;
+  }
 );
+
 const initialState = {
   order: null,
   orderRequest: false,
