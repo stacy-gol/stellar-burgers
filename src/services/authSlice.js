@@ -34,12 +34,8 @@ const initialState = {
 };
 
 const handleAsyncThunk = (asyncFunction) => async (args, { rejectWithValue }) => {
-  try {
     const response = await asyncFunction(args);
     return response;
-  } catch (err) {
-    return rejectWithValue(err.message);
-  }
 };
 
 export const registerUser = createAsyncThunk(
@@ -108,6 +104,7 @@ export const authSlice = createSlice({
         state.user = action.payload;
         state.isAuthorizationInProcess = false;
         state.isAuthorizationSuccess = true;
+        state.isAuthenticated = true;
         state.isLoggedIn = true;
         state.accessToken = action.payload.accessToken;
         state.email = action.payload.email;
@@ -147,6 +144,12 @@ export const authSlice = createSlice({
       .addCase(logoutUser.rejected, (state, action) => {
         state.isAuthorizationInProcess = false;
         state.isAuthorizationFailed = true;
+      })
+      .addCase(refreshTokenThunk.fulfilled, (state, action) => {
+        state.accessToken = action.payload;
+      })
+      .addCase(refreshTokenThunk.rejected, (state, action) => {
+        state.accessTokenExpired = true;
       });
   },
 });

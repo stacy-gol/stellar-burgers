@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { loginUser } from "../../services/authSlice";
@@ -9,17 +9,21 @@ import {
 import LoginStyles from "./login.module.css";
 import { useForm } from "../../hooks/useForm";
 
-
 export const Login = () => {
-  const { values, handleChange, setValues } = useForm({ email: "", password: "" });
+  const { values, handleChange, setValues } = useForm({
+    email: "",
+    password: "",
+  });
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || '/';
+  const from = location.state?.from?.pathname || "/";
 
   const handleLogin = (e) => {
     e.preventDefault();
-    dispatch(loginUser({ email: values.email, password: values.password })).then(({ payload }) => {
+    dispatch(
+      loginUser({ email: values.email, password: values.password })
+    ).then(({ payload }) => {
       if (payload && payload.isAuthenticated) {
         navigate(from, { replace: true });
       }
@@ -52,7 +56,12 @@ export const Login = () => {
           icon="ShowIcon"
           extraClass="mt-6 mb-6"
         />
-        <Button type="primary" htmlType="submit" size="medium" extraClass="mb-20">
+        <Button
+          type="primary"
+          htmlType="submit"
+          size="medium"
+          extraClass="mb-20"
+        >
           Войти
         </Button>
       </form>
