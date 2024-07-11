@@ -1,7 +1,8 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useDrop } from "react-dnd";
-import { addIngredient } from "../../services/burgerConstructor/burgerConstructorSlice";
+import { addIngredient, clearConstructor } from "../../services/burgerConstructor/burgerConstructorSlice";
 import {
   ConstructorElement,
   CurrencyIcon,
@@ -12,8 +13,11 @@ import ConstructorStyles from "./burger-constructor.module.css";
 import Modal from "../modal/modal";
 import OrderDetails from "../order/order";
 import BurgerConstructorElement from "../burger-constructor-element/burger-constructor-element";
+import Preloader from "../preloader/preloader";
 import { createOrder } from "../../services/order/orderSlice";
 import { openOrderModal, closeOrderModal } from "../../services/modal/modalSlice";
+const selectIsLoggedIn = state => state.auth.isLoggedIn;
+
 
 const Placeholder = ({ text, type, position }) => (
   <div
@@ -28,11 +32,14 @@ const Placeholder = ({ text, type, position }) => (
 
 function BurgerConstructor() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { bun, ingredients } = useSelector((state) => state.burgerConstructor);
   const { order, orderRequest } = useSelector(
     (state) => state.order
   );
   const isModalOpen = useSelector((state) => state.modal.orderModal.isOpen);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
 
   const bunTop = bun && (
@@ -89,8 +96,16 @@ function BurgerConstructor() {
   }
 
   const handleCreateOrder = () => {
-    dispatch(createOrder(ingredientIds));
-    dispatch(openOrderModal());
+    if (!isLoggedIn) {
+      navigate('/login', { state: { from: location } });
+      return;
+    }
+    dispatch(createOrder(ingredientIds)).then(({ payload }) => {
+      if (payload) {
+        dispatch(clearConstructor());
+        dispatch(openOrderModal());
+      }
+    });
   };
 
   const handleCloseModal = () => {
@@ -104,6 +119,7 @@ function BurgerConstructor() {
 
   return (
     <div className={ConstructorStyles.container + " mt-25 ml-16"}>
+      {orderRequest && <Preloader />}
       <div className={ConstructorStyles.bunTop} ref={dropBunTopTarget}>
         {bun ? (
           bunTop
@@ -150,7 +166,7 @@ function BurgerConstructor() {
           htmlType="submit"
           size="large"
           onClick={handleCreateOrder}
-          disabled={orderRequest}
+          disabled={orderRequest || !bun}
         >
           Оформить заказ
         </Button>

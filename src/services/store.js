@@ -1,13 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
-// import logger from 'redux-logger';
-// import { customEnhancer } from './enhancers';
 import {rootReducer} from "./rootReducer"
+import authReducer from '../services/authSlice';
+
 
 const store = configureStore({
   reducer: rootReducer,
-  // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
-  // devTools: process.env.NODE_ENV !== 'production',
-  // enhancers: [customEnhancer],
+  auth: authReducer,
+
 });
 
 export default store;

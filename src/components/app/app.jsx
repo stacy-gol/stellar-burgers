@@ -1,32 +1,95 @@
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { Routes, Route, useLocation } from "react-router-dom";
+import {
+  Home,
+  Login,
+  Register,
+  ForgotPassword,
+  ResetPassword,
+  IngredientModal,
+  Profile,
+} from "../../pages";
+import { ProtectedRouteElement } from "../protected-route/protected-route";
 import Header from "../app-header/app-header";
-import BurgerIngredients from "../burger-ingredients/burger-ingredients";
-import BurgerConstructor from "../burger-constructor/burger-constructor";
-import { DndProvider } from "react-dnd";
-import { HTML5Backend } from "react-dnd-html5-backend";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 import { fetchIngredients } from "../../services/ingredients/ingredientsSlice";
-import AppStyles from "./app.module.css";
+import { checkAuthStatus, refreshTokenThunk } from "../../services/authSlice";
 
+export default function App() {
+  const location = useLocation();
+  let background = location.state && location.state.backgroundLocation;
 
-function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(fetchIngredients());
   }, [dispatch]);
 
+  useEffect(() => {
+    dispatch(checkAuthStatus());
+    const interval = setInterval(() => {
+      dispatch(refreshTokenThunk());
+    }, 20 * 60 * 1000);
+
+    return () => clearInterval(interval);
+  }, [dispatch]);
+
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div>
-        <Header />
-        <main className={AppStyles.app}>
-          <BurgerIngredients/>
-          <BurgerConstructor/>
-        </main>
-      </div>
-    </DndProvider>
+    <div>
+      <Header />
+      <Routes location={background || location}>
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/login"
+          element={
+            <ProtectedRouteElement anonymous>
+              <Login />
+            </ProtectedRouteElement>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <ProtectedRouteElement anonymous>
+              <Register />
+            </ProtectedRouteElement>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <ProtectedRouteElement anonymous>
+              <ForgotPassword />
+            </ProtectedRouteElement>
+          }
+        />
+        <Route
+          path="/reset-password"
+          element={
+            <ProtectedRouteElement anonymous>
+              <ResetPassword />
+            </ProtectedRouteElement>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRouteElement>
+              <Profile />
+            </ProtectedRouteElement>
+          }
+        />
+        <Route path="ingredients/:ingredientId" element={<IngredientModal />} />
+      </Routes>
+
+      {background && (
+        <Routes>
+          <Route
+            path="/ingredients/:ingredientId"
+            element={<IngredientModal />}
+          />
+        </Routes>
+      )}
+    </div>
   );
 }
-
-export default App;
