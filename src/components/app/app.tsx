@@ -22,12 +22,15 @@ export default function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    // @ts-ignore
     dispatch(fetchIngredients());
   }, [dispatch]);
 
   useEffect(() => {
+    // @ts-ignore
     dispatch(checkAuthStatus());
     const interval = setInterval(() => {
+      // @ts-ignore
       dispatch(refreshTokenThunk());
     }, 20 * 60 * 1000);
 

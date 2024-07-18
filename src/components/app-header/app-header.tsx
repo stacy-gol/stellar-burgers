@@ -13,7 +13,7 @@ function Header() {
 
   const currentPath = location.pathname;
 
-  const onClick = (path) => {
+  const onClick = (path: string) => {
     navigate(path);
   };
 
