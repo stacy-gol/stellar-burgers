@@ -46,7 +46,7 @@ function BurgerIngredients() {
     [dispatch, navigate, location]
   );
 
-  const [current, setCurrent] = useState("one");
+  const [current, setCurrent] = useState("bun");
   const ingredientRefs: {
     bun: MutableRefObject<HTMLDivElement | null>;
     sauce: MutableRefObject<HTMLDivElement | null>;
