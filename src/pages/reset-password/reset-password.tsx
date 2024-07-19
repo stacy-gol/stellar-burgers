@@ -6,6 +6,8 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import ResetPasswordStyles from "./reset-password.module.css";
 import { resetPassword } from '../../utils/api';
+import { defaultInputProps } from "../../services/types";
+
 
 
 export const ResetPassword = () => {
@@ -15,9 +17,8 @@ export const ResetPassword = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || '/login';
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     try {
       const response = await resetPassword(password, token);
       if (response.success) {
@@ -45,6 +46,7 @@ export const ResetPassword = () => {
           size="default"
           icon="ShowIcon"
           extraClass="mt-6 mb-6"
+          {...defaultInputProps}
         />
         <Input
           type="text"
@@ -53,6 +55,7 @@ export const ResetPassword = () => {
           value={token}
           name="token"
           size="default"
+          {...defaultInputProps}
         />
         <Button htmlType="submit" type="primary" size="medium" extraClass="mt-6 mb-20">
           Сохранить

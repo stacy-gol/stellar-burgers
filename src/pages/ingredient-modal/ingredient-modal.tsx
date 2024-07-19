@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Modal from '../../components/modal/modal';
 import IngredientDetails from '../../components/ingredient-details/ingredient-details';
+import { Ingredient } from '../../services/types';
 
 export const IngredientModal = () => {
   let { ingredientId } = useParams();
@@ -13,10 +14,10 @@ export const IngredientModal = () => {
   const background = location.state && location.state.backgroundLocation;
 
   const { allIngredients, loading, error } = useSelector(
-    (state) => state.ingredients
+    (state: any) => state.ingredients
   );
   
-  const ingredient = allIngredients.find((item) => item._id === ingredientId);
+  const ingredient = allIngredients.find((item: Ingredient) => item._id === ingredientId);
 
   const handleClose = () => {
     navigate(-1);

@@ -81,3 +81,10 @@ export interface PasswordResetRequest {
 export interface PasswordResetEmailRequest {
   email: string;
 }
+
+export const defaultInputProps = {
+  error: false,
+  errorText: "",
+  onPointerEnterCapture: undefined,
+  onPointerLeaveCapture: undefined,
+};

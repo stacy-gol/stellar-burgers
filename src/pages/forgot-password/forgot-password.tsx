@@ -6,6 +6,8 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import ForgotPasswordStyles from "./forgot-password.module.css";
 import { sendPasswordResetEmail } from "../../utils/api";
+import { defaultInputProps } from "../../services/types";
+
 
 export const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -13,7 +15,7 @@ export const ForgotPassword = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/reset-password";
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
@@ -46,12 +48,14 @@ export const ForgotPassword = () => {
             name="email"
             size="default"
             extraClass="mb-6"
+            {...defaultInputProps}
           />
           <Button
             type="primary"
             htmlType="submit"
             size="medium"
             extraClass="mb-20"
+            {...defaultInputProps}
           >
             Восстановить
           </Button>
