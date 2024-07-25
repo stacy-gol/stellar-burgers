@@ -4,81 +4,100 @@ import React, {
   useRef,
   useCallback,
   useEffect,
+  MutableRefObject,
 } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import burgerIngredientsStyles from "../burger-ingredients/burger-ingredients.module.css";
-import Modal from "../modal/modal";
-import IngredientDetails from "../ingredient-details/ingredient-details";
-import { openIngredientModal, closeIngredientModal } from "../../services/modal/modalSlice";
-import {
-  setIngredient,
-  clearIngredient,
-} from "../../services/currentIngredient/currentIngredientSlice";
+import { openIngredientModal } from "../../services/modal/modalSlice";
+import { setIngredient } from "../../services/currentIngredient/currentIngredientSlice";
 import DraggableIngredient from "../draggable-ingredient/draggable-ingredient";
+import {
+  BurgerIngredient,
+  GroupedIngredients,
+  IngredientCounts,
+} from "../../services/types";
 
 function BurgerIngredients() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation(); 
+  const location = useLocation();
 
   const { allIngredients, loading, error } = useSelector(
-    (state) => state.ingredients
+    (state: any) => state.ingredients
   );
-  const { bun, ingredients } = useSelector((state) => state.burgerConstructor);
+  const { bun, ingredients } = useSelector(
+    (state: any) => state.burgerConstructor
+  );
   const currentIngredient = useSelector(
-    (state) => state.currentIngredient.currentIngredient
+    (state: any) => state.currentIngredient.currentIngredient
   );
-  
-  const handleOpenIngredientModal = useCallback((ingredient) => {
-    dispatch(setIngredient(ingredient));
-    dispatch(openIngredientModal());
-    navigate(`/ingredients/${ingredient._id}`, { state: { backgroundLocation: location.pathname } });
-  }, [dispatch, navigate, location]);
 
+  const handleOpenIngredientModal = useCallback(
+    (ingredient: BurgerIngredient) => {
+      dispatch(setIngredient(ingredient));
+      //@ts-ignore
+      dispatch(openIngredientModal());
+      navigate(`/ingredients/${ingredient._id}`, {
+        state: { backgroundLocation: location.pathname },
+      });
+    },
+    [dispatch, navigate, location]
+  );
 
-  const [current, setCurrent] = useState("one");
-  const ingredientRefs = {
-    bun: useRef(null),
-    sauce: useRef(null),
-    main: useRef(null),
+  const [current, setCurrent] = useState("bun");
+  const ingredientRefs: {
+    bun: MutableRefObject<HTMLDivElement | null>;
+    sauce: MutableRefObject<HTMLDivElement | null>;
+    main: MutableRefObject<HTMLDivElement | null>;
+  } = {
+    bun: useRef<HTMLDivElement | null>(null),
+    sauce: useRef<HTMLDivElement | null>(null),
+    main: useRef<HTMLDivElement | null>(null),
   };
 
   const groupedIngredients = useMemo(() => {
-    if (!loading && allIngredients.length > 0) {
-      return allIngredients.reduce((acc, item) => {
-        if (!acc[item.type]) {
-          acc[item.type] = [];
-        }
-        acc[item.type].push(item);
-        return acc;
-      }, {});
+    if (
+      !loading &&
+      Array.isArray(allIngredients) &&
+      allIngredients.length > 0
+    ) {
+      return allIngredients.reduce(
+        (acc: GroupedIngredients, item: BurgerIngredient) => {
+          if (!acc[item.type]) {
+            acc[item.type] = [];
+          }
+          acc[item.type].push(item);
+          return acc;
+        },
+        {}
+      );
     }
     return {};
   }, [loading, allIngredients]);
 
   const ingredientCounts = useMemo(() => {
-    const counts = {};
+    const counts: IngredientCounts = {};
     if (bun) {
       counts[bun._id] = 2;
     }
-    ingredients.forEach((ingredient) => {
+    ingredients.forEach((ingredient: BurgerIngredient) => {
       counts[ingredient._id] = (counts[ingredient._id] || 0) + 1;
     });
     return counts;
   }, [bun, ingredients]);
 
   const handleTabClick = useCallback(
-    (value, type) => {
+    (value: string, type: "bun" | "sauce" | "main") => {
       setCurrent(value);
-      ingredientRefs[type].current.scrollIntoView({ behavior: "smooth" });
+      ingredientRefs[type].current?.scrollIntoView({ behavior: "smooth" });
     },
     [ingredientRefs]
   );
 
   const getClosestHeading = () => {
-    const headings = {
+    const headings: Record<"bun" | "sauce" | "main", HTMLDivElement | null> = {
       bun: ingredientRefs.bun.current,
       sauce: ingredientRefs.sauce.current,
       main: ingredientRefs.main.current,
@@ -87,7 +106,8 @@ function BurgerIngredients() {
     let minDistance = Infinity;
 
     Object.keys(headings).forEach((key) => {
-      const heading = headings[key];
+      const typedKey = key as keyof typeof headings;
+      const heading = headings[typedKey];
       if (heading) {
         const distance = heading.getBoundingClientRect().top;
         if (distance >= 0 && distance < minDistance) {
@@ -106,24 +126,27 @@ function BurgerIngredients() {
       setCurrent(closest);
     };
 
-    const containerElement = document.querySelector(
+    const containerElement = document.querySelector<HTMLDivElement>(
       `.${burgerIngredientsStyles.ingredientsContainer}`
     );
-    containerElement.addEventListener("scroll", onScroll);
-
+    if (containerElement) {
+      containerElement.addEventListener("scroll", onScroll);
+    }
     return () => {
-      containerElement.removeEventListener("scroll", onScroll);
+      if (containerElement) {
+        containerElement.removeEventListener("scroll", onScroll);
+      }
     };
   }, []);
 
-  const renderIngredientsByType = useCallback(
-    (ingredients, type) => {
-      const ingredientTypeNames = {
-        bun: "Булки",
-        main: "Начинки",
-        sauce: "Соусы",
-      };
+  const ingredientTypeNames: Record<"bun" | "main" | "sauce", string> = {
+    bun: "Булки",
+    main: "Начинки",
+    sauce: "Соусы",
+  };
 
+  const renderIngredientsByType = useCallback(
+    (ingredients: BurgerIngredient[], type: "bun" | "sauce" | "main") => {
       const typeName = ingredientTypeNames[type] || type;
 
       if (loading) {
@@ -138,7 +161,7 @@ function BurgerIngredients() {
         <div key={type} ref={ingredientRefs[type]}>
           <h3 className={burgerIngredientsStyles.typeTitle}>{typeName}</h3>
           <div className={burgerIngredientsStyles.typeContainer}>
-            {ingredients.map((ingredient) => (
+            {ingredients.map((ingredient: BurgerIngredient) => (
               <div
                 key={ingredient._id}
                 className={burgerIngredientsStyles.ingredient}
@@ -187,7 +210,10 @@ function BurgerIngredients() {
         className={`${burgerIngredientsStyles.ingredientsContainer} container`}
       >
         {Object.keys(groupedIngredients).map((type) =>
-          renderIngredientsByType(groupedIngredients[type], type)
+          renderIngredientsByType(
+            groupedIngredients[type as "bun" | "sauce" | "main"],
+            type as "bun" | "sauce" | "main"
+          )
         )}
       </div>
     </div>

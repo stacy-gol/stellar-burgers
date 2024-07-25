@@ -2,10 +2,15 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
-const selectIsAuthenticated = state => state.auth.isAuthenticated;
-const selectHasPasswordResetRequest = state => state.auth.isPasswordRecoverySuccess;
+const selectIsAuthenticated = (state: any) => state.auth.isAuthenticated;
+const selectHasPasswordResetRequest = (state: any) => state.auth.isPasswordRecoverySuccess;
 
-export function ProtectedRouteElement({ children,  anonymous = false }) {
+type TProtectedRoute = {
+  children: React.ReactNode;
+  anonymous?: boolean;
+};
+
+export function ProtectedRouteElement({ children, anonymous = false }: TProtectedRoute) {  
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const location = useLocation();
   const from = location.state?.from || '/';
@@ -23,5 +28,5 @@ export function ProtectedRouteElement({ children,  anonymous = false }) {
     return <Navigate to="/forgot-password" />;
   }
 
-  return children;
+  return <>{children}</>;
 }

@@ -1,11 +1,10 @@
 import { useDrag } from "react-dnd";
 import burgerIngredientsStyles from "../burger-ingredients/burger-ingredients.module.css";
 import { Counter } from "@ya.praktikum/react-developer-burger-ui-components";
-import { draggableIngredientTypes } from "../../utils/types";
+import { DraggableIngredientProps } from "../../services/types";
 
-
-function DraggableIngredient({ ingredient, onClick, orderCount }) {
-  const [{ isDragging }, drag, preview] = useDrag(() => ({
+const DraggableIngredient = ({ ingredient, onClick, orderCount }: DraggableIngredientProps): React.JSX.Element => {
+  const [{ isDragging }, drag] = useDrag(() => ({
     type: "ingredient",
     item: { ...ingredient },
     collect: (monitor) => ({
@@ -35,8 +34,5 @@ function DraggableIngredient({ ingredient, onClick, orderCount }) {
     </div>
   );
 }
-
-DraggableIngredient.propTypes = draggableIngredientTypes;
-
 
 export default DraggableIngredient;

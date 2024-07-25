@@ -1,22 +1,26 @@
 import React, { useRef } from "react";
-import { useDrag, useDrop } from "react-dnd";
+import { DropTargetMonitor, useDrag, useDrop } from "react-dnd";
 import { ConstructorElement } from "@ya.praktikum/react-developer-burger-ui-components";
 import { useDispatch } from "react-redux";
 import {
   removeIngredient,
   moveIngredient,
 } from "../../services/burgerConstructor/burgerConstructorSlice";
-import { burgerConstructorElementTypes } from "../../utils/types";
+import { Ingredient } from "../../services/types";
 
+interface BurgerConstructorElementProps {
+  ingredient: Ingredient;
+  index: number;
+}
 
-const BurgerConstructorElement = ({ ingredient, index }) => {
+const BurgerConstructorElement = ({ ingredient, index }: BurgerConstructorElementProps): React.JSX.Element => {
   const dispatch = useDispatch();
 
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement | null>(null);
 
-  const [, drop] = useDrop({
+  const [, drop] = useDrop<{ index: number }>({
     accept: "ingredient",
-    hover(item, monitor) {
+    hover(item: { index: number }, monitor: DropTargetMonitor) {
       if (!ref.current) {
         return;
       }
@@ -31,6 +35,9 @@ const BurgerConstructorElement = ({ ingredient, index }) => {
       const hoverMiddleY =
         (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
       const clientOffset = monitor.getClientOffset();
+      if (!clientOffset) {
+        return;
+      }
       const hoverClientY = clientOffset.y - hoverBoundingRect.top;
 
       if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
@@ -72,7 +79,7 @@ const BurgerConstructorElement = ({ ingredient, index }) => {
   return (
     <div ref={ref} style={style}>
       <ConstructorElement
-        type={ingredient.type === "bun" ? ingredient.type : undefined}
+        type={ingredient.type === "bun" ? "top" : undefined} 
         isLocked={ingredient.type === "bun"}
         text={ingredient.name}
         price={ingredient.price}
@@ -82,8 +89,5 @@ const BurgerConstructorElement = ({ ingredient, index }) => {
     </div>
   );
 };
-
-BurgerConstructorElement.propTypes = burgerConstructorElementTypes;
-
 
 export default BurgerConstructorElement;

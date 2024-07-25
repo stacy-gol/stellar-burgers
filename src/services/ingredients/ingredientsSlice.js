@@ -4,8 +4,7 @@ import { request } from "../../utils/api";
 export const fetchIngredients = createAsyncThunk(
   "ingredients/fetchIngredients",
   async (_,) => {
-    const response = await request("/api/ingredients");
-    return response.data;
+    return await request("/api/ingredients");
   }
 );
 

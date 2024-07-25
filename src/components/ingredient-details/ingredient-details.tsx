@@ -1,7 +1,12 @@
 import React from "react";
 import burgerIngredientsStyles from "../burger-ingredients/burger-ingredients.module.css";
+import { BurgerIngredient } from "../../services/types";
 
-function IngredientDetails({ currentIngredient }) {
+interface IngredientDetailsProps {
+  currentIngredient: BurgerIngredient;
+}
+
+function IngredientDetails({ currentIngredient }: IngredientDetailsProps) {
   return (
     <div>
       <img

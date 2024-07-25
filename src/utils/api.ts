@@ -1,24 +1,37 @@
-import { getCookie, setCookie } from "../../src/utils/cookies";
+import {
+  ApiResponse,
+  AuthResponse,
+  LoginCredentials,
+  User,
+} from "../services/types";
+import { getCookie, setCookie } from "./cookies";
+
 export const BASE_URL = "https://norma.nomoreparties.space";
 
-export const checkResponse = async (response) => {
-  const data = await response.json();
+export const checkResponse = async <T>(response: Response): Promise<T> => {
+  const data: ApiResponse<T> = await response.json();
   if (!response.ok || !data.success) {
-    throw new Error(data.message || 'Something went wrong');
+    throw new Error(data.message || "Something went wrong");
   }
-  return data;
+  return data.data ? data.data : (data as unknown as T);
 };
 
-export const request = async (endpoint, options) => {
+export const request = async <T>(
+  endpoint: string,
+  options: RequestInit
+): Promise<T> => {
   try {
     const response = await fetch(`${BASE_URL}${endpoint}`, options);
-  return checkResponse(response);
-} catch (error) {
-  throw error;
-}
+    return checkResponse<T>(response);
+  } catch (error) {
+    throw error;
+  }
 };
 
-export async function resetPassword(password, token) {
+export async function resetPassword(
+  password: string,
+  token: string
+): Promise<{ success: boolean }>  {
   return await request("/api/password-reset/reset", {
     method: "POST",
     headers: {
@@ -28,7 +41,9 @@ export async function resetPassword(password, token) {
   });
 }
 
-export async function sendPasswordResetEmail(email) {
+export async function sendPasswordResetEmail(
+  email: string
+): Promise<{ success: boolean }> {
   return await request("/api/password-reset", {
     method: "POST",
     headers: {
@@ -38,12 +53,12 @@ export async function sendPasswordResetEmail(email) {
   });
 }
 
-export async function getUser() {
+export async function getUser(): Promise<User> {
   const accessToken = getCookie("accessToken");
   if (!accessToken) {
-    throw new Error("No access token found"); 
+    throw new Error("No access token found");
   }
-  return request("/api/auth/user", {
+  return request<User>("/api/auth/user", {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -52,8 +67,12 @@ export async function getUser() {
   });
 }
 
-export async function register(email, password, name) {
-  const data = await request("/api/auth/register", {
+export async function register(
+  email: string,
+  password: string,
+  name: string
+): Promise<User> {
+  const data = await request<AuthResponse>("/api/auth/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -61,13 +80,15 @@ export async function register(email, password, name) {
     body: JSON.stringify({ email, password, name }),
   });
 
-  setCookie("accessToken", data.accessToken.split('Bearer ')[1], { expires: 3600 });
+  setCookie("accessToken", data.accessToken.split("Bearer ")[1], {
+    expires: 3600,
+  });
   setCookie("refreshToken", data.refreshToken, { expires: 7 * 24 * 3600 });
   return data.user;
 }
 
-export async function login(credentials) {
-  const data = await request("/api/auth/login", {
+export async function login(credentials: LoginCredentials): Promise<User>  {
+  const data = await request<AuthResponse>("/api/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -79,9 +100,9 @@ export async function login(credentials) {
   return data.user;
 }
 
-export async function logout() {
+export async function logout(): Promise<string> {
   const refreshToken = getCookie("refreshToken");
-  const data = await request("/api/auth/logout", {
+  const data = await request<{ message: string }>("/api/auth/logout", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -93,18 +114,16 @@ export async function logout() {
   return data.message;
 }
 
-export async function refreshAccessToken() {
+export async function refreshAccessToken(): Promise<string> {
   const refreshToken = getCookie("refreshToken");
-  const data = await request("/api/auth/token", {
+  const data = await request<AuthResponse>("/api/auth/token", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ token: refreshToken }),
   });
-  if (data.success) {
-    setCookie("accessToken", data.accessToken, { expires: 3600 });
-    setCookie("refreshToken", data.refreshToken, { expires: 7 * 24 * 3600 });
-  }
+  setCookie("accessToken", data.accessToken, { expires: 3600 });
+  setCookie("refreshToken", data.refreshToken, { expires: 7 * 24 * 3600 });
   return data.accessToken;
 }

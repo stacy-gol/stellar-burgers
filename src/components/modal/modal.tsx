@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import modalStyles from "./modal.module.css";
 import ModalOverlay from "../modal-overlay/modal-overlay";
-import { modalTypes } from "../../utils/types";
+import { ModalProps } from "../../services/types";
 import { CloseIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 
-const Modal = ({ isOpen, onClose, children, title }) => {
+const Modal = ({ isOpen, onClose, children, title }: ModalProps): React.JSX.Element | null => {
   useEffect(() => {
-    const handleEsc = (event) => {
+    const handleEsc = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         onClose();
       }
@@ -25,7 +25,7 @@ const Modal = ({ isOpen, onClose, children, title }) => {
     return null;
   }
 
-  const handleOverlayClick = (event) => {
+  const handleOverlayClick = () => {
     onClose();
   };
 
@@ -36,7 +36,7 @@ const Modal = ({ isOpen, onClose, children, title }) => {
         {title && <h1 className="text text_type_main-large ml-4">{title}</h1>}
 
           <div onClick={onClose} className={modalStyles.closeButtonContainer}>
-            <CloseIcon />
+            <CloseIcon type="primary"/>
           </div>
         </div>
         <div className={modalStyles.modalContent}>{children}</div>
@@ -46,7 +46,5 @@ const Modal = ({ isOpen, onClose, children, title }) => {
 
   return ReactDOM.createPortal(modalContent, modalRoot);
 };
-
-Modal.propTypes = modalTypes;
 
 export default Modal;

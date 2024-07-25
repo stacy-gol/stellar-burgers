@@ -7,24 +7,22 @@ import {
   Button
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import ProfileStyles from "./profile.module.css";
+import { defaultInputProps } from "../../services/types";
 
 export const Profile = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // И��пользуем хук useNavigate
+  const navigate = useNavigate(); 
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleLogout = async () => {
-    console.log("Logout initiated");
+    //@ts-ignore
     const result = await dispatch(logoutUser());
-    console.log("Logout result:", result);
     if (logoutUser.fulfilled.match(result)) {
-      console.log("Logout successful, navigating to home");
-      navigate("/"); // Перенаправляем на главную страницу
+      navigate("/"); 
     } else {
-      console.error("Logout failed:", result.error.message);
     }
   };
 
@@ -61,6 +59,7 @@ export const Profile = () => {
           </div>
           <div className={ProfileStyles.navElement}>
             <NavLink
+            to={`/`}
               className={
                 ProfileStyles.navElement + " text text_type_main-medium"
               }
@@ -92,6 +91,7 @@ export const Profile = () => {
           name="name"
           icon="EditIcon"
           size="default"
+          {...defaultInputProps}
         />
         <Input
           type="email"
@@ -102,6 +102,7 @@ export const Profile = () => {
           size="default"
           icon="EditIcon"
           extraClass="mt-6 mb-6"
+          {...defaultInputProps}
         />
         <Input
           type="password"
@@ -112,6 +113,7 @@ export const Profile = () => {
           size="default"
           icon="EditIcon"
           extraClass="mb-6"
+          {...defaultInputProps}
         />
       </form>
     </div>

@@ -16,10 +16,17 @@ import BurgerConstructorElement from "../burger-constructor-element/burger-const
 import Preloader from "../preloader/preloader";
 import { createOrder } from "../../services/order/orderSlice";
 import { openOrderModal, closeOrderModal } from "../../services/modal/modalSlice";
-const selectIsLoggedIn = state => state.auth.isLoggedIn;
+import { Ingredient } from "../../services/types";
 
+const selectIsLoggedIn = (state: any) => state.auth.isLoggedIn;
 
-const Placeholder = ({ text, type, position }) => (
+interface PlaceholderProps {
+  text: string;
+  type?: string;
+  position?: string;
+}
+
+const Placeholder = ({ text, type, position }: PlaceholderProps): React.JSX.Element => (
   <div
     className={`${ConstructorStyles.ingredientRow}
       ${type === "ingredient" ? ConstructorStyles.placeholder : ""} 
@@ -34,11 +41,11 @@ function BurgerConstructor() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { bun, ingredients } = useSelector((state) => state.burgerConstructor);
+  const { bun, ingredients } = useSelector((state: any) => state.burgerConstructor);
   const { order, orderRequest } = useSelector(
-    (state) => state.order
+    (state: any) => state.order
   );
-  const isModalOpen = useSelector((state) => state.modal.orderModal.isOpen);
+  const isModalOpen = useSelector((state: any) => state.modal.orderModal.isOpen);
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
 
@@ -66,30 +73,30 @@ function BurgerConstructor() {
     </div>
   );
 
-  const [{}, dropBunTopTarget] = useDrop({
+  const [, dropBunTopTarget] = useDrop<Ingredient, void, unknown>({
     accept: "ingredient",
-    drop(item) {
+    drop(item: Ingredient) {
       dispatch(addIngredient({ ...item, position: "top" }));
     },
   });
 
-  const [{}, dropBunBottomTarget] = useDrop({
+  const [, dropBunBottomTarget] = useDrop<Ingredient, void, unknown>({
     accept: "ingredient",
-    drop(item) {
+    drop(item: Ingredient) {
       dispatch(addIngredient({ ...item, position: "bottom" }));
     },
   });
 
-  const [, dropIngredientTarget] = useDrop({
+  const [, dropIngredientTarget] = useDrop<Ingredient, void, unknown>({
     accept: "ingredient",
-    drop(item) {
+    drop(item: Ingredient) {
       if (item.type !== "bun" && !item.isExistingIngredient) {
         dispatch(addIngredient(item));
       }
     },
   });
 
-  const ingredientIds = ingredients.map((ingredient) => ingredient._id);
+  const ingredientIds = ingredients.map((ingredient: Ingredient) => ingredient._id);
   if (bun) {
     ingredientIds.unshift(bun._id);
     ingredientIds.push(bun._id);
@@ -100,8 +107,10 @@ function BurgerConstructor() {
       navigate('/login', { state: { from: location } });
       return;
     }
-    dispatch(createOrder(ingredientIds)).then(({ payload }) => {
+    // @ts-ignore
+    dispatch(createOrder(ingredientIds)).then(({ payload }: { payload: any }) => {
       if (payload) {
+        // @ts-ignore
         dispatch(clearConstructor());
         dispatch(openOrderModal());
       }
@@ -113,7 +122,7 @@ function BurgerConstructor() {
   };
 
   const total = ingredients.reduce(
-    (acc, item) => acc + item.price,
+    (acc: number, item: Ingredient) => acc + item.price,
     bun ? bun.price * 2 : 0
   );
 
@@ -133,12 +142,12 @@ function BurgerConstructor() {
         ref={dropIngredientTarget}
       >
         {ingredients.length ? (
-          ingredients.map((ingredient, index) => (
+          ingredients.map((ingredient: Ingredient, index: number) => (
             <div
               className={ConstructorStyles.ingredientRow}
               key={ingredient.uniqueKey}
             >
-              <DragIcon/>
+              <DragIcon type="primary"/>
               <BurgerConstructorElement ingredient={ingredient} index={index} />
             </div>
           ))
@@ -172,7 +181,7 @@ function BurgerConstructor() {
         </Button>
       </div>
       {order && (
-        <Modal isOpen={isModalOpen} onClose={handleCloseModal}>
+        <Modal isOpen={isModalOpen} onClose={handleCloseModal} title="Детали ингредиента">
           <OrderDetails />
         </Modal>
       )}
