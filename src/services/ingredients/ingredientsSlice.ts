@@ -1,18 +1,25 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { request } from "../../utils/api";
+import { BurgerIngredient } from "../types";
 
-export const fetchIngredients = createAsyncThunk(
-  "ingredients/fetchIngredients",
-  async (_,) => {
-    return await request("/api/ingredients");
-  }
-);
+interface IngredientsState {
+  allIngredients: BurgerIngredient[];
+  loading: boolean;
+  error: string | null;
+}
 
-const initialState = {
+const initialState: IngredientsState = {
   allIngredients: [],
   loading: false,
   error: null,
 };
+
+export const fetchIngredients = createAsyncThunk<BurgerIngredient[]>(
+  "ingredients/fetchIngredients",
+  async () => {
+    return await request("/api/ingredients", {});
+  }
+);
 
 const ingredientsSlice = createSlice({
   name: "ingredients",
@@ -30,13 +37,13 @@ const ingredientsSlice = createSlice({
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchIngredients.fulfilled, (state, action) => {
+      .addCase(fetchIngredients.fulfilled, (state, action: PayloadAction<BurgerIngredient[]>) => {
         state.allIngredients = action.payload;
         state.loading = false;
       })
       .addCase(fetchIngredients.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message; 
+        state.error = action.error.message || null;
       });
   },
 });

@@ -1,6 +1,17 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
+import { BurgerIngredient } from '../types';
 
-const initialState = {
+interface ModalsState {
+  orderModal: {
+    isOpen: boolean;
+  };
+  ingredientModal: {
+    isOpen: boolean;
+    currentIngredient: BurgerIngredient | null;
+  };
+}
+
+const initialState: ModalsState = {
   orderModal: {
     isOpen: false,
   },
@@ -20,7 +31,7 @@ const modalsSlice = createSlice({
     closeOrderModal(state) {
       state.orderModal.isOpen = false;
     },
-    openIngredientModal(state, action) {
+    openIngredientModal(state, action: PayloadAction<BurgerIngredient>) {
       state.ingredientModal.isOpen = true;
       state.ingredientModal.currentIngredient = action.payload;
     },

@@ -60,6 +60,8 @@ export interface User {
   email: string;
   name: string;
   password?: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface AuthResponse {
@@ -88,3 +90,39 @@ export const defaultInputProps = {
   onPointerEnterCapture: undefined,
   onPointerLeaveCapture: undefined,
 };
+export interface Order {
+  number: number;
+}
+export interface OrderApiResponse {
+  name: string;
+  order: Order;
+  success: boolean;
+}
+export interface AuthState {
+  isAuthenticated: boolean;
+  isAuthChecked: boolean;
+  isLoggedIn: boolean;
+  email: string;
+  name: string;
+  accessToken: string;
+  accessTokenExpired: boolean;
+  refreshToken: string;
+  isRegistrationInProcess: boolean;
+  isRegistrationSuccess: boolean;
+  isRegistrationFailed: boolean;
+  isAuthorizationInProcess: boolean;
+  isAuthorizationSuccess: boolean;
+  isAuthorizationFailed: boolean;
+  isPasswordRecoveryInProcess: boolean;
+  isPasswordRecoverySuccess: boolean;
+  isPasswordRecoveryFailed: boolean;
+  isPasswordUpdatingInProcess: boolean;
+  isPasswordUpdatingFailed: boolean;
+  getUserInfoInProcess: boolean;
+  getUserInfoSuccess: boolean;
+  getUserInfoFailed: boolean;
+  updateUserInfoInProcess: boolean;
+  updateUserInfoInFailed: boolean;
+  user: User | null;
+  error: string | null;
+}

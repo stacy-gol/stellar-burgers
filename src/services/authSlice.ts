@@ -1,8 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { login, logout, register, refreshAccessToken, getUser } from "../utils/api";
 import { getCookie, setCookie } from "../utils/cookies";
+import { AuthState } from "./types";
 
-const initialState = {
+const initialState: AuthState = {
   isAuthenticated: false,
   isAuthChecked: false,
   isLoggedIn: false,
@@ -31,54 +32,69 @@ const initialState = {
 
   updateUserInfoInProcess: false,
   updateUserInfoInFailed: false,
+  user: null,
+  error: null
 };
 
-const handleAsyncThunk = (asyncFunction) => async (args, { rejectWithValue }) => {
+const handleAsyncThunk = <T, P>(asyncFunction: (args: T) => Promise<P>) => async (args: T) => {
     const response = await asyncFunction(args);
     return response;
 };
 
 export const registerUser = createAsyncThunk(
   "user/register",
-  handleAsyncThunk(({ email, password, name }) => register(email, password, name))
+  handleAsyncThunk(async ({ email, password, name }: { email: string; password: string; name: string }) => {
+    return register(email, password, name);
+  })
 );
 
 export const loginUser = createAsyncThunk(
   "user/login",
-  handleAsyncThunk((credentials) => login(credentials))
+  handleAsyncThunk(async (credentials: { email: string; password: string }) => {
+    return login(credentials);
+  })
 );
 
 export const logoutUser = createAsyncThunk(
   "user/logout",
-  handleAsyncThunk(() => logout())
+  handleAsyncThunk(async () => {
+    return logout();
+  })
 );
 
 export const refreshTokenThunk = createAsyncThunk(
   "user/refreshToken",
-  handleAsyncThunk(async (_, { getState, rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     const refreshToken = getCookie("refreshToken");
+
     if (!refreshToken) {
       return rejectWithValue("No refreshToken available.");
     }
 
-    const response = await refreshAccessToken(refreshToken);
-    if (response.success) {
-      setCookie("accessToken", response.accessToken, { expires: 3600 });
-      if (response.refreshToken) {
-        setCookie("refreshToken", response.refreshToken, {
-          expires: 7 * 24 * 3600,
-        });
+    try {
+      const response = await refreshAccessToken(); 
+      const parsedResponse = JSON.parse(response);
+      if (parsedResponse.success) {
+        setCookie("accessToken", parsedResponse.accessToken, { expires: 3600 });
+        if (parsedResponse.refreshToken) {
+          setCookie("refreshToken", parsedResponse.refreshToken, { expires: 7 * 24 * 3600 });
+        }
+        return parsedResponse.accessToken;
+      } else {
+        return rejectWithValue("Failed to refresh access token.");
       }
-      return response.accessToken;
-    } else {
-      return rejectWithValue("Failed to refresh access token.");
+    } catch (error) {
+      return rejectWithValue("An error occurred while refreshing the token.");
     }
-  })
+  }
 );
+
 
 export const checkAuthStatus = createAsyncThunk(
   "user/checkAuthStatus",
-  handleAsyncThunk(() => getUser())
+  handleAsyncThunk(async () => {
+    return getUser();
+  })
 );
 
 export const authSlice = createSlice({
@@ -137,9 +153,9 @@ export const authSlice = createSlice({
         state.isLoggedIn = false;
         state.isAuthorizationInProcess = false;
         state.isAuthorizationSuccess = false;
-        state.accessToken = null;
-        state.email = null;
-        state.name = null;
+        state.accessToken = "";
+        state.email = "";
+        state.name = "";
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.isAuthorizationInProcess = false;
