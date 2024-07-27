@@ -1,6 +1,6 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector } from '../../services/store';
 
 const selectIsAuthenticated = (state: any) => state.auth.isAuthenticated;
 const selectHasPasswordResetRequest = (state: any) => state.auth.isPasswordRecoverySuccess;

@@ -1,12 +1,12 @@
 import React, { useRef } from "react";
 import { DropTargetMonitor, useDrag, useDrop } from "react-dnd";
 import { ConstructorElement } from "@ya.praktikum/react-developer-burger-ui-components";
-import { useDispatch } from "react-redux";
 import {
   removeIngredient,
   moveIngredient,
 } from "../../services/burgerConstructor/burgerConstructorSlice";
 import { Ingredient } from "../../services/types";
+import { useDispatch } from "../../services/store";
 
 interface BurgerConstructorElementProps {
   ingredient: Ingredient;

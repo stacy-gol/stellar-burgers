@@ -6,7 +6,6 @@ import React, {
   useEffect,
   MutableRefObject,
 } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import burgerIngredientsStyles from "../burger-ingredients/burger-ingredients.module.css";
@@ -18,6 +17,7 @@ import {
   GroupedIngredients,
   IngredientCounts,
 } from "../../services/types";
+import { useDispatch, useSelector } from "../../services/store";
 
 function BurgerIngredients() {
   const dispatch = useDispatch();
@@ -37,8 +37,7 @@ function BurgerIngredients() {
   const handleOpenIngredientModal = useCallback(
     (ingredient: BurgerIngredient) => {
       dispatch(setIngredient(ingredient));
-      //@ts-ignore
-      dispatch(openIngredientModal());
+      dispatch(openIngredientModal(ingredient));
       navigate(`/ingredients/${ingredient._id}`, {
         state: { backgroundLocation: location.pathname },
       });

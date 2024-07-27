@@ -1,6 +1,5 @@
-import React, { ChangeEvent, FormEvent, useEffect } from "react";
+import React, { ChangeEvent, FormEvent } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { loginUser } from "../../services/authSlice";
 import {
   Input,
@@ -9,9 +8,10 @@ import {
 import LoginStyles from "./login.module.css";
 import { useForm } from "../../hooks/useForm";
 import { defaultInputProps } from "../../services/types";
+import { RootState, useDispatch, useSelector } from "../../services/store";
 
 export const Login = () => {
-  const { values, handleChange, setValues } = useForm<{
+  const { values, handleChange } = useForm<{
     email: string;
     password: string;
   }>({
@@ -23,15 +23,25 @@ export const Login = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || "/";
 
-  const handleLogin = (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    //@ts-ignore
-    dispatch(loginUser({ email: values.email, password: values.password })).then(({ payload }) => {
-      if (payload && payload.isAuthenticated) {
-        navigate(from, { replace: true });
-      }
-    });
-  };
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+
+const handleLogin = (e: FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  dispatch(loginUser({ email: values.email, password: values.password })).then((action: any) => {
+    if (isAuthenticated) {
+      navigate(from, { replace: true });
+    }
+  });
+};
+
+  // const handleLogin = (e: FormEvent<HTMLFormElement>) => {
+  //   e.preventDefault();
+  //   dispatch(loginUser({ email: values.email, password: values.password })).then(({ payload }) => {
+  //     if (payload && payload.isAuthenticated) {
+  //       navigate(from, { replace: true });
+  //     }
+  //   });
+  // };
 
   return (
     <div className={LoginStyles.loginContainer}>

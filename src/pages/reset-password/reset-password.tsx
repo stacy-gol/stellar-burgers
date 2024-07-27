@@ -8,8 +8,6 @@ import ResetPasswordStyles from "./reset-password.module.css";
 import { resetPassword } from '../../utils/api';
 import { defaultInputProps } from "../../services/types";
 
-
-
 export const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [token, setToken] = useState("");

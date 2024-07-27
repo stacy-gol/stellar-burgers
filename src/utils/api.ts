@@ -87,7 +87,7 @@ export async function register(
   return data.user;
 }
 
-export async function login(credentials: LoginCredentials): Promise<User>  {
+export async function login(credentials: LoginCredentials): Promise<AuthResponse>  {
   const data = await request<AuthResponse>("/api/auth/login", {
     method: "POST",
     headers: {
@@ -97,7 +97,12 @@ export async function login(credentials: LoginCredentials): Promise<User>  {
   });
   setCookie("accessToken", data.accessToken.split('Bearer ')[1], { expires: 3600 });
   setCookie("refreshToken", data.refreshToken, { expires: 7 * 24 * 3600 });
-  return data.user;
+  return {
+    success: data.success,
+    accessToken: data.accessToken,
+    refreshToken: data.refreshToken,
+    user: data.user as User,
+  };
 }
 
 export async function logout(): Promise<string> {

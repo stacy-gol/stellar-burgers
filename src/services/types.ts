@@ -65,6 +65,7 @@ export interface User {
 }
 
 export interface AuthResponse {
+  success: boolean;
   accessToken: string;
   refreshToken: string;
   user: User;

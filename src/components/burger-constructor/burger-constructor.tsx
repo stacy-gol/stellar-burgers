@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDrop } from "react-dnd";
 import { addIngredient, clearConstructor } from "../../services/burgerConstructor/burgerConstructorSlice";
@@ -17,9 +16,9 @@ import Preloader from "../preloader/preloader";
 import { createOrder } from "../../services/order/orderSlice";
 import { openOrderModal, closeOrderModal } from "../../services/modal/modalSlice";
 import { Ingredient } from "../../services/types";
+import { useDispatch, useSelector } from "../../services/store";
 
 const selectIsLoggedIn = (state: any) => state.auth.isLoggedIn;
-
 interface PlaceholderProps {
   text: string;
   type?: string;
@@ -107,10 +106,8 @@ function BurgerConstructor() {
       navigate('/login', { state: { from: location } });
       return;
     }
-    // @ts-ignore
     dispatch(createOrder(ingredientIds)).then(({ payload }: { payload: any }) => {
       if (payload) {
-        // @ts-ignore
         dispatch(clearConstructor());
         dispatch(openOrderModal());
       }

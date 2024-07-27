@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { login, logout, register, refreshAccessToken, getUser } from "../utils/api";
 import { getCookie, setCookie } from "../utils/cookies";
-import { AuthState } from "./types";
+import { AuthResponse, AuthState, LoginCredentials } from "./types";
 
 const initialState: AuthState = {
   isAuthenticated: false,
@@ -48,18 +48,27 @@ export const registerUser = createAsyncThunk(
   })
 );
 
-export const loginUser = createAsyncThunk(
+export const loginUser = createAsyncThunk<AuthResponse, LoginCredentials>(
   "user/login",
-  handleAsyncThunk(async (credentials: { email: string; password: string }) => {
-    return login(credentials);
-  })
+  async (credentials: LoginCredentials) => {
+    const response = await login(credentials);
+    return response;
+  }
 );
+
 
 export const logoutUser = createAsyncThunk(
   "user/logout",
   handleAsyncThunk(async () => {
     return logout();
   })
+);
+
+export const checkAuthStatus = createAsyncThunk(
+  "user/checkAuthStatus",
+  async () => {
+    return getUser();
+  }
 );
 
 export const refreshTokenThunk = createAsyncThunk(
@@ -89,14 +98,6 @@ export const refreshTokenThunk = createAsyncThunk(
   }
 );
 
-
-export const checkAuthStatus = createAsyncThunk(
-  "user/checkAuthStatus",
-  handleAsyncThunk(async () => {
-    return getUser();
-  })
-);
-
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -117,16 +118,32 @@ export const authSlice = createSlice({
         state.isAuthorizationSuccess = false;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.user = action.payload;
+      //   state.user = action.payload;
+      //   state.isAuthorizationInProcess = false;
+      //   state.isAuthorizationSuccess = true;
+      //   state.isAuthenticated = true;
+      //   state.isLoggedIn = true;
+      //   state.accessToken = action.payload.accessToken;
+      //   state.email = action.payload.email;
+      //   state.name = action.payload.name;
+      //   state.isAuthChecked = true;
+      // })
+      const payload = action.payload as AuthResponse;
+      if (payload.success) {
+        state.user = payload.user;
         state.isAuthorizationInProcess = false;
         state.isAuthorizationSuccess = true;
         state.isAuthenticated = true;
         state.isLoggedIn = true;
-        state.accessToken = action.payload.accessToken;
-        state.email = action.payload.email;
-        state.name = action.payload.name;
+        state.accessToken = payload.accessToken;
+        state.email = payload.user.email;
+        state.name = payload.user.name;
         state.isAuthChecked = true;
-      })
+      } else {
+        state.isAuthorizationInProcess = false;
+        state.isAuthorizationFailed = true;
+      }
+    })
       .addCase(loginUser.rejected, (state, action) => {
         state.isAuthorizationInProcess = false;
         state.isAuthorizationFailed = true;

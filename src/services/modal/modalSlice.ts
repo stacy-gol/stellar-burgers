@@ -31,7 +31,7 @@ const modalsSlice = createSlice({
     closeOrderModal(state) {
       state.orderModal.isOpen = false;
     },
-    openIngredientModal(state, action: PayloadAction<BurgerIngredient>) {
+    openIngredientModal(state, action: PayloadAction<BurgerIngredient | null>) {
       state.ingredientModal.isOpen = true;
       state.ingredientModal.currentIngredient = action.payload;
     },

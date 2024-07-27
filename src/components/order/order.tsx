@@ -1,7 +1,7 @@
 import React from "react";
 import orderDetailsStyles from "./order.module.css";
 import doneIcon from "../../images/done-icon.gif";
-import { useSelector } from "react-redux";
+import { useSelector } from "../../services/store";
 
 
 const OrderDetails = () => {

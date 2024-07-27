@@ -10,10 +10,10 @@ import {
 } from "../../pages";
 import { ProtectedRouteElement } from "../protected-route/protected-route";
 import Header from "../app-header/app-header";
-import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { fetchIngredients } from "../../services/ingredients/ingredientsSlice";
 import { checkAuthStatus, refreshTokenThunk } from "../../services/authSlice";
+import { useDispatch } from "../../services/store";
 
 export default function App() {
   const location = useLocation();
@@ -22,15 +22,12 @@ export default function App() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // @ts-ignore
     dispatch(fetchIngredients());
   }, [dispatch]);
 
   useEffect(() => {
-    // @ts-ignore
     dispatch(checkAuthStatus());
     const interval = setInterval(() => {
-      // @ts-ignore
       dispatch(refreshTokenThunk());
     }, 20 * 60 * 1000);
 
