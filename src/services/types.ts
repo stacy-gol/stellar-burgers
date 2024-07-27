@@ -92,7 +92,7 @@ export const defaultInputProps = {
   onPointerLeaveCapture: undefined,
 };
 export interface Order {
-  number: number;
+  id: string;
 }
 export interface OrderApiResponse {
   name: string;
@@ -127,3 +127,29 @@ export interface AuthState {
   user: User | null;
   error: string | null;
 }
+
+export enum WebsocketStatus {
+  CONNECTING = 'CONNECTING...',
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE'
+}
+
+export interface OrderForFeed {
+  id: string;
+  text: string;
+  date?: string;
+  price: string;
+}
+
+export type OrderFeed = Array<OrderForFeed>;
+
+export enum OrderFeedActionType {
+  DATA = 'data',
+}
+
+export type Data = {
+  type: OrderFeedActionType.DATA,
+  data: OrderFeed
+}
+
+export type OrderFeedAction = OrderFeed
