@@ -4,17 +4,19 @@ import { useDispatch as dispatchHook, useSelector as selectorHook } from 'react-
 import { socketMiddleware } from './middleware/middleware/socketMiddleware';
 import { wsConnect as orderFeedConnect, wsDisconnect as orderFeedDisconnect } from './middleware/orderFeed/actions';
 import { wsClose as orderFeedClose, wsConnecting as orderFeedConnecting, wsError as orderFeedError, wsMessage as orderFeedMessage, wsOpen as orderFeedOpen } from './middleware/orderFeed/slice';
+// import { wsConnect , wsDisconnect } from './middleware/orderFeed/actions';
+// import { wsClose, wsConnecting, wsError, wsMessage, wsOpen } from './middleware/orderFeed/slice';
 import { wsConnect as profileFeedConnect, wsDisconnect as profileFeedDisconnect } from './middleware/profileFeed/actions';
 import { wsClose as profileFeedClose, wsConnecting as profileFeedConnecting, wsError as profileFeedError, wsMessage as profileFeedMessage, wsOpen as profileFeedOpen } from './middleware/profileFeed/slice';
 
 const orderFeedMiddleware = socketMiddleware({
   connect: orderFeedConnect,
-  disconnect: orderFeedDisconnect,
-  onConnecting: orderFeedConnecting,
-  onOpen: orderFeedOpen,
-  onClose: orderFeedClose,
-  onError: orderFeedError,
-  onMessage: orderFeedMessage,
+    disconnect: orderFeedDisconnect,
+    onConnecting: orderFeedConnecting,
+    onOpen: orderFeedOpen,
+    onClose: orderFeedClose,
+    onError: orderFeedError,
+    onMessage: orderFeedMessage,
 });
 
 const profileFeedMiddleware = socketMiddleware({

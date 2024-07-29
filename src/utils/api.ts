@@ -18,7 +18,7 @@ export const checkResponse = async <T>(response: Response): Promise<T> => {
 
 export const request = async <T>(
   endpoint: string,
-  options: RequestInit
+  options?: RequestInit
 ): Promise<T> => {
   try {
     const response = await fetch(`${BASE_URL}${endpoint}`, options);

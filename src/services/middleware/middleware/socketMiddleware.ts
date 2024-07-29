@@ -3,7 +3,8 @@ import {
   ActionCreatorWithoutPayload,
   Middleware,
 } from "@reduxjs/toolkit";
-import { RootState } from "../../store";
+import { AppDispatch, RootState, useDispatch } from "../../store";
+import { refreshTokenThunk } from "../../authSlice";
 
 export type TWsActionTypes = {
   connect: ActionCreatorWithPayload<string>;
@@ -17,9 +18,9 @@ export type TWsActionTypes = {
 };
 
 export const socketMiddleware = (
-  wsActions: TWsActionTypes
+  wsActions: TWsActionTypes, withTokenRefresh: boolean = false
 ): Middleware<{}, RootState> => {
-  return ({ dispatch }) => {
+  return ({ dispatch }: { dispatch: AppDispatch }) => {
     let socket: WebSocket | null = null;
     const {
       connect,
@@ -31,10 +32,17 @@ export const socketMiddleware = (
       onConnecting,
       disconnect,
     } = wsActions;
+
+        let url = "";
+        let isConnected = false;
+        let reconnectTimer = 0;
+
     return (next) => (action) => {
       if (connect.match(action)) {
-        socket = new WebSocket(action.payload);
-        onConnecting && dispatch(onConnecting());
+        url = action.payload;
+        socket = new WebSocket(url);
+        isConnected = true;
+        dispatch(onConnecting());
 
         socket.onopen = () => {
           dispatch(onOpen());
@@ -49,6 +57,31 @@ export const socketMiddleware = (
 
           try {
             const parsedData = JSON.parse(data);
+  
+            if (withTokenRefresh && parsedData.message === "Invalid or missing token") {
+              (async () => {
+                try {
+                  const resultAction = await dispatch(refreshTokenThunk());
+                  if (refreshTokenThunk.fulfilled.match(resultAction)) {
+                    const newToken = resultAction.payload.replace("Bearer ", "");
+  
+                    const wssUrl = new URL(action.payload);
+                    wssUrl.searchParams.set("token", newToken);
+  
+                    dispatch(connect(wssUrl.toString()));
+                  } else {
+                    dispatch(onError(resultAction.payload as string));
+                  }
+                } catch (err) {
+                  dispatch(onError((err as { message: string }).message));
+                }
+  
+                dispatch(disconnect());
+              })();
+  
+              return;
+            }
+  
             dispatch(onMessage(parsedData));
           } catch (error) {
             dispatch(onError((error as { message: string }).message));
@@ -68,12 +101,19 @@ export const socketMiddleware = (
         }
 
         if (socket && disconnect.match(action)) {
+          clearTimeout(reconnectTimer);
+          isConnected = false;
+          reconnectTimer = 0;
           socket.close();
           socket = null;
-        }
+      }
 
         next(action);
       }
     };
   };
 };
+function refreshToken() {
+    throw new Error("Function not implemented.");
+}
+
