@@ -3,13 +3,13 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 export type OrderFeedStore = {
     status: WebsocketStatus;
-    orderFeed: OrderFeed;
+    orders: OrderFeed;
     connectionError: string | null;
 };
 
 const initialState: OrderFeedStore = {
     status: WebsocketStatus.OFFLINE,
-    orderFeed: [],
+    orders: [],
     connectionError: null,
 };
 
@@ -17,31 +17,31 @@ export const orderFeedSlice = createSlice({
     name: "orderFeed",
     initialState,
     reducers: {
-        wsConnecting: (): void => {
-        },
+        wsConnecting:(state) => {
+            state.status = WebsocketStatus.CONNECTING;
+          },
         wsOpen: (state) => {
+            state.status = WebsocketStatus.ONLINE;
             state.connectionError = null;
-        },
-        wsClose: (): void=> {
-        },
+          },
+        wsClose: (state) => {
+            state.status = WebsocketStatus.OFFLINE;
+          },
         wsError: (state, action: PayloadAction<string>) => {
             state.connectionError = action.payload;
+          },
+          wsMessage: (state, action: PayloadAction<OrderFeedAction>) => {
+            state.orders = action.payload.data;
+            console.log('state.orderFeed', action.payload.data)
         },
-        wsMessage: (state, action: PayloadAction<OrderFeedAction>) => {
-            state.orderFeed = action.payload
-        }
     },
     selectors: {
-        getOrderFeed: state => state.orderFeed,
+        getOrders: state => state.orders,
     }
 })
 
 export const {wsConnecting, wsOpen, wsClose, wsError, wsMessage} = orderFeedSlice.actions;
-export const { getOrderFeed } = orderFeedSlice.selectors;
+export const { getOrders } = orderFeedSlice.selectors;
 
 export type TWsInternalActions = ReturnType<typeof orderFeedSlice.actions[keyof typeof orderFeedSlice.actions]>;
 export default orderFeedSlice
-
-// function orderFeedUpdate(orderFeed: OrderFeedAction, payload: unknown) {
-//     throw new Error("Function not implemented.");
-// }

@@ -7,6 +7,7 @@ import {
   ResetPassword,
   IngredientModal,
   Profile,
+  Feed
 } from "../../pages";
 import { ProtectedRouteElement } from "../protected-route/protected-route";
 import Header from "../app-header/app-header";
@@ -80,6 +81,7 @@ export default function App() {
           }
         />
         <Route path="ingredients/:ingredientId" element={<IngredientModal />} />
+        <Route path="/feed" element={<Feed />} />
       </Routes>
 
       {background && (

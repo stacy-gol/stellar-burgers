@@ -134,14 +134,23 @@ export enum WebsocketStatus {
   OFFLINE = 'OFFLINE'
 }
 
-export interface OrderForFeed {
-  id: string;
-  text: string;
-  date?: string;
-  price: string;
+export interface OrderDetail {
+  ingredients: string[];
+  _id: string;
+  status: string;
+  number: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-export type OrderFeed = Array<OrderForFeed>;
+export interface OrderFeedApiResponse {
+  success: boolean;
+  orders: OrderDetail[];
+  total: number;
+  totalToday: number;
+}
+
+export type OrderFeed = Array<OrderDetail>;
 
 export enum OrderFeedActionType {
   DATA = 'data',
@@ -149,7 +158,7 @@ export enum OrderFeedActionType {
 
 export type Data = {
   type: OrderFeedActionType.DATA,
-  data: OrderFeed
+  data: OrderFeed;
 }
 
-export type OrderFeedAction = OrderFeed
+export type OrderFeedAction = Data;

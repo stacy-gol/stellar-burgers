@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { request } from "../../utils/api";
 import { getCookie } from "../../utils/cookies";
-import { Order, OrderApiResponse } from "../types";
+import { Order, OrderApiResponse, OrderDetail } from "../types";
 
 export const createOrder = createAsyncThunk(
   "order/createOrder",
@@ -17,6 +17,16 @@ export const createOrder = createAsyncThunk(
       });
       const data: OrderApiResponse = await (response as Response).json();
       return data.order;
+  }
+);
+
+export const getOrder = createAsyncThunk(
+  "order/getOrder",
+  async (orderId: string) => {
+    const response = await request<OrderDetail>(`/orders/${orderId}`, {
+      method: "GET",
+    });
+    return response;
   }
 );
 
