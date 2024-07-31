@@ -2,7 +2,6 @@ import {
   ApiResponse,
   AuthResponse,
   LoginCredentials,
-  OrderDetail,
   User,
 } from "../services/types";
 import { getCookie, setCookie } from "./cookies";

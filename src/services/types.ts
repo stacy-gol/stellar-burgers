@@ -53,7 +53,8 @@ export interface ModalOverlayProps {
 export interface ApiResponse<T> {
   success: boolean;
   message?: string;
-  data: T;
+  data?: T;
+  [key: string]: any;
 }
 
 export interface User {
@@ -93,6 +94,7 @@ export const defaultInputProps = {
 };
 export interface Order {
   id: string;
+  number: number;
 }
 export interface OrderApiResponse {
   name: string;

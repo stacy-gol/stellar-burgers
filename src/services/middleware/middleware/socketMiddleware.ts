@@ -18,7 +18,8 @@ export type TWsActionTypes = {
 };
 
 export const socketMiddleware = (
-  wsActions: TWsActionTypes, withTokenRefresh: boolean = false
+  wsActions: TWsActionTypes,
+  withTokenRefresh: boolean = false
 ): Middleware<{}, RootState> => {
   return ({ dispatch }: { dispatch: AppDispatch }) => {
     let socket: WebSocket | null = null;
@@ -33,9 +34,9 @@ export const socketMiddleware = (
       disconnect,
     } = wsActions;
 
-        let url = "";
-        let isConnected = false;
-        let reconnectTimer = 0;
+    let url = "";
+    let isConnected = false;
+    let reconnectTimer = 0;
 
     return (next) => (action) => {
       if (connect.match(action)) {
@@ -57,17 +58,23 @@ export const socketMiddleware = (
 
           try {
             const parsedData = JSON.parse(data);
-  
-            if (withTokenRefresh && parsedData.message === "Invalid or missing token") {
+
+            if (
+              withTokenRefresh &&
+              parsedData.message === "Invalid or missing token"
+            ) {
               (async () => {
                 try {
                   const resultAction = await dispatch(refreshTokenThunk());
                   if (refreshTokenThunk.fulfilled.match(resultAction)) {
-                    const newToken = resultAction.payload.replace("Bearer ", "");
-  
+                    const newToken = resultAction.payload.replace(
+                      "Bearer ",
+                      ""
+                    );
+
                     const wssUrl = new URL(action.payload);
                     wssUrl.searchParams.set("token", newToken);
-  
+
                     dispatch(connect(wssUrl.toString()));
                   } else {
                     dispatch(onError(resultAction.payload as string));
@@ -75,13 +82,13 @@ export const socketMiddleware = (
                 } catch (err) {
                   dispatch(onError((err as { message: string }).message));
                 }
-  
+
                 dispatch(disconnect());
               })();
-  
+
               return;
             }
-  
+
             dispatch(onMessage(parsedData));
           } catch (error) {
             dispatch(onError((error as { message: string }).message));
@@ -91,29 +98,22 @@ export const socketMiddleware = (
         socket.onclose = () => {
           dispatch(onClose());
         };
-
-        if (socket && sendMessage?.match(action)) {
-          try {
-            socket.send(JSON.stringify(action.payload));
-          } catch (error) {
-            dispatch(onError((error as { message: string }).message));
-          }
+        next(action);
+      } else if (socket && sendMessage?.match(action)) {
+        try {
+          socket.send(JSON.stringify(action.payload));
+        } catch (error) {
+          dispatch(onError((error as { message: string }).message));
         }
-
-        if (socket && disconnect.match(action)) {
-          clearTimeout(reconnectTimer);
-          isConnected = false;
-          reconnectTimer = 0;
-          socket.close();
-          socket = null;
-      }
-
+      } else if (socket && disconnect.match(action)) {
+        clearTimeout(reconnectTimer);
+        isConnected = false;
+        reconnectTimer = 0;
+        socket.close();
+        socket = null;
+      } else {
         next(action);
       }
     };
   };
 };
-function refreshToken() {
-    throw new Error("Function not implemented.");
-}
-

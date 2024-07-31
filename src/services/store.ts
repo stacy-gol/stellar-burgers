@@ -6,8 +6,8 @@ import { wsConnect as orderFeedConnect, wsDisconnect as orderFeedDisconnect } fr
 import { wsClose as orderFeedClose, wsConnecting as orderFeedConnecting, wsError as orderFeedError, wsMessage as orderFeedMessage, wsOpen as orderFeedOpen } from './middleware/orderFeed/slice';
 // import { wsConnect , wsDisconnect } from './middleware/orderFeed/actions';
 // import { wsClose, wsConnecting, wsError, wsMessage, wsOpen } from './middleware/orderFeed/slice';
-import { wsConnect as profileFeedConnect, wsDisconnect as profileFeedDisconnect } from './middleware/profileFeed/actions';
-import { wsClose as profileFeedClose, wsConnecting as profileFeedConnecting, wsError as profileFeedError, wsMessage as profileFeedMessage, wsOpen as profileFeedOpen } from './middleware/profileFeed/slice';
+// import { wsConnect as profileFeedConnect, wsDisconnect as profileFeedDisconnect } from './middleware/profileFeed/actions';
+// import { wsClose as profileFeedClose, wsConnecting as profileFeedConnecting, wsError as profileFeedError, wsMessage as profileFeedMessage, wsOpen as profileFeedOpen } from './middleware/profileFeed/slice';
 
 const orderFeedMiddleware = socketMiddleware({
   connect: orderFeedConnect,
@@ -19,20 +19,20 @@ const orderFeedMiddleware = socketMiddleware({
     onMessage: orderFeedMessage,
 });
 
-const profileFeedMiddleware = socketMiddleware({
-  connect: profileFeedConnect,
-  disconnect: profileFeedDisconnect,
-  onConnecting: profileFeedConnecting,
-  onOpen: profileFeedOpen,
-  onClose: profileFeedClose,
-  onError: profileFeedError,
-  onMessage: profileFeedMessage,
-});
+// const profileFeedMiddleware = socketMiddleware({
+//   connect: profileFeedConnect,
+//   disconnect: profileFeedDisconnect,
+//   onConnecting: profileFeedConnecting,
+//   onOpen: profileFeedOpen,
+//   onClose: profileFeedClose,
+//   onError: profileFeedError,
+//   onMessage: profileFeedMessage,
+// });
 
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) => {
-    return getDefaultMiddleware().concat(orderFeedMiddleware, profileFeedMiddleware)
+    return getDefaultMiddleware().concat(orderFeedMiddleware/*, profileFeedMiddleware*/)
   }
 });
 
