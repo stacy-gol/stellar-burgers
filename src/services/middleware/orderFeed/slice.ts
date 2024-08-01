@@ -31,17 +31,12 @@ export const orderFeedSlice = createSlice({
             state.connectionError = action.payload;
           },
           wsMessage: (state, action: PayloadAction<OrderFeedAction>) => {
-            state.orders = action.payload.data;
-            console.log('state.orderFeed', action.payload.data)
+            state.orders = action.payload.orders;
         },
-    },
-    selectors: {
-        getOrders: state => state.orders,
     }
 })
 
 export const {wsConnecting, wsOpen, wsClose, wsError, wsMessage} = orderFeedSlice.actions;
-export const { getOrders } = orderFeedSlice.selectors;
 
 export type TWsInternalActions = ReturnType<typeof orderFeedSlice.actions[keyof typeof orderFeedSlice.actions]>;
 export default orderFeedSlice

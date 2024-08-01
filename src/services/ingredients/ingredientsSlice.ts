@@ -48,6 +48,8 @@ const ingredientsSlice = createSlice({
   },
 });
 
+export const selectAllIngredients = (state: { ingredients: IngredientsState }) => state.ingredients.allIngredients;
+
 export const { resetIngredientsState } = ingredientsSlice.actions;
 
 export default ingredientsSlice.reducer;

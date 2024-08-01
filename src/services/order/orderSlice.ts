@@ -10,6 +10,8 @@ export const createOrder = createAsyncThunk(
     if (!accessToken) {
       throw new Error("No access token found");
     }
+    console.log("Sending ingredient IDs:", ingredientIds); // Добавляем проверку
+
       const response = await request<OrderApiResponse>("/api/orders", {
         method: "POST",
         headers: {

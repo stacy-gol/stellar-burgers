@@ -7,26 +7,29 @@ import {
   wsDisconnect,
 } from "../../services/middleware/orderFeed/actions";
 import OrderCard from "../../components/order-card/order-card";
+import { selectOrders } from "../../services/middleware/orderFeed/selectors";
 
 export function Feed() {
   const dispatch = useDispatch();
-  const { orders, isDoneToday, isDoneAllTime } = useSelector((store) => ({
-    orders: store.orderFeed.orders,
-    isDoneToday: store.orderFeed.orders.reduce((acc, order) => acc + (order.status === 'done' ? 1 : 0), 0),
-    isDoneAllTime: store.orderFeed.orders.length,
-}));
 
-useEffect(() => {
-  dispatch(wsConnect("wss://norma.nomoreparties.space/orders/all"));
-  return () => {
+  const orders = useSelector(selectOrders);
+  const isDoneToday = orders.reduce(
+    (acc, order) => acc + (order.status === "done" ? 1 : 0),
+    0
+  );
+  const isDoneAllTime = orders.length;
+
+  useEffect(() => {
+    dispatch(wsConnect("wss://norma.nomoreparties.space/orders/all"));
+    return () => {
       dispatch(wsDisconnect());
-  };
-}, [dispatch]);
+    };
+  }, [dispatch]);
 
   const readyOrderNumbers = () => {
     return orders
-      ?.filter(order => order.status === "done")
-      .map(order => (
+      ?.filter((order) => order.status === "done")
+      .map((order) => (
         <p className="text text_type_digits-default mb-2 mr-4" key={uuidv4()}>
           {order.number}
         </p>
@@ -35,8 +38,8 @@ useEffect(() => {
 
   const inProgressOrderNumbers = () => {
     return orders
-      ?.filter(order => order.status !== "done")
-      .map(order => (
+      ?.filter((order) => order.status !== "done")
+      .map((order) => (
         <p className="text text_type_digits-default mb-2 mr-4" key={uuidv4()}>
           {order.number}
         </p>
@@ -60,14 +63,14 @@ useEffect(() => {
               <div className={feedStyles.done}>
                 <h3 className="text text_type_main-medium mb-6">Готовы:</h3>
                 <div className={feedStyles.statusContainer}>
-                  {readyOrderNumbers()}w4rw4er
+                  {readyOrderNumbers()}
                 </div>
               </div>
               <div className={feedStyles.inProgress}>
                 <div className={feedStyles.done}>
                   <h3 className="text text_type_main-medium mb-6">В работе:</h3>
                   <div className={feedStyles.statusContainer}>
-                    {inProgressOrderNumbers()}45353
+                    {inProgressOrderNumbers()}
                     <div className="mb-2"></div>
                   </div>
                 </div>
@@ -76,11 +79,9 @@ useEffect(() => {
             <h2 className="text text_type_main-large">
               Выполнено за всё время:
             </h2>
-            <p className="text text_type_digits-large mb-15">
-              {/*isDoneAllTime*/ 33223}
-            </p>
+            <p className="text text_type_digits-large mb-15">{isDoneAllTime}</p>
             <h2 className="text text_type_main-large">Выполнено за сегодня:</h2>
-            <p className="text text_type_digits-large">{/* isDoneToday*/}445</p>
+            <p className="text text_type_digits-large">{isDoneToday}</p>
           </div>
         </div>
       </div>

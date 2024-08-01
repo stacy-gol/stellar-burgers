@@ -105,12 +105,13 @@ export const socketMiddleware = (
         } catch (error) {
           dispatch(onError((error as { message: string }).message));
         }
-      } else if (socket && disconnect.match(action)) {
-        clearTimeout(reconnectTimer);
-        isConnected = false;
-        reconnectTimer = 0;
-        socket.close();
-        socket = null;
+      // } else if (socket && disconnect.match(action)) {
+      //   clearTimeout(reconnectTimer);
+      //   isConnected = false;
+      //   reconnectTimer = 0;
+      //   socket.close();
+      //   socket = null;
+      //   next(action);
       } else {
         next(action);
       }

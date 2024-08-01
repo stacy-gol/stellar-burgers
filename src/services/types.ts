@@ -143,6 +143,7 @@ export interface OrderDetail {
   number: number;
   createdAt: string;
   updatedAt: string;
+  name: string;
 }
 
 export interface OrderFeedApiResponse {
@@ -160,7 +161,7 @@ export enum OrderFeedActionType {
 
 export type Data = {
   type: OrderFeedActionType.DATA,
-  data: OrderFeed;
+  orders: OrderFeed;
 }
 
 export type OrderFeedAction = Data;

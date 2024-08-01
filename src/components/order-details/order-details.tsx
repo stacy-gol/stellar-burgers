@@ -5,6 +5,8 @@
 // import orderDetailsStyles from './order-details.module.css';
 // import { OrderDetail } from '../../services/types';
 // import { getOrder } from '../../services/order/orderSlice';
+// import { selectIngredients, selectOrders } from '../../services/middleware/orderFeed/selectors';
+
 
 
 // function OrderDetails() {
@@ -12,11 +14,10 @@
 //   const dispatch = useDispatch();
 //   const [order, setOrder] = useState<Order | null>(null);
 //   const [loading, setLoading] = useState(true);
-//   const ingredients = useSelector(state => state.burgerConstructor.ingredients);
-//   const { orders } = useSelector((store) => ({
-//     orders: store.orderFeed.orders
-// }));
+//   const orders = useSelector(selectOrders);
+//   const ingredients = useSelector(selectIngredients);
 
+  
 //   useEffect(() => {
 //     const getOrderDetails = async () => {
 //       const orderData = await dispatch(getOrder(id));

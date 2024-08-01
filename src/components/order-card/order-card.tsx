@@ -1,28 +1,21 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
-import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
+import { CurrencyIcon, FormattedDate } from "@ya.praktikum/react-developer-burger-ui-components";
 import orderCardStyles from "./order-card.module.css";
-import { RootState, useSelector } from "../../services/store";
+import { useSelector } from "../../services/store";
 import { OrderDetail } from "../../services/types";
 import { useNavigate } from "react-router-dom";
+import { selectAllIngredients } from "../../services/ingredients/ingredientsSlice";
 
 interface OrderCardProps {
   order: OrderDetail;
 }
 
 function OrderCard({ order }: OrderCardProps) {
-  const ingredients = useSelector(
-    (state: RootState) => state.burgerConstructor.ingredients
-  );
-  const bun = useSelector((state: RootState) => state.burgerConstructor.bun);
-  const { orders } = useSelector((store) => ({
-    orders: store.orderFeed.orders,
-  }));
-  const location = useLocation();
   const navigate = useNavigate();
+  const allIngredients = useSelector(selectAllIngredients);
 
   const orderIngredients = order.ingredients.map((id) => {
-    return ingredients.find((ingredient) => ingredient._id === id) || bun;
+    return allIngredients.find((ingredient) => ingredient._id === id);
   });
 
   const totalPrice = orderIngredients.reduce((acc, ingredient) => {
@@ -33,11 +26,22 @@ function OrderCard({ order }: OrderCardProps) {
     .slice(0, 6)
     .map((ingredient, index: number) => (
       <div key={index} className={orderCardStyles.ingredientImageWrapper}>
-        <img
-          src={ingredient?.image}
-          alt={ingredient?.name}
-          className={orderCardStyles.ingredientImage}
-        />
+        {ingredient ? (
+          <img
+            src={ingredient.image}
+            alt={ingredient.name}
+            className={orderCardStyles.ingredientImage}
+          />
+        ) : (
+          <div className={orderCardStyles.ingredientImagePlaceholder} />
+        )}
+        {index === 5 && orderIngredients.length > 6 && (
+          <div className={orderCardStyles.ingredientOverlay}>
+            <span className={orderCardStyles.ingredientCount}>
+              +{orderIngredients.length - 6}
+            </span>
+          </div>
+        )}
       </div>
     ));
 
@@ -49,12 +53,10 @@ function OrderCard({ order }: OrderCardProps) {
     <div onClick={handleClick} className={orderCardStyles.orderCard}>
       <div className={orderCardStyles.orderDetails}>
         <span className={orderCardStyles.orderNumber}>#{order.number}</span>
-        <span className={orderCardStyles.orderDate}>
-          {new Date(order.createdAt).toLocaleString()}
-        </span>
+        <FormattedDate date={new Date(order.createdAt)}/>
       </div>
       <div className={orderCardStyles.orderInfo}>
-        {/* <h3 className={orderCardStyles.orderName}>{order.name}</h3> */}
+        <h3 className={orderCardStyles.orderName}>{order.name}</h3>
         <div className={orderCardStyles.ingredientImages}>
           {ingredientImages}
         </div>

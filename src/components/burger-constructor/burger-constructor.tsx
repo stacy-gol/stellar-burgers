@@ -99,7 +99,10 @@ function BurgerConstructor() {
   if (bun) {
     ingredientIds.unshift(bun._id);
     ingredientIds.push(bun._id);
-  }
+  }  
+
+  console.log("Ingredient IDs:", ingredientIds); // Выводим список ID в консоль для проверки
+
 
   const handleCreateOrder = () => {
     if (!isLoggedIn) {
