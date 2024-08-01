@@ -1,5 +1,8 @@
 import React from "react";
-import { CurrencyIcon, FormattedDate } from "@ya.praktikum/react-developer-burger-ui-components";
+import {
+  CurrencyIcon,
+  FormattedDate,
+} from "@ya.praktikum/react-developer-burger-ui-components";
 import orderCardStyles from "./order-card.module.css";
 import { useSelector } from "../../services/store";
 import { OrderDetail } from "../../services/types";
@@ -25,7 +28,12 @@ function OrderCard({ order }: OrderCardProps) {
   const ingredientImages = orderIngredients
     .slice(0, 6)
     .map((ingredient, index: number) => (
-      <div key={index} className={orderCardStyles.ingredientImageWrapper}>
+      <div
+        key={index}
+        className={`${orderCardStyles.ingredientImageWrapper} ${
+          index === 5 && orderIngredients.length > 6 ? orderCardStyles.lastIngredient : ""
+        }`}
+      >
         {ingredient ? (
           <img
             src={ingredient.image}
@@ -53,7 +61,7 @@ function OrderCard({ order }: OrderCardProps) {
     <div onClick={handleClick} className={orderCardStyles.orderCard}>
       <div className={orderCardStyles.orderDetails}>
         <span className={orderCardStyles.orderNumber}>#{order.number}</span>
-        <FormattedDate date={new Date(order.createdAt)}/>
+        <FormattedDate date={new Date(order.createdAt)} />
       </div>
       <div className={orderCardStyles.orderInfo}>
         <h3 className={orderCardStyles.orderName}>{order.name}</h3>

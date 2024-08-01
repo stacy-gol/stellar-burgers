@@ -27,7 +27,7 @@ export function Feed() {
   }, [dispatch]);
 
   const readyOrderNumbers = () => {
-    return orders
+    return orders.slice(0, 5)
       ?.filter((order) => order.status === "done")
       .map((order) => (
         <p className="text text_type_digits-default mb-2 mr-4" key={uuidv4()}>
@@ -37,7 +37,7 @@ export function Feed() {
   };
 
   const inProgressOrderNumbers = () => {
-    return orders
+    return orders.slice(0, 5)
       ?.filter((order) => order.status !== "done")
       .map((order) => (
         <p className="text text_type_digits-default mb-2 mr-4" key={uuidv4()}>
