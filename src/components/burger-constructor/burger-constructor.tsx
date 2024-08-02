@@ -101,9 +101,6 @@ function BurgerConstructor() {
     ingredientIds.push(bun._id);
   }  
 
-  console.log("Ingredient IDs:", ingredientIds); // Выводим список ID в консоль для проверки
-
-
   const handleCreateOrder = () => {
     if (!isLoggedIn) {
       navigate('/login', { state: { from: location } });

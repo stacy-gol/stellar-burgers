@@ -7,7 +7,8 @@ import {
   ResetPassword,
   IngredientModal,
   Profile,
-  Feed
+  Feed,
+  ProfileFeed
 } from "../../pages";
 import { ProtectedRouteElement } from "../protected-route/protected-route";
 import Header from "../app-header/app-header";
@@ -77,6 +78,14 @@ export default function App() {
           element={
             <ProtectedRouteElement>
               <Profile />
+            </ProtectedRouteElement>
+          }
+        />
+        <Route
+          path="/profile/orders/"
+          element={
+            <ProtectedRouteElement>
+              <ProfileFeed />
             </ProtectedRouteElement>
           }
         />

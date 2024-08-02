@@ -9,6 +9,7 @@ import LoginStyles from "./login.module.css";
 import { useForm } from "../../hooks/useForm";
 import { defaultInputProps } from "../../services/types";
 import { RootState, useDispatch, useSelector } from "../../services/store";
+import { getCookie } from "../../utils/cookies";
 
 export const Login = () => {
   const { values, handleChange } = useForm<{
@@ -25,23 +26,26 @@ export const Login = () => {
 
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
-const handleLogin = (e: FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  dispatch(loginUser({ email: values.email, password: values.password })).then((action: any) => {
-    if (isAuthenticated) {
-      navigate(from, { replace: true });
-    }
-  });
-};
+// const handleLogin = (e: FormEvent<HTMLFormElement>) => {
+//   e.preventDefault();
+//   dispatch(loginUser({ email: values.email, password: values.password })).then((action: any) => {
+//     if (isAuthenticated) {
+//       navigate(from, { replace: true });
+//     }
+//   });
+// };
 
-  // const handleLogin = (e: FormEvent<HTMLFormElement>) => {
-  //   e.preventDefault();
-  //   dispatch(loginUser({ email: values.email, password: values.password })).then(({ payload }) => {
-  //     if (payload && payload.isAuthenticated) {
-  //       navigate(from, { replace: true });
-  //     }
-  //   });
-  // };
+  const handleLogin = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("Access Token after login:", getCookie("accessToken")); // Проверка токена
+    console.log("Refresh Token after login:", getCookie("refreshToken")); // Проверка токена
+    dispatch(loginUser({ email: values.email, password: values.password })).then(({ payload }) => {
+      if (payload && isAuthenticated) {
+        navigate(from, { replace: true });
+      }
+    });
+  };
+
 
   return (
     <div className={LoginStyles.loginContainer}>

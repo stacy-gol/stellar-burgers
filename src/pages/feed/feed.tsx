@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "../../services/store";
 import {
   wsConnect,
   wsDisconnect,
-} from "../../services/middleware/orderFeed/actions";
+} from "../../services/middleware/orderFeed/order-feed-actions";
 import OrderCard from "../../components/order-card/order-card";
 import { selectOrders } from "../../services/middleware/orderFeed/selectors";
 

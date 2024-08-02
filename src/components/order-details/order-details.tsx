@@ -1,10 +1,10 @@
-// import React, { useEffect, useState } from 'react';
-// import { useParams } from 'react-router-dom';
-// import { useDispatch, useSelector } from '../../services/store';
-// import { BurgerIngredient, Order } from '../../services/types';
-// import orderDetailsStyles from './order-details.module.css';
-// import { OrderDetail } from '../../services/types';
-// import { getOrder } from '../../services/order/orderSlice';
+import React, { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from '../../services/store';
+import { BurgerIngredient, Order } from '../../services/types';
+import orderDetailsStyles from './order-details.module.css';
+import { OrderDetail } from '../../services/types';
+import { getOrder } from '../../services/order/orderSlice';
 // import { selectIngredients, selectOrders } from '../../services/middleware/orderFeed/selectors';
 
 
