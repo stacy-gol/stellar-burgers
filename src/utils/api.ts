@@ -55,7 +55,6 @@ export async function sendPasswordResetEmail(
 
 export async function getUser(): Promise<User> {
   const accessToken = getCookie("accessToken");
-  console.log("Access Token:", accessToken); // Проверка токена
 
   if (!accessToken) {
     throw new Error("No access token found");
@@ -95,26 +94,6 @@ export async function register(
   return data.user;
 }
 
-// export async function login(credentials: LoginCredentials): Promise<AuthResponse>  {
-//   const data = await request<AuthResponse>("/api/auth/login", {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(credentials),
-//   });
-//   console.log("Login response data:", data); // Логирование ответа
-
-//   setCookie("accessToken", data.accessToken.split('Bearer ')[1], { expires: 3600 });
-//   setCookie("refreshToken", data.refreshToken, { expires: 7 * 24 * 3600 });
-//   return {
-//     success: data.success,
-//     accessToken: data.accessToken,
-//     refreshToken: data.refreshToken,
-//     user: data.user as User,
-//   };
-// }
-
 export async function login(credentials: LoginCredentials): Promise<AuthResponse> {
   const data = await request<AuthResponse>("/api/auth/login", {
     method: "POST",
@@ -124,19 +103,11 @@ export async function login(credentials: LoginCredentials): Promise<AuthResponse
     body: JSON.stringify(credentials),
   });
 
-  console.log("Login response data:", data); // Логирование ответа
-
   const accessToken = data.accessToken.split('Bearer ')[1];
   const refreshToken = data.refreshToken;
 
-  console.log("Access Token to set:", accessToken); // Логирование токена
-  console.log("Refresh Token to set:", refreshToken); // Логирование токена
-
   setCookie("accessToken", accessToken, { expires: 3600 });
   setCookie("refreshToken", refreshToken, { expires: 7 * 24 * 3600 });
-
-  console.log("Access Token set in cookie:", getCookie("accessToken")); // Проверка установки токена
-  console.log("Refresh Token set in cookie:", getCookie("refreshToken")); // Проверка установки токена
 
   return {
     success: data.success,
@@ -162,7 +133,6 @@ export async function logout(): Promise<string> {
 
 export async function refreshAccessToken(): Promise<string> {
   const refreshToken = getCookie("refreshToken");
-  console.log("Refresh Token:", refreshToken); // Проверка токена
 
   const data = await request<AuthResponse>("/api/auth/token", {
     method: "POST",

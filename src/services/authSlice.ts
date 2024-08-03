@@ -75,7 +75,7 @@ export const refreshTokenThunk = createAsyncThunk(
   "user/refreshToken",
   async (_, { rejectWithValue }) => {
     const refreshToken = getCookie("refreshToken");
-    console.log("Refresh Token in Thunk:", refreshToken); // Проверка токена
+    console.log("Refresh Token in Thunk:", refreshToken);
 
 
     if (!refreshToken) {
@@ -126,26 +126,8 @@ export const authSlice = createSlice({
         state.isAuthenticated = true;
         state.isLoggedIn = true;
         state.accessToken = action.payload.accessToken;
-        // state.email = action.payload.email;
-        // state.name = action.payload.name;
         state.isAuthChecked = true;
       })
-    //   const payload = action.payload as AuthResponse;
-    //   if (payload.success) {
-    //     state.user = payload.user;
-    //     state.isAuthorizationInProcess = false;
-    //     state.isAuthorizationSuccess = true;
-    //     state.isAuthenticated = true;
-    //     state.isLoggedIn = true;
-    //     state.accessToken = payload.accessToken;
-    //     state.email = payload.user.email;
-    //     state.name = payload.user.name;
-    //     state.isAuthChecked = true;
-    //   } else {
-    //     state.isAuthorizationInProcess = false;
-    //     state.isAuthorizationFailed = true;
-    //   }
-    // })
       .addCase(loginUser.rejected, (state, action) => {
         state.isAuthorizationInProcess = false;
         state.isAuthorizationFailed = true;

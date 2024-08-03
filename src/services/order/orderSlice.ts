@@ -7,11 +7,6 @@ export const createOrder = createAsyncThunk(
   "order/createOrder",
   async (ingredientIds: string[]) => {
     const accessToken = getCookie("accessToken");
-    if (!accessToken) {
-      throw new Error("No access token found");
-    }
-    console.log("Sending ingredient IDs:", ingredientIds);
-
       const response = await request<OrderApiResponse>("/api/orders", {
         method: "POST",
         headers: {
@@ -20,8 +15,6 @@ export const createOrder = createAsyncThunk(
         },
         body: JSON.stringify({ ingredients: ingredientIds }),
       });
-      // const data: OrderApiResponse = await (response as Response).json();
-      // return data.order;
       return response.order;
   }
 );

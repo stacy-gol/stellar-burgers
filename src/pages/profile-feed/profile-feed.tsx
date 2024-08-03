@@ -8,6 +8,7 @@ import OrderCard from "../../components/order-card/order-card";
 import { selectProfileOrders } from "../../services/middleware/orderFeed/selectors";
 import { OrderDetail } from "../../services/types";
 import profileFeedStyles from "./profile-feed.module.css";
+import { getCookie } from "../../utils/cookies";
 
 
 export function ProfileFeed() {
@@ -16,15 +17,18 @@ export function ProfileFeed() {
   const profileOrders = useSelector(selectProfileOrders);
 
   useEffect(() => {
-    dispatch(wsConnect("wss://norma.nomoreparties.space/orders"));
+    const accessToken = getCookie("accessToken");
+    if (accessToken) {
+      const wsUrl = `wss://norma.nomoreparties.space/orders?token=${accessToken}`;
+      dispatch(wsConnect(wsUrl));
+    } else {
+      console.error("No access token found");
+    }
+
     return () => {
       dispatch(wsDisconnect());
     };
   }, [dispatch]);
-
-  if (!profileOrders) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <>

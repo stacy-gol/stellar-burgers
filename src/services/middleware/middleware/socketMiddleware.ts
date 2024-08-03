@@ -3,8 +3,8 @@ import {
   ActionCreatorWithoutPayload,
   Middleware,
 } from "@reduxjs/toolkit";
-import { AppDispatch, RootState, useDispatch } from "../../store";
-import { refreshTokenThunk } from "../../authSlice";
+import { AppDispatch, RootState } from "../../store";
+import { refreshAccessToken } from "../../../utils/api";
 
 export type TWsActionTypes = {
   connect: ActionCreatorWithPayload<string>;
@@ -53,7 +53,7 @@ export const socketMiddleware = (
           dispatch(onError("Error"));
         };
 
-        socket.onmessage = (event) => {
+        socket.onmessage = async (event) => {
           const { data } = event;
 
           try {
@@ -63,28 +63,16 @@ export const socketMiddleware = (
               withTokenRefresh &&
               parsedData.message === "Invalid or missing token"
             ) {
-              (async () => {
-                try {
-                  const resultAction = await dispatch(refreshTokenThunk());
-                  if (refreshTokenThunk.fulfilled.match(resultAction)) {
-                    const newToken = resultAction.payload.replace(
-                      "Bearer ",
-                      ""
-                    );
+              try {
+                const newToken = await refreshAccessToken();
+                const wssUrl = new URL(action.payload);
+                wssUrl.searchParams.set("token", newToken);
 
-                    const wssUrl = new URL(action.payload);
-                    wssUrl.searchParams.set("token", newToken);
-
-                    dispatch(connect(wssUrl.toString()));
-                  } else {
-                    dispatch(onError(resultAction.payload as string));
-                  }
-                } catch (err) {
-                  dispatch(onError((err as { message: string }).message));
-                }
-
+                dispatch(connect(wssUrl.toString()));
+              } catch (err) {
+                dispatch(onError((err as { message: string }).message));
                 dispatch(disconnect());
-              })();
+              }
 
               return;
             }
@@ -105,13 +93,13 @@ export const socketMiddleware = (
         } catch (error) {
           dispatch(onError((error as { message: string }).message));
         }
-      // } else if (socket && disconnect.match(action)) {
-      //   clearTimeout(reconnectTimer);
-      //   isConnected = false;
-      //   reconnectTimer = 0;
-      //   socket.close();
-      //   socket = null;
-      //   next(action);
+      } else if (socket && disconnect.match(action)) {
+        clearTimeout(reconnectTimer);
+        isConnected = false;
+        reconnectTimer = 0;
+        socket.close();
+        socket = null;
+        next(action);
       } else {
         next(action);
       }

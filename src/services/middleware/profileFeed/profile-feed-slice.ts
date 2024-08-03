@@ -19,7 +19,6 @@ export const profileFeedSlice = createSlice({
     reducers: {
         wsConnecting:(state) => {
             state.status = WebsocketStatus.CONNECTING;
-            console.log('WebsocketStatus.CONNECTING', state);
           },
         wsOpen: (state) => {
             state.status = WebsocketStatus.ONLINE;
@@ -30,11 +29,9 @@ export const profileFeedSlice = createSlice({
           },
         wsError: (state, action: PayloadAction<string>) => {
             state.connectionError = action.payload;
-            console.log('action.payload', action.payload)
         },
         wsMessage: (state, action: PayloadAction<OrderFeedAction>) => {
             state.profileOrders = action.payload.orders
-            console.log('action.payload', action.payload)
         }
     },
 })

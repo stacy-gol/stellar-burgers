@@ -6,7 +6,7 @@ import {
 import orderCardStyles from "./order-card.module.css";
 import { useSelector } from "../../services/store";
 import { OrderDetail } from "../../services/types";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { selectAllIngredients } from "../../services/ingredients/ingredientsSlice";
 
 interface OrderCardProps {
@@ -16,6 +16,7 @@ interface OrderCardProps {
 function OrderCard({ order }: OrderCardProps) {
   const navigate = useNavigate();
   const allIngredients = useSelector(selectAllIngredients);
+  const location = useLocation();
 
   const orderIngredients = order.ingredients.map((id) => {
     return allIngredients.find((ingredient) => ingredient._id === id);
