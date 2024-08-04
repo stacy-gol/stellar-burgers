@@ -2,6 +2,7 @@ import {
   ApiResponse,
   AuthResponse,
   LoginCredentials,
+  OrderDetail,
   User,
 } from "../services/types";
 import { getCookie, setCookie } from "./cookies";
@@ -68,8 +69,8 @@ export async function getUser(): Promise<User> {
   });
 }
 
-// export async function getOrder(orderId: string): Promise<OrderDetail> {
-//   return request<OrderDetail>(`/orders/${orderId}`, {
+// export async function getOrder(number: string): Promise<OrderDetail> {
+//   return request<OrderDetail>(`/orders/${number}`, {
 //     method: "GET",
 //   });
 // }

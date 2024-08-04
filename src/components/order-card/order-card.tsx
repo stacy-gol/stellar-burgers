@@ -10,7 +10,7 @@ import { selectAllIngredients } from "../../services/ingredients/ingredientsSlic
 
 interface OrderCardProps {
   order: OrderDetail;
-  onClick: () => void ;
+  onClick: () => void;
 }
 
 function OrderCard({ order, onClick }: OrderCardProps) {
@@ -30,7 +30,9 @@ function OrderCard({ order, onClick }: OrderCardProps) {
       <div
         key={index}
         className={`${orderCardStyles.ingredientImageWrapper} ${
-          index === 5 && orderIngredients.length > 6 ? orderCardStyles.lastIngredient : ""
+          index === 5 && orderIngredients.length > 6
+            ? orderCardStyles.lastIngredient
+            : ""
         }`}
       >
         {ingredient ? (

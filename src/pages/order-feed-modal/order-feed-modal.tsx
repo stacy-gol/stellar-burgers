@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import Modal from '../../components/modal/modal';
-import OrderDetails from '../../components/order-details/order-details';
-import { useSelector, useDispatch, RootState } from '../../services/store';
-import { OrderDetail } from '../../services/types';
-import { selectOrders, selectProfileOrders } from '../../services/middleware/orderFeed/selectors';
-import { getOrder } from '../../services/order/orderSlice';
-import { wsConnect, wsDisconnect } from '../../services/middleware/orderFeed/order-feed-actions';
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import Modal from "../../components/modal/modal";
+import OrderDetails from "../../components/order-details/order-details";
+import { useSelector, useDispatch, RootState } from "../../services/store";
+import { OrderDetail } from "../../services/types";
+import {
+  selectOrders,
+  selectProfileOrders,
+} from "../../services/middleware/orderFeed/selectors";
+import { getOrder } from "../../services/order/orderSlice";
 
 export const OrderFeedModal = () => {
   let { number } = useParams<{ number: string }>();
@@ -16,13 +18,6 @@ export const OrderFeedModal = () => {
   let location = useLocation();
   let navigate = useNavigate();
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(wsConnect("wss://norma.nomoreparties.space/orders/all"));
-    return () => {
-      dispatch(wsDisconnect());
-    };
-  }, [dispatch]);
 
   const background = location.state && location.state.backgroundLocation;
 
@@ -39,22 +34,14 @@ export const OrderFeedModal = () => {
     }
 
     const getOrderDetails = async () => {
-      console.log(`Fetching order with number: ${orderNumber}`);
-
       let orderData =
         orders.find((order) => order.number === orderNumber) ||
         profileOrders.find((order) => order.number === orderNumber);
-        console.log('orders', orders);
-        console.log('profileOrders', profileOrders);
-        console.log('state orders', (state: RootState) => state.orderFeed.orders);
-        
 
       if (!orderData) {
         const result = await dispatch(getOrder(orderNumber.toString()));
         if (getOrder.fulfilled.match(result)) {
           orderData = result.payload;
-        }  else {
-          console.error(`Order with number ${orderNumber} not found`);
         }
       }
       setOrder(orderData || null);
@@ -65,7 +52,7 @@ export const OrderFeedModal = () => {
   }, [dispatch, orderNumber, orders, profileOrders]);
 
   const handleClose = () => {
-    navigate(background || '/', { replace: true });
+    navigate(background || "/", { replace: true });
   };
 
   if (loading) {

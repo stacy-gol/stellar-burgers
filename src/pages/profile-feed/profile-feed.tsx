@@ -18,22 +18,7 @@ export function ProfileFeed() {
   const navigate = useNavigate();
   const location = useLocation();
 
-
   const profileOrders = useSelector(selectProfileOrders);
-
-  useEffect(() => {
-    const accessToken = getCookie("accessToken");
-    if (accessToken) {
-      const wsUrl = `wss://norma.nomoreparties.space/orders?token=${accessToken}`;
-      dispatch(wsConnect(wsUrl));
-    } else {
-      console.error("No access token found");
-    }
-
-    return () => {
-      dispatch(wsDisconnect());
-    };
-  }, [dispatch]);
 
   const handleLogout = async () => {
     //@ts-ignore
@@ -47,7 +32,7 @@ export function ProfileFeed() {
   const handleOpenOrderCard = useCallback(
     (order: OrderDetail) => {
       dispatch(openOrderFeedModal(order));
-      navigate(`/profile/orders/${order.number}`, {
+      navigate(`/profile/orders/${order.number.toString()}`, {
         state: { backgroundLocation: location.pathname },
       });
     },
@@ -93,18 +78,10 @@ export function ProfileFeed() {
           >
             Выход
           </NavLink>
-          {/* <Button
-              type="primary"
-              size="medium"
-              htmlType="button" 
-              onClick={handleLogout}
-            >
-              Выход
-            </Button> */}
         </div>
         <p className="text text_type_main-default text_color_inactive mt-20">
-        В этом разделе вы можете <br></br> посмотреть свою историю заказов
-      </p>
+          В этом разделе вы можете <br></br> посмотреть свою историю заказов
+        </p>
       </div>
       <div className={profileFeedStyles.content}>
         <h1 className="text text_type_main-large mb-5">Лента заказов</h1>
@@ -112,7 +89,11 @@ export function ProfileFeed() {
           <div className={profileFeedStyles.contentleft}>
             <div className={profileFeedStyles.orderContainer}>
               {profileOrders.map((order: OrderDetail) => (
-                <OrderCard key={order._id} order={order} onClick={() => handleOpenOrderCard}/>
+                <OrderCard
+                  key={order._id}
+                  order={order}
+                  onClick={() => handleOpenOrderCard(order)}
+                />
               ))}
             </div>
           </div>

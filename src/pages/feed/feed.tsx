@@ -25,23 +25,6 @@ export function Feed() {
   );
   const isDoneAllTime = orders.length;
 
-  // useEffect(() => {
-  //   dispatch(wsConnect("wss://norma.nomoreparties.space/orders/all"));
-  //   return () => {
-  //     dispatch(wsDisconnect());
-  //   };
-  // }, [dispatch]);
-
-  useEffect(() => {
-    console.log("Feed component mounted");
-    dispatch(wsConnect("wss://norma.nomoreparties.space/orders/all"));
-    
-    return () => {
-      console.log("Feed component unmounted");
-      dispatch(wsDisconnect());
-    };
-  }, [dispatch]);
-
   const readyOrderNumbers = () => {
     return orders
       .slice(0, 5)
@@ -67,7 +50,6 @@ export function Feed() {
   const handleOpenOrderCard = useCallback(
     (order: OrderDetail) => {
       dispatch(openOrderFeedModal(order));
-      console.log("Opening order:", order);
       navigate(`/feed/${order.number.toString()}`, {
         state: { backgroundLocation: location.pathname },
       });
@@ -83,7 +65,11 @@ export function Feed() {
           <div className={feedStyles.contentleft}>
             <div className={feedStyles.orderContainer}>
               {orders.map((order) => (
-                <OrderCard key={order._id} order={order} onClick={() => handleOpenOrderCard(order)}/>
+                <OrderCard
+                  key={order._id}
+                  order={order}
+                  onClick={() => handleOpenOrderCard(order)}
+                />
               ))}
             </div>
           </div>
