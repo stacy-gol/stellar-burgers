@@ -47,7 +47,7 @@ export function ProfileFeed() {
   const handleOpenOrderCard = useCallback(
     (order: OrderDetail) => {
       dispatch(openOrderFeedModal(order));
-      navigate(`/profile/ordera/${order.number}`, {
+      navigate(`/profile/orders/${order.number}`, {
         state: { backgroundLocation: location.pathname },
       });
     },

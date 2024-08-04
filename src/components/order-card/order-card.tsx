@@ -13,7 +13,7 @@ interface OrderCardProps {
   onClick: () => void ;
 }
 
-function OrderCard({ order }: OrderCardProps) {
+function OrderCard({ order, onClick }: OrderCardProps) {
   const allIngredients = useSelector(selectAllIngredients);
 
   const orderIngredients = order.ingredients.map((id) => {
@@ -53,7 +53,7 @@ function OrderCard({ order }: OrderCardProps) {
     ));
 
   return (
-    <div className={orderCardStyles.orderCard}>
+    <div onClick={() => onClick()} className={orderCardStyles.orderCard}>
       <div className={orderCardStyles.orderDetails}>
         <span className={orderCardStyles.orderNumber}>#{order.number}</span>
         <FormattedDate date={new Date(order.createdAt)} />

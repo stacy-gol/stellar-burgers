@@ -93,8 +93,8 @@ export default function App() {
         />
         <Route path="ingredients/:ingredientId" element={<IngredientModal />} />
         <Route path="/feed" element={<Feed />} />
-        <Route path="/feed/:number" element={<OrderDetails />} />
-        <Route path="/profile/orders/:number" element={<OrderDetails />} />
+        <Route path="/feed/:number" element={<OrderFeedModal />} />
+        <Route path="/profile/orders/:number" element={<OrderFeedModal />} />
       </Routes>
 
       {background && (

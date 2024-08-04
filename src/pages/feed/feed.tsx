@@ -36,10 +36,10 @@ export function Feed() {
     console.log("Feed component mounted");
     dispatch(wsConnect("wss://norma.nomoreparties.space/orders/all"));
     
-    // return () => {
-    //   console.log("Feed component unmounted");
-    //   dispatch(wsDisconnect());
-    // };
+    return () => {
+      console.log("Feed component unmounted");
+      dispatch(wsDisconnect());
+    };
   }, [dispatch]);
 
   const readyOrderNumbers = () => {
@@ -66,10 +66,9 @@ export function Feed() {
 
   const handleOpenOrderCard = useCallback(
     (order: OrderDetail) => {
-      console.log("Opening order:", order);
-
       dispatch(openOrderFeedModal(order));
-      navigate(`/feed/${order.number}`, {
+      console.log("Opening order:", order);
+      navigate(`/feed/${order.number.toString()}`, {
         state: { backgroundLocation: location.pathname },
       });
     },

@@ -10,7 +10,7 @@ interface ModalsState {
     currentIngredient: BurgerIngredient | null;
   };
   orderFeedModal: {
-    order: OrderDetail | null;
+    currentOrder: OrderDetail | null;
     isOpen: boolean;
   };
 }
@@ -24,7 +24,7 @@ const initialState: ModalsState = {
     currentIngredient: null,
   },
   orderFeedModal: {
-    order: null,
+    currentOrder: null,
     isOpen: false,
   },
 };
@@ -47,12 +47,12 @@ const modalsSlice = createSlice({
       state.ingredientModal.isOpen = false;
       state.ingredientModal.currentIngredient = null;
     },
-    openOrderFeedModal(state, action: PayloadAction<OrderDetail>) {
-      state.orderFeedModal.order = action.payload;
+    openOrderFeedModal(state, action: PayloadAction<OrderDetail | null>) {
+      state.orderFeedModal.currentOrder = action.payload;
       state.orderFeedModal.isOpen = true;
     },
     closeOrderFeedModal(state) {
-      state.orderFeedModal.order = null;
+      state.orderFeedModal.currentOrder = null;
       state.orderFeedModal.isOpen = false;
     },
   },
