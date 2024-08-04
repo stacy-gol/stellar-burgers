@@ -46,10 +46,14 @@ export const socketMiddleware = (
         dispatch(onConnecting());
 
         socket.onopen = () => {
+          console.log("WebSocket connection opened");
+
           dispatch(onOpen());
         };
 
-        socket.onerror = () => {
+        socket.onerror = (errorEvent) => {
+          console.error("WebSocket error", errorEvent);
+
           dispatch(onError("Error"));
         };
 
@@ -64,7 +68,8 @@ export const socketMiddleware = (
               parsedData.message === "Invalid or missing token"
             ) {
               try {
-                const newToken = await refreshAccessToken();
+                const newAccessToken = await refreshAccessToken();
+                const newToken = newAccessToken.replace("Bearer ", "");
                 const wssUrl = new URL(action.payload);
                 wssUrl.searchParams.set("token", newToken);
 
@@ -84,7 +89,15 @@ export const socketMiddleware = (
         };
 
         socket.onclose = () => {
+          console.log("WebSocket connection closed");
+
           dispatch(onClose());
+
+          if (isConnected) {
+            reconnectTimer = window.setTimeout(() => {
+              dispatch(connect(url));
+            }, 3000);
+          }
         };
         next(action);
       } else if (socket && sendMessage?.match(action)) {
@@ -94,6 +107,8 @@ export const socketMiddleware = (
           dispatch(onError((error as { message: string }).message));
         }
       } else if (socket && disconnect.match(action)) {
+        console.log("Disconnecting from WebSocket");
+
         clearTimeout(reconnectTimer);
         isConnected = false;
         reconnectTimer = 0;

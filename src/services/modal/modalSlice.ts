@@ -1,5 +1,5 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import { BurgerIngredient } from '../types';
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { BurgerIngredient, OrderDetail } from "../types";
 
 interface ModalsState {
   orderModal: {
@@ -8,6 +8,10 @@ interface ModalsState {
   ingredientModal: {
     isOpen: boolean;
     currentIngredient: BurgerIngredient | null;
+  };
+  orderFeedModal: {
+    order: OrderDetail | null;
+    isOpen: boolean;
   };
 }
 
@@ -19,10 +23,14 @@ const initialState: ModalsState = {
     isOpen: false,
     currentIngredient: null,
   },
+  orderFeedModal: {
+    order: null,
+    isOpen: false,
+  },
 };
 
 const modalsSlice = createSlice({
-  name: 'modals',
+  name: "modals",
   initialState,
   reducers: {
     openOrderModal(state) {
@@ -39,6 +47,14 @@ const modalsSlice = createSlice({
       state.ingredientModal.isOpen = false;
       state.ingredientModal.currentIngredient = null;
     },
+    openOrderFeedModal(state, action: PayloadAction<OrderDetail>) {
+      state.orderFeedModal.order = action.payload;
+      state.orderFeedModal.isOpen = true;
+    },
+    closeOrderFeedModal(state) {
+      state.orderFeedModal.order = null;
+      state.orderFeedModal.isOpen = false;
+    },
   },
 });
 
@@ -47,6 +63,8 @@ export const {
   closeOrderModal,
   openIngredientModal,
   closeIngredientModal,
+  openOrderFeedModal,
+  closeOrderFeedModal
 } = modalsSlice.actions;
 
 export default modalsSlice.reducer;

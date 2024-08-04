@@ -8,7 +8,7 @@ import {
   IngredientModal,
   Profile,
   Feed,
-  ProfileFeed
+  ProfileFeed,
 } from "../../pages";
 import { ProtectedRouteElement } from "../protected-route/protected-route";
 import Header from "../app-header/app-header";
@@ -16,6 +16,8 @@ import { useEffect } from "react";
 import { fetchIngredients } from "../../services/ingredients/ingredientsSlice";
 import { checkAuthStatus, refreshTokenThunk } from "../../services/authSlice";
 import { useDispatch } from "../../services/store";
+import { OrderFeedModal } from "../../pages/order-feed-modal/order-feed-modal";
+import OrderDetails from "../order-details/order-details";
 
 export default function App() {
   const location = useLocation();
@@ -91,14 +93,15 @@ export default function App() {
         />
         <Route path="ingredients/:ingredientId" element={<IngredientModal />} />
         <Route path="/feed" element={<Feed />} />
+        <Route path="/feed/:number" element={<OrderDetails />} />
+        <Route path="/profile/orders/:number" element={<OrderDetails />} />
       </Routes>
 
       {background && (
         <Routes>
-          <Route
-            path="/ingredients/:ingredientId"
-            element={<IngredientModal />}
-          />
+          <Route path="/ingredients/:ingredientId" element={<IngredientModal />}/>
+          <Route path="/feed/:number" element={<OrderFeedModal />} />
+          <Route path="/profile/orders/:number" element={<OrderFeedModal />} />
         </Routes>
       )}
     </div>

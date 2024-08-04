@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "../../services/store";
 import {
   wsConnect,
@@ -9,12 +9,15 @@ import { selectProfileOrders } from "../../services/middleware/orderFeed/selecto
 import { OrderDetail } from "../../services/types";
 import profileFeedStyles from "./profile-feed.module.css";
 import { getCookie } from "../../utils/cookies";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../services/authSlice";
+import { openOrderFeedModal } from "../../services/modal/modalSlice";
 
 export function ProfileFeed() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+
 
   const profileOrders = useSelector(selectProfileOrders);
 
@@ -40,6 +43,16 @@ export function ProfileFeed() {
     } else {
     }
   };
+
+  const handleOpenOrderCard = useCallback(
+    (order: OrderDetail) => {
+      dispatch(openOrderFeedModal(order));
+      navigate(`/profile/ordera/${order.number}`, {
+        state: { backgroundLocation: location.pathname },
+      });
+    },
+    [dispatch, navigate, location]
+  );
 
   return (
     <div className={profileFeedStyles.layout}>
@@ -90,7 +103,7 @@ export function ProfileFeed() {
             </Button> */}
         </div>
         <p className="text text_type_main-default text_color_inactive mt-20">
-        В этом разделе вы можете <br></br> изменить свои персональные данные
+        В этом разделе вы можете <br></br> посмотреть свою историю заказов
       </p>
       </div>
       <div className={profileFeedStyles.content}>
@@ -99,7 +112,7 @@ export function ProfileFeed() {
           <div className={profileFeedStyles.contentleft}>
             <div className={profileFeedStyles.orderContainer}>
               {profileOrders.map((order: OrderDetail) => (
-                <OrderCard key={order._id} order={order} />
+                <OrderCard key={order._id} order={order} onClick={() => handleOpenOrderCard}/>
               ))}
             </div>
           </div>

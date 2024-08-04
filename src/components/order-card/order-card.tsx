@@ -6,17 +6,15 @@ import {
 import orderCardStyles from "./order-card.module.css";
 import { useSelector } from "../../services/store";
 import { OrderDetail } from "../../services/types";
-import { useLocation, useNavigate } from "react-router-dom";
 import { selectAllIngredients } from "../../services/ingredients/ingredientsSlice";
 
 interface OrderCardProps {
   order: OrderDetail;
+  onClick: () => void ;
 }
 
 function OrderCard({ order }: OrderCardProps) {
-  const navigate = useNavigate();
   const allIngredients = useSelector(selectAllIngredients);
-  const location = useLocation();
 
   const orderIngredients = order.ingredients.map((id) => {
     return allIngredients.find((ingredient) => ingredient._id === id);
@@ -54,12 +52,8 @@ function OrderCard({ order }: OrderCardProps) {
       </div>
     ));
 
-  const handleClick = () => {
-    navigate(`/feed/${order._id}`, { state: { background: location } });
-  };
-
   return (
-    <div onClick={handleClick} className={orderCardStyles.orderCard}>
+    <div className={orderCardStyles.orderCard}>
       <div className={orderCardStyles.orderDetails}>
         <span className={orderCardStyles.orderNumber}>#{order.number}</span>
         <FormattedDate date={new Date(order.createdAt)} />

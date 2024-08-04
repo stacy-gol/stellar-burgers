@@ -21,8 +21,8 @@ export const createOrder = createAsyncThunk(
 
 export const getOrder = createAsyncThunk(
   "order/getOrder",
-  async (orderId: string) => {
-    const response = await request<OrderDetail>(`/orders/${orderId}`, {
+  async (number: string) => {
+    const response = await request<OrderDetail>(`/orders/${number}`, {
       method: "GET",
     });
     return response;

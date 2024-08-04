@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 import feedStyles from "./feed.module.css";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "../../services/store";
@@ -8,26 +8,43 @@ import {
 } from "../../services/middleware/orderFeed/order-feed-actions";
 import OrderCard from "../../components/order-card/order-card";
 import { selectOrders } from "../../services/middleware/orderFeed/selectors";
+import { OrderDetail } from "../../services/types";
+import { useLocation, useNavigate } from "react-router-dom";
+import { openOrderFeedModal } from "../../services/modal/modalSlice";
 
 export function Feed() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const orders = useSelector(selectOrders);
+
   const isDoneToday = orders.reduce(
     (acc, order) => acc + (order.status === "done" ? 1 : 0),
     0
   );
   const isDoneAllTime = orders.length;
 
+  // useEffect(() => {
+  //   dispatch(wsConnect("wss://norma.nomoreparties.space/orders/all"));
+  //   return () => {
+  //     dispatch(wsDisconnect());
+  //   };
+  // }, [dispatch]);
+
   useEffect(() => {
+    console.log("Feed component mounted");
     dispatch(wsConnect("wss://norma.nomoreparties.space/orders/all"));
-    return () => {
-      dispatch(wsDisconnect());
-    };
+    
+    // return () => {
+    //   console.log("Feed component unmounted");
+    //   dispatch(wsDisconnect());
+    // };
   }, [dispatch]);
 
   const readyOrderNumbers = () => {
-    return orders.slice(0, 5)
+    return orders
+      .slice(0, 5)
       ?.filter((order) => order.status === "done")
       .map((order) => (
         <p className="text text_type_digits-default mb-2 mr-4" key={uuidv4()}>
@@ -37,7 +54,8 @@ export function Feed() {
   };
 
   const inProgressOrderNumbers = () => {
-    return orders.slice(0, 5)
+    return orders
+      .slice(0, 5)
       ?.filter((order) => order.status !== "done")
       .map((order) => (
         <p className="text text_type_digits-default mb-2 mr-4" key={uuidv4()}>
@@ -45,6 +63,18 @@ export function Feed() {
         </p>
       ));
   };
+
+  const handleOpenOrderCard = useCallback(
+    (order: OrderDetail) => {
+      console.log("Opening order:", order);
+
+      dispatch(openOrderFeedModal(order));
+      navigate(`/feed/${order.number}`, {
+        state: { backgroundLocation: location.pathname },
+      });
+    },
+    [dispatch, navigate, location]
+  );
 
   return (
     <>
@@ -54,7 +84,7 @@ export function Feed() {
           <div className={feedStyles.contentleft}>
             <div className={feedStyles.orderContainer}>
               {orders.map((order) => (
-                <OrderCard key={order._id} order={order} />
+                <OrderCard key={order._id} order={order} onClick={() => handleOpenOrderCard(order)}/>
               ))}
             </div>
           </div>
