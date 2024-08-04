@@ -68,7 +68,7 @@ export const OrderFeedModal = () => {
   }
 
   return (
-    <Modal title="Детали заказа" isOpen={true} onClose={handleClose}>
+    <Modal title="" isOpen={true} onClose={handleClose}>
       <OrderDetails order={order} />
     </Modal>
   );

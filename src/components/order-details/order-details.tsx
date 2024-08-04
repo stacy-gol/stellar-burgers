@@ -3,6 +3,7 @@ import { BurgerIngredient, OrderDetail } from "../../services/types";
 import orderDetailsStyles from "./order-details.module.css";
 import { useSelector } from "../../services/store";
 import { selectAllIngredients } from "../../services/ingredients/ingredientsSlice";
+import { CurrencyIcon } from "@ya.praktikum/react-developer-burger-ui-components";
 
 type OrderDetailsProps = {
   order: OrderDetail;
@@ -21,26 +22,38 @@ function OrderDetails({ order }: OrderDetailsProps) {
     })
     .filter((ingredient: BurgerIngredient | null) => ingredient !== null);
 
-  const totalPrice = orderIngredients.reduce((acc, ingredient) => {
-    return acc + (ingredient ? ingredient.price : 0);
-  }, 0);
+    const ingredientCount = order.ingredients.reduce((acc: { [id: string]: number }, id: string) => {
+      acc[id] = (acc[id] || 0) + 1;
+      return acc;
+    }, {});
+
+    const totalPrice = orderIngredients.reduce((acc, ingredient) => {
+      return acc + (ingredient ? ingredient.price * (ingredientCount[ingredient._id] || 0) : 0);
+    }, 0);
 
   return (
-    <div className={orderDetailsStyles.container}>
-      <h1 className="text text_type_main-large mb-4">Order #{order.number}</h1>
+    <div className={`${orderDetailsStyles.container} mt-10`}>
+      <p className={`text text_type_digits-default mb-4 ${orderDetailsStyles.header}`}>#{order.number}</p>
+      <h1 className="text text_type_main-medium">{order.name}</h1>
       <div className={orderDetailsStyles.ingredients}>
         {orderIngredients.map((ingredient, index) => (
           <div key={index} className={orderDetailsStyles.ingredient}>
             <img src={ingredient?.image_mobile} alt={ingredient?.name} />
             <p>{ingredient?.name}</p>
-            <p>{ingredient?.price}</p>
+            <div className={orderDetailsStyles.price}>
+            <span>{ingredientCount[ingredient!._id]} x {ingredient?.price}</span>
+            <CurrencyIcon type={"primary"} />
+            </div>
           </div>
         ))}
       </div>
       <div className={orderDetailsStyles.total}>
         <span>Total:</span>
+        <div className={orderDetailsStyles.price}>
         <span>{totalPrice}</span>
+        <CurrencyIcon type={"primary"} />
       </div>
+    </div>
     </div>
   );
 }
