@@ -9,6 +9,9 @@ import {
   selectProfileOrders,
 } from "../../services/middleware/orderFeed/selectors";
 import { getOrder } from "../../services/order/orderSlice";
+import { getCookie } from "../../utils/cookies";
+import { wsConnect as orderFeedConnect, wsDisconnect as orderFeedDisconnect } from '../../services/middleware/orderFeed/order-feed-actions';
+import { wsConnect as profileFeedConnect, wsDisconnect as profileFeedDisconnect } from '../../services/middleware/profileFeed/profile-feed-actions';
 
 export const OrderFeedModal = () => {
   let { number } = useParams<{ number: string }>();
@@ -26,6 +29,30 @@ export const OrderFeedModal = () => {
 
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const isProfileFeed = location.pathname.startsWith('/profile/orders');
+
+    if (isProfileFeed) {
+      const accessToken = getCookie("accessToken");
+      if (accessToken) {
+        const wsUrl = `wss://norma.nomoreparties.space/orders?token=${accessToken}`;
+        dispatch(profileFeedConnect(wsUrl));
+      } else {
+        console.error("No access token found");
+      }
+    } else {
+      dispatch(orderFeedConnect("wss://norma.nomoreparties.space/orders/all"));
+    }
+
+    return () => {
+      if (isProfileFeed) {
+          dispatch(profileFeedDisconnect())
+        } else {
+        dispatch(orderFeedDisconnect());
+      }
+    };
+  }, [dispatch, location.pathname]);
 
   useEffect(() => {
     if (!orderNumber) {

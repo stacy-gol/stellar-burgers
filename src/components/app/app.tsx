@@ -14,13 +14,9 @@ import { ProtectedRouteElement } from "../protected-route/protected-route";
 import Header from "../app-header/app-header";
 import { useEffect } from "react";
 import { fetchIngredients } from "../../services/ingredients/ingredientsSlice";
-import { checkAuthStatus, refreshTokenThunk } from "../../services/authSlice";
+import { checkAuthStatus } from "../../services/authSlice";
 import { useDispatch } from "../../services/store";
 import { OrderFeedModal } from "../../pages/order-feed-modal/order-feed-modal";
-import { getCookie } from "../../utils/cookies";
-import { wsConnect as orderFeedConnect, wsDisconnect as orderFeedDisconnect } from '../../services/middleware/orderFeed/order-feed-actions';
-import { wsConnect as profileFeedConnect, wsDisconnect as profileFeedDisconnect } from '../../services/middleware/profileFeed/profile-feed-actions';
-
 
 export default function App() {
   const location = useLocation();
@@ -33,36 +29,7 @@ export default function App() {
 
   useEffect(() => {
     dispatch(checkAuthStatus());
-    const interval = setInterval(() => {
-      dispatch(refreshTokenThunk());
-    }, 20 * 60 * 1000);
-
-    return () => clearInterval(interval);
   }, [dispatch]);
-
-  useEffect(() => {
-    const isProfileFeed = location.pathname.startsWith('/profile/orders');
-
-    if (isProfileFeed) {
-      const accessToken = getCookie("accessToken");
-      if (accessToken) {
-        const wsUrl = `wss://norma.nomoreparties.space/orders?token=${accessToken}`;
-        dispatch(profileFeedConnect(wsUrl));
-      } else {
-        console.error("No access token found");
-      }
-    } else {
-      dispatch(orderFeedConnect("wss://norma.nomoreparties.space/orders/all"));
-    }
-
-    return () => {
-      if (isProfileFeed) {
-          dispatch(profileFeedDisconnect())
-        } else {
-        dispatch(orderFeedDisconnect());
-      }
-    };
-  }, [dispatch, location.pathname]);
 
   return (
     <div>

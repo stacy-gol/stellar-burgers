@@ -18,6 +18,17 @@ export function ProfileFeed() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  useEffect(() => {
+    const accessToken = getCookie("accessToken");
+    if (accessToken) {
+      const wsUrl = `wss://norma.nomoreparties.space/orders?token=${accessToken}`;
+      dispatch(wsConnect(wsUrl));
+    }
+    return () => {
+      dispatch(wsDisconnect());
+    };
+  }, [dispatch]);
+
   const profileOrders = useSelector(selectProfileOrders);
 
   const handleLogout = async () => {

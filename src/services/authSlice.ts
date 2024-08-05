@@ -1,6 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { login, logout, register, refreshAccessToken, getUser } from "../utils/api";
-import { getCookie, setCookie } from "../utils/cookies";
+import { login, logout, register, getUser } from "../utils/api";
 import { AuthResponse, AuthState, LoginCredentials } from "./types";
 
 const initialState: AuthState = {
@@ -71,35 +70,6 @@ export const checkAuthStatus = createAsyncThunk(
   }
 );
 
-export const refreshTokenThunk = createAsyncThunk(
-  "user/refreshToken",
-  async (_, { rejectWithValue }) => {
-    const refreshToken = getCookie("refreshToken");
-    console.log("Refresh Token in Thunk:", refreshToken);
-
-
-    if (!refreshToken) {
-      return rejectWithValue("No refreshToken available.");
-    }
-
-    try {
-      const response = await refreshAccessToken(); 
-      const parsedResponse = JSON.parse(response);
-      if (parsedResponse.success) {
-        setCookie("accessToken", parsedResponse.accessToken, { expires: 3600 });
-        if (parsedResponse.refreshToken) {
-          setCookie("refreshToken", parsedResponse.refreshToken, { expires: 7 * 24 * 3600 });
-        }
-        return parsedResponse.accessToken;
-      } else {
-        return rejectWithValue("Failed to refresh access token.");
-      }
-    } catch (error) {
-      return rejectWithValue("An error occurred while refreshing the token.");
-    }
-  }
-);
-
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -161,12 +131,6 @@ export const authSlice = createSlice({
       .addCase(logoutUser.rejected, (state, action) => {
         state.isAuthorizationInProcess = false;
         state.isAuthorizationFailed = true;
-      })
-      .addCase(refreshTokenThunk.fulfilled, (state, action) => {
-        state.accessToken = action.payload;
-      })
-      .addCase(refreshTokenThunk.rejected, (state, action) => {
-        state.accessTokenExpired = true;
       });
   },
 });

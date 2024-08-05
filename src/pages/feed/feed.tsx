@@ -17,6 +17,13 @@ export function Feed() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  useEffect(() => {
+      dispatch(wsConnect("wss://norma.nomoreparties.space/orders/all"));
+    return () => {
+        dispatch(wsDisconnect());
+    };
+  }, [dispatch]);
+
   const orders = useSelector(selectOrders);
 
   const isDoneToday = orders.reduce(
