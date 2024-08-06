@@ -62,3 +62,12 @@
 .inactive {
   color: #8585ad;
 }
+
+.logoContainer {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1c1c21;
+  border: 1px solid #1c1c21;
+}

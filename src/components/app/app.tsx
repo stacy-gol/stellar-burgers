@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import {
   Home,
   Login,
@@ -87,14 +87,31 @@ export default function App() {
         <Route path="ingredients/:ingredientId" element={<IngredientModal />} />
         <Route path="/feed" element={<Feed />} />
         <Route path="/feed/:number" element={<OrderFeedModal />} />
-        <Route path="/profile/orders/:number" element={<OrderFeedModal />} />
+        <Route
+          path="/profile/orders/:number"
+          element={
+            <ProtectedRouteElement>
+              <OrderFeedModal />
+            </ProtectedRouteElement>
+          }
+        />
       </Routes>
 
       {background && (
         <Routes>
-          <Route path="/ingredients/:ingredientId" element={<IngredientModal />}/>
+          <Route
+            path="/ingredients/:ingredientId"
+            element={<IngredientModal />}
+          />
           <Route path="/feed/:number" element={<OrderFeedModal />} />
-          <Route path="/profile/orders/:number" element={<OrderFeedModal />} />
+          <Route
+            path="/profile/orders/:number"
+            element={
+              <ProtectedRouteElement>
+                <OrderFeedModal />
+              </ProtectedRouteElement>
+            }
+          />
         </Routes>
       )}
     </div>

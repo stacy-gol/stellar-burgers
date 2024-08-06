@@ -1,11 +1,11 @@
 import React from "react";
 import orderDetailsStyles from "./order.module.css";
 import doneIcon from "../../images/done-icon.gif";
-import { useSelector } from "../../services/store";
+import { RootState, useSelector } from "../../services/store";
 
 
 const OrderDetails = () => {
-  const orderNumber = useSelector((state: any) => state.order.order?.number);
+  const orderNumber = useSelector((state: RootState) => state.order.order?.number);
 
   return (
     <div className={orderDetailsStyles.orderDetails}>

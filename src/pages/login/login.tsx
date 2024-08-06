@@ -45,7 +45,7 @@ const handleLogin = (e: FormEvent<HTMLFormElement>) => {
         <Input
           type="email"
           placeholder="Email"
-          onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
+          onChange={handleChange}
           value={values.email}
           name="email"
           size="default"
@@ -54,7 +54,7 @@ const handleLogin = (e: FormEvent<HTMLFormElement>) => {
         <Input
           type="password"
           placeholder="Пароль"
-          onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(e)}
+          onChange={handleChange}
           value={values.password}
           name="password"
           size="default"

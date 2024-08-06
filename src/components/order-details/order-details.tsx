@@ -20,29 +20,47 @@ function OrderDetails({ order }: OrderDetailsProps) {
         ) || null
       );
     })
-    .filter((ingredient: BurgerIngredient | null) => ingredient !== null);
+    .filter((ingredient: BurgerIngredient | null): ingredient is BurgerIngredient => ingredient !== null);
 
-    const ingredientCount = order.ingredients.reduce((acc: { [id: string]: number }, id: string) => {
+  const ingredientCount = order.ingredients.reduce(
+    (acc: { [id: string]: number }, id: string) => {
       acc[id] = (acc[id] || 0) + 1;
       return acc;
-    }, {});
+    },
+    {}
+  );
 
-    const totalPrice = orderIngredients.reduce((acc, ingredient) => {
-      return acc + (ingredient ? ingredient.price * (ingredientCount[ingredient._id] || 0) : 0);
-    }, 0);
+  const uniqueOrderIngredients = Array.from(
+    new Set(orderIngredients.map((ingredient) => ingredient._id))
+  ).map((id) => orderIngredients.find((ingredient) => ingredient._id === id));
+
+  const totalPrice = orderIngredients.reduce((acc, ingredient) => {
+    return (
+      acc +
+      (ingredient
+        ? ingredient.price * (ingredientCount[ingredient._id] || 0)
+        : 0)
+    );
+  }, 0);
 
   return (
     <div className={`${orderDetailsStyles.container} mt-10`}>
-      <p className={`text text_type_digits-default mb-4 ${orderDetailsStyles.header}`}>#{order.number}</p>
+      <p
+        className={`text text_type_digits-default mb-4 ${orderDetailsStyles.header}`}
+      >
+        #{order.number}
+      </p>
       <h1 className="text text_type_main-medium">{order.name}</h1>
       <div className={orderDetailsStyles.ingredients}>
-        {orderIngredients.map((ingredient, index) => (
+        {uniqueOrderIngredients.map((ingredient, index) => (
           <div key={index} className={orderDetailsStyles.ingredient}>
             <img src={ingredient?.image_mobile} alt={ingredient?.name} />
             <p>{ingredient?.name}</p>
             <div className={orderDetailsStyles.price}>
-            <span>{ingredientCount[ingredient!._id]} x {ingredient?.price}</span>
-            <CurrencyIcon type={"primary"} />
+              <span>
+                {ingredientCount[ingredient!._id]} x {ingredient?.price}
+              </span>
+              <CurrencyIcon type={"primary"} />
             </div>
           </div>
         ))}
@@ -50,10 +68,10 @@ function OrderDetails({ order }: OrderDetailsProps) {
       <div className={orderDetailsStyles.total}>
         <span>Total:</span>
         <div className={orderDetailsStyles.price}>
-        <span>{totalPrice}</span>
-        <CurrencyIcon type={"primary"} />
+          <span>{totalPrice}</span>
+          <CurrencyIcon type={"primary"} />
+        </div>
       </div>
-    </div>
     </div>
   );
 }

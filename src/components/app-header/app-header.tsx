@@ -56,7 +56,13 @@ function Header() {
             </p>
           </button>
         </nav>
-        <Logo />
+        <button
+          className={headerStyles.logoContainer}
+          type="button"
+          onClick={() => onClick("/")}
+        >
+          <Logo />
+        </button>
         <button
           className={headerStyles.loginButton}
           type="button"

@@ -1,11 +1,15 @@
-export function getCookie(name) {
+type CookieProps = {
+  expires?: number | Date | string;
+  [key: string]: any;
+};
+export function getCookie(name: string): string | undefined {
     const matches = document.cookie.match(
       new RegExp('(?:^|; )' + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + '=([^;]*)')
     );
     return matches ? decodeURIComponent(matches[1]) : undefined;
   }
   
-  export function setCookie(name, value, props) {
+  export function setCookie(name: string, value: string | null, props: CookieProps = {}): void {
     props = props || {};
     let exp = props.expires;
     if (typeof exp == 'number' && exp) {
@@ -13,10 +17,10 @@ export function getCookie(name) {
       d.setTime(d.getTime() + exp * 1000);
       exp = props.expires = d;
     }
-    if (exp && exp.toUTCString) {
-      props.expires = exp.toUTCString();
+    if (exp && (exp as Date).toUTCString) {
+      props.expires = (exp as Date).toUTCString();
     }
-    value = encodeURIComponent(value);
+    value = encodeURIComponent(value as string);
     let updatedCookie = name + '=' + value;
     for (const propName in props) {
       updatedCookie += '; ' + propName;
@@ -28,7 +32,7 @@ export function getCookie(name) {
     document.cookie = updatedCookie;
   }
   
-  export function deleteCookie(name) {
+  export function deleteCookie(name: string): void {
     setCookie(name, null, { expires: -1 });
   }
 

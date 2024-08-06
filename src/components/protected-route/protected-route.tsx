@@ -1,9 +1,9 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useSelector } from '../../services/store';
+import { RootState, useSelector } from '../../services/store';
 
-const selectIsAuthenticated = (state: any) => state.auth.isAuthenticated;
-const selectHasPasswordResetRequest = (state: any) => state.auth.isPasswordRecoverySuccess;
+const selectIsAuthenticated = (state: RootState) => state.auth.isAuthenticated;
+const selectHasPasswordResetRequest = (state: RootState) => state.auth.isPasswordRecoverySuccess;
 
 type TProtectedRoute = {
   children: React.ReactNode;

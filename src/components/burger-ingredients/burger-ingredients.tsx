@@ -16,8 +16,9 @@ import {
   BurgerIngredient,
   GroupedIngredients,
   IngredientCounts,
+  Ingredient
 } from "../../services/types";
-import { useDispatch, useSelector } from "../../services/store";
+import { useDispatch, useSelector, RootState } from "../../services/store";
 
 function BurgerIngredients() {
   const dispatch = useDispatch();
@@ -25,13 +26,10 @@ function BurgerIngredients() {
   const location = useLocation();
 
   const { allIngredients, loading, error } = useSelector(
-    (state: any) => state.ingredients
+    (state: RootState) => state.ingredients
   );
   const { bun, ingredients } = useSelector(
-    (state: any) => state.burgerConstructor
-  );
-  const currentIngredient = useSelector(
-    (state: any) => state.currentIngredient.currentIngredient
+    (state: RootState) => state.burgerConstructor
   );
 
   const handleOpenIngredientModal = useCallback(
@@ -81,7 +79,7 @@ function BurgerIngredients() {
     if (bun) {
       counts[bun._id] = 2;
     }
-    ingredients.forEach((ingredient: BurgerIngredient) => {
+    ingredients.forEach((ingredient: Ingredient) => {
       counts[ingredient._id] = (counts[ingredient._id] || 0) + 1;
     });
     return counts;
