@@ -46,14 +46,10 @@ export const socketMiddleware = (
         dispatch(onConnecting());
 
         socket.onopen = () => {
-          console.log("WebSocket connection opened");
-
           dispatch(onOpen());
         };
 
-        socket.onerror = (errorEvent) => {
-          console.error("WebSocket error", errorEvent);
-
+        socket.onerror = () => {
           dispatch(onError("Error"));
         };
 
@@ -89,8 +85,6 @@ export const socketMiddleware = (
         };
 
         socket.onclose = () => {
-          console.log("WebSocket connection closed");
-
           dispatch(onClose());
 
           if (isConnected) {
@@ -107,8 +101,6 @@ export const socketMiddleware = (
           dispatch(onError((error as { message: string }).message));
         }
       } else if (socket && disconnect.match(action)) {
-        console.log("Disconnecting from WebSocket");
-
         clearTimeout(reconnectTimer);
         isConnected = false;
         reconnectTimer = 0;
