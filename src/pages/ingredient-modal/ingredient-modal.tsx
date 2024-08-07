@@ -1,10 +1,10 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Modal from '../../components/modal/modal';
 import IngredientDetails from '../../components/ingredient-details/ingredient-details';
 import { Ingredient } from '../../services/types';
+import { RootState, useSelector } from '../../services/store';
 
 export const IngredientModal = () => {
   let { ingredientId } = useParams();
@@ -14,7 +14,7 @@ export const IngredientModal = () => {
   const background = location.state && location.state.backgroundLocation;
 
   const { allIngredients, loading, error } = useSelector(
-    (state: any) => state.ingredients
+    (state: RootState) => state.ingredients
   );
   
   const ingredient = allIngredients.find((item: Ingredient) => item._id === ingredientId);

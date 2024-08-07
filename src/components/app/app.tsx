@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import {
   Home,
   Login,
@@ -7,34 +7,28 @@ import {
   ResetPassword,
   IngredientModal,
   Profile,
+  Feed,
+  ProfileFeed,
 } from "../../pages";
 import { ProtectedRouteElement } from "../protected-route/protected-route";
 import Header from "../app-header/app-header";
-import { useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { fetchIngredients } from "../../services/ingredients/ingredientsSlice";
-import { checkAuthStatus, refreshTokenThunk } from "../../services/authSlice";
+import { checkAuthStatus } from "../../services/authSlice";
+import { useDispatch } from "../../services/store";
+import { OrderFeedModal } from "../../pages/order-feed-modal/order-feed-modal";
 
 export default function App() {
   const location = useLocation();
   let background = location.state && location.state.backgroundLocation;
-
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // @ts-ignore
     dispatch(fetchIngredients());
   }, [dispatch]);
 
   useEffect(() => {
-    // @ts-ignore
     dispatch(checkAuthStatus());
-    const interval = setInterval(() => {
-      // @ts-ignore
-      dispatch(refreshTokenThunk());
-    }, 20 * 60 * 1000);
-
-    return () => clearInterval(interval);
   }, [dispatch]);
 
   return (
@@ -82,7 +76,25 @@ export default function App() {
             </ProtectedRouteElement>
           }
         />
+        <Route
+          path="/profile/orders/"
+          element={
+            <ProtectedRouteElement>
+              <ProfileFeed />
+            </ProtectedRouteElement>
+          }
+        />
         <Route path="ingredients/:ingredientId" element={<IngredientModal />} />
+        <Route path="/feed" element={<Feed />} />
+        <Route path="/feed/:number" element={<OrderFeedModal />} />
+        <Route
+          path="/profile/orders/:number"
+          element={
+            <ProtectedRouteElement>
+              <OrderFeedModal />
+            </ProtectedRouteElement>
+          }
+        />
       </Routes>
 
       {background && (
@@ -90,6 +102,15 @@ export default function App() {
           <Route
             path="/ingredients/:ingredientId"
             element={<IngredientModal />}
+          />
+          <Route path="/feed/:number" element={<OrderFeedModal />} />
+          <Route
+            path="/profile/orders/:number"
+            element={
+              <ProtectedRouteElement>
+                <OrderFeedModal />
+              </ProtectedRouteElement>
+            }
           />
         </Routes>
       )}

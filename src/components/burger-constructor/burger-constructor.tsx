@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useDrop } from "react-dnd";
 import { addIngredient, clearConstructor } from "../../services/burgerConstructor/burgerConstructorSlice";
@@ -17,9 +16,9 @@ import Preloader from "../preloader/preloader";
 import { createOrder } from "../../services/order/orderSlice";
 import { openOrderModal, closeOrderModal } from "../../services/modal/modalSlice";
 import { Ingredient } from "../../services/types";
+import { RootState, useDispatch, useSelector } from "../../services/store";
 
-const selectIsLoggedIn = (state: any) => state.auth.isLoggedIn;
-
+const selectIsLoggedIn = (state: RootState) => state.auth.isLoggedIn;
 interface PlaceholderProps {
   text: string;
   type?: string;
@@ -41,11 +40,11 @@ function BurgerConstructor() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { bun, ingredients } = useSelector((state: any) => state.burgerConstructor);
+  const { bun, ingredients } = useSelector((state: RootState) => state.burgerConstructor);
   const { order, orderRequest } = useSelector(
-    (state: any) => state.order
+    (state: RootState) => state.order
   );
-  const isModalOpen = useSelector((state: any) => state.modal.orderModal.isOpen);
+  const isModalOpen = useSelector((state: RootState) => state.modal.orderModal.isOpen);
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
 
@@ -100,17 +99,15 @@ function BurgerConstructor() {
   if (bun) {
     ingredientIds.unshift(bun._id);
     ingredientIds.push(bun._id);
-  }
+  }  
 
   const handleCreateOrder = () => {
     if (!isLoggedIn) {
       navigate('/login', { state: { from: location } });
       return;
     }
-    // @ts-ignore
     dispatch(createOrder(ingredientIds)).then(({ payload }: { payload: any }) => {
       if (payload) {
-        // @ts-ignore
         dispatch(clearConstructor());
         dispatch(openOrderModal());
       }

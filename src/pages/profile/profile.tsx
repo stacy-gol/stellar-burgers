@@ -1,17 +1,16 @@
 import React, { useState } from "react";
-import { NavLink, useNavigate } from "react-router-dom"; 
+import { NavLink, useNavigate } from "react-router-dom";
 import { logoutUser } from "../../services/authSlice";
-import { useDispatch } from 'react-redux';
 import {
-  Input,
-  Button
+  Input
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import ProfileStyles from "./profile.module.css";
 import { defaultInputProps } from "../../services/types";
+import { useDispatch } from "../../services/store";
 
 export const Profile = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -21,15 +20,14 @@ export const Profile = () => {
     //@ts-ignore
     const result = await dispatch(logoutUser());
     if (logoutUser.fulfilled.match(result)) {
-      navigate("/"); 
+      navigate("/");
     } else {
     }
   };
 
   return (
     <div>
-          <div className={ProfileStyles.layout}>
-
+      <div className={ProfileStyles.layout}>
         <div className={`${ProfileStyles.navBar} mr-15`}>
           <div className={ProfileStyles.navElement}>
             <NavLink
@@ -59,7 +57,7 @@ export const Profile = () => {
           </div>
           <div className={ProfileStyles.navElement}>
             <NavLink
-            to={`/`}
+              to={`/`}
               className={
                 ProfileStyles.navElement + " text text_type_main-medium"
               }
@@ -81,43 +79,43 @@ export const Profile = () => {
             В этом разделе вы можете <br></br> изменить свои персональные данные
           </p>
         </div>
-    <div className="mr-60">
-      <form className={ProfileStyles.formContainer}>
-      <Input
-          type="text"
-          placeholder="Имя"
-          onChange={(e) => setName(e.target.value)}
-          value={name}
-          name="name"
-          icon="EditIcon"
-          size="default"
-          {...defaultInputProps}
-        />
-        <Input
-          type="email"
-          placeholder="Логин"
-          onChange={(e) => setEmail(e.target.value)}
-          value={email}
-          name="email"
-          size="default"
-          icon="EditIcon"
-          extraClass="mt-6 mb-6"
-          {...defaultInputProps}
-        />
-        <Input
-          type="password"
-          placeholder="Пароль"
-          onChange={(e) => setPassword(e.target.value)}
-          value={password}
-          name="password"
-          size="default"
-          icon="EditIcon"
-          extraClass="mb-6"
-          {...defaultInputProps}
-        />
-      </form>
-    </div>
-    </div>
+        <div className="mr-60">
+          <form className={ProfileStyles.formContainer}>
+            <Input
+              type="text"
+              placeholder="Имя"
+              onChange={(e) => setName(e.target.value)}
+              value={name}
+              name="name"
+              icon="EditIcon"
+              size="default"
+              {...defaultInputProps}
+            />
+            <Input
+              type="email"
+              placeholder="Логин"
+              onChange={(e) => setEmail(e.target.value)}
+              value={email}
+              name="email"
+              size="default"
+              icon="EditIcon"
+              extraClass="mt-6 mb-6"
+              {...defaultInputProps}
+            />
+            <Input
+              type="password"
+              placeholder="Пароль"
+              onChange={(e) => setPassword(e.target.value)}
+              value={password}
+              name="password"
+              size="default"
+              icon="EditIcon"
+              extraClass="mb-6"
+              {...defaultInputProps}
+            />
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

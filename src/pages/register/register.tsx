@@ -1,6 +1,5 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
 import { registerUser } from "../../services/authSlice";
 import {
   Input,
@@ -8,7 +7,7 @@ import {
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import RegisterStyles from "./register.module.css";
 import { defaultInputProps } from "../../services/types";
-
+import { useDispatch } from "../../services/store";
 
 export const Register = () => {
   const [name, setName] = useState("");
@@ -22,7 +21,6 @@ export const Register = () => {
 
   const handleRegister = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    //@ts-ignore
     dispatch(registerUser({ name, email, password }));
     navigate(from, { replace: true });
   };

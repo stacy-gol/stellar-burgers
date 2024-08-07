@@ -53,16 +53,20 @@ export interface ModalOverlayProps {
 export interface ApiResponse<T> {
   success: boolean;
   message?: string;
-  data: T;
+  data?: T;
+  [key: string]: any;
 }
 
 export interface User {
   email: string;
   name: string;
   password?: string;
+  accessToken: string;
+  refreshToken: string;
 }
 
 export interface AuthResponse {
+  success: boolean;
   accessToken: string;
   refreshToken: string;
   user: User;
@@ -88,3 +92,76 @@ export const defaultInputProps = {
   onPointerEnterCapture: undefined,
   onPointerLeaveCapture: undefined,
 };
+export interface Order {
+  id: string;
+  number: number;
+}
+export interface OrderApiResponse {
+  name: string;
+  order: Order;
+  success: boolean;
+}
+export interface AuthState {
+  isAuthenticated: boolean;
+  isAuthChecked: boolean;
+  isLoggedIn: boolean;
+  email: string;
+  name: string;
+  accessToken: string;
+  accessTokenExpired: boolean;
+  refreshToken: string;
+  isRegistrationInProcess: boolean;
+  isRegistrationSuccess: boolean;
+  isRegistrationFailed: boolean;
+  isAuthorizationInProcess: boolean;
+  isAuthorizationSuccess: boolean;
+  isAuthorizationFailed: boolean;
+  isPasswordRecoveryInProcess: boolean;
+  isPasswordRecoverySuccess: boolean;
+  isPasswordRecoveryFailed: boolean;
+  isPasswordUpdatingInProcess: boolean;
+  isPasswordUpdatingFailed: boolean;
+  getUserInfoInProcess: boolean;
+  getUserInfoSuccess: boolean;
+  getUserInfoFailed: boolean;
+  updateUserInfoInProcess: boolean;
+  updateUserInfoInFailed: boolean;
+  user: User | null;
+  error: string | null;
+}
+
+export enum WebsocketStatus {
+  CONNECTING = 'CONNECTING...',
+  ONLINE = 'ONLINE',
+  OFFLINE = 'OFFLINE'
+}
+
+export interface OrderDetail {
+  ingredients: string[];
+  _id: string;
+  status: string;
+  number: number;
+  createdAt: string;
+  updatedAt: string;
+  name: string;
+}
+
+export interface OrderFeedApiResponse {
+  success: boolean;
+  orders: OrderDetail[];
+  total: number;
+  totalToday: number;
+}
+
+export type OrderFeed = Array<OrderDetail>;
+
+export enum OrderFeedActionType {
+  DATA = 'data',
+}
+
+export type Data = {
+  type: OrderFeedActionType.DATA,
+  orders: OrderFeed;
+}
+
+export type OrderFeedAction = Data;

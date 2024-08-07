@@ -1,8 +1,8 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { login, logout, register, refreshAccessToken, getUser } from "../utils/api";
-import { getCookie, setCookie } from "../utils/cookies";
+import { login, logout, register, getUser } from "../utils/api";
+import { AuthResponse, AuthState, LoginCredentials } from "./types";
 
-const initialState = {
+const initialState: AuthState = {
   isAuthenticated: false,
   isAuthChecked: false,
   isLoggedIn: false,
@@ -31,54 +31,43 @@ const initialState = {
 
   updateUserInfoInProcess: false,
   updateUserInfoInFailed: false,
+  user: null,
+  error: null
 };
 
-const handleAsyncThunk = (asyncFunction) => async (args, { rejectWithValue }) => {
+const handleAsyncThunk = <T, P>(asyncFunction: (args: T) => Promise<P>) => async (args: T) => {
     const response = await asyncFunction(args);
     return response;
 };
 
 export const registerUser = createAsyncThunk(
   "user/register",
-  handleAsyncThunk(({ email, password, name }) => register(email, password, name))
+  handleAsyncThunk(async ({ email, password, name }: { email: string; password: string; name: string }) => {
+    return register(email, password, name);
+  })
 );
 
-export const loginUser = createAsyncThunk(
+export const loginUser = createAsyncThunk<AuthResponse, LoginCredentials>(
   "user/login",
-  handleAsyncThunk((credentials) => login(credentials))
+  async (credentials: LoginCredentials) => {
+    const response = await login(credentials);
+    return response;
+  }
 );
+
 
 export const logoutUser = createAsyncThunk(
   "user/logout",
-  handleAsyncThunk(() => logout())
-);
-
-export const refreshTokenThunk = createAsyncThunk(
-  "user/refreshToken",
-  handleAsyncThunk(async (_, { getState, rejectWithValue }) => {
-    const refreshToken = getCookie("refreshToken");
-    if (!refreshToken) {
-      return rejectWithValue("No refreshToken available.");
-    }
-
-    const response = await refreshAccessToken(refreshToken);
-    if (response.success) {
-      setCookie("accessToken", response.accessToken, { expires: 3600 });
-      if (response.refreshToken) {
-        setCookie("refreshToken", response.refreshToken, {
-          expires: 7 * 24 * 3600,
-        });
-      }
-      return response.accessToken;
-    } else {
-      return rejectWithValue("Failed to refresh access token.");
-    }
+  handleAsyncThunk(async () => {
+    return logout();
   })
 );
 
 export const checkAuthStatus = createAsyncThunk(
   "user/checkAuthStatus",
-  handleAsyncThunk(() => getUser())
+  async () => {
+    return getUser();
+  }
 );
 
 export const authSlice = createSlice({
@@ -101,14 +90,12 @@ export const authSlice = createSlice({
         state.isAuthorizationSuccess = false;
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.user = action.payload;
+        state.user = action.payload.user;
         state.isAuthorizationInProcess = false;
         state.isAuthorizationSuccess = true;
         state.isAuthenticated = true;
         state.isLoggedIn = true;
         state.accessToken = action.payload.accessToken;
-        state.email = action.payload.email;
-        state.name = action.payload.name;
         state.isAuthChecked = true;
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -137,19 +124,13 @@ export const authSlice = createSlice({
         state.isLoggedIn = false;
         state.isAuthorizationInProcess = false;
         state.isAuthorizationSuccess = false;
-        state.accessToken = null;
-        state.email = null;
-        state.name = null;
+        state.accessToken = "";
+        state.email = "";
+        state.name = "";
       })
       .addCase(logoutUser.rejected, (state, action) => {
         state.isAuthorizationInProcess = false;
         state.isAuthorizationFailed = true;
-      })
-      .addCase(refreshTokenThunk.fulfilled, (state, action) => {
-        state.accessToken = action.payload;
-      })
-      .addCase(refreshTokenThunk.rejected, (state, action) => {
-        state.accessTokenExpired = true;
       });
   },
 });

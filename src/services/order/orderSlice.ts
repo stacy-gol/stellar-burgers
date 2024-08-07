@@ -1,12 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { request } from "../../utils/api";
 import { getCookie } from "../../utils/cookies";
+import { Order, OrderApiResponse, OrderDetail } from "../types";
 
 export const createOrder = createAsyncThunk(
   "order/createOrder",
-  async (ingredientIds, { rejectWithValue }) => {
+  async (ingredientIds: string[]) => {
     const accessToken = getCookie("accessToken");
-      const response = await request("/api/orders", {
+      const response = await request<OrderApiResponse>("/api/orders", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -18,7 +19,23 @@ export const createOrder = createAsyncThunk(
   }
 );
 
-const initialState = {
+export const getOrder = createAsyncThunk(
+  "order/getOrder",
+  async (number: string) => {
+    const response = await request<OrderDetail>(`/orders/${number}`, {
+      method: "GET",
+    });
+    return response;
+  }
+);
+
+interface OrderState {
+  order: Order | null;
+  orderRequest: boolean;
+  orderFailed: string | null;
+}
+
+const initialState: OrderState = {
   order: null,
   orderRequest: false,
   orderFailed: null,
@@ -46,7 +63,7 @@ export const orderSlice = createSlice({
         state.orderFailed = null;
       })
       .addCase(createOrder.rejected, (state, action) => {
-        state.orderFailed = action.error.message; 
+        state.orderFailed = action.error.message || null;
         state.orderRequest = false;
       });
   },

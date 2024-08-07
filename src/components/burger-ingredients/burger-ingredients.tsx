@@ -6,7 +6,6 @@ import React, {
   useEffect,
   MutableRefObject,
 } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Tab } from "@ya.praktikum/react-developer-burger-ui-components";
 import burgerIngredientsStyles from "../burger-ingredients/burger-ingredients.module.css";
@@ -17,7 +16,9 @@ import {
   BurgerIngredient,
   GroupedIngredients,
   IngredientCounts,
+  Ingredient
 } from "../../services/types";
+import { useDispatch, useSelector, RootState } from "../../services/store";
 
 function BurgerIngredients() {
   const dispatch = useDispatch();
@@ -25,20 +26,16 @@ function BurgerIngredients() {
   const location = useLocation();
 
   const { allIngredients, loading, error } = useSelector(
-    (state: any) => state.ingredients
+    (state: RootState) => state.ingredients
   );
   const { bun, ingredients } = useSelector(
-    (state: any) => state.burgerConstructor
-  );
-  const currentIngredient = useSelector(
-    (state: any) => state.currentIngredient.currentIngredient
+    (state: RootState) => state.burgerConstructor
   );
 
   const handleOpenIngredientModal = useCallback(
     (ingredient: BurgerIngredient) => {
       dispatch(setIngredient(ingredient));
-      //@ts-ignore
-      dispatch(openIngredientModal());
+      dispatch(openIngredientModal(ingredient));
       navigate(`/ingredients/${ingredient._id}`, {
         state: { backgroundLocation: location.pathname },
       });
@@ -82,7 +79,7 @@ function BurgerIngredients() {
     if (bun) {
       counts[bun._id] = 2;
     }
-    ingredients.forEach((ingredient: BurgerIngredient) => {
+    ingredients.forEach((ingredient: Ingredient) => {
       counts[ingredient._id] = (counts[ingredient._id] || 0) + 1;
     });
     return counts;

@@ -2,6 +2,7 @@ import {
   ApiResponse,
   AuthResponse,
   LoginCredentials,
+  OrderDetail,
   User,
 } from "../services/types";
 import { getCookie, setCookie } from "./cookies";
@@ -18,7 +19,7 @@ export const checkResponse = async <T>(response: Response): Promise<T> => {
 
 export const request = async <T>(
   endpoint: string,
-  options: RequestInit
+  options?: RequestInit
 ): Promise<T> => {
   try {
     const response = await fetch(`${BASE_URL}${endpoint}`, options);
@@ -55,6 +56,7 @@ export async function sendPasswordResetEmail(
 
 export async function getUser(): Promise<User> {
   const accessToken = getCookie("accessToken");
+
   if (!accessToken) {
     throw new Error("No access token found");
   }
@@ -66,6 +68,12 @@ export async function getUser(): Promise<User> {
     },
   });
 }
+
+// export async function getOrder(number: string): Promise<OrderDetail> {
+//   return request<OrderDetail>(`/orders/${number}`, {
+//     method: "GET",
+//   });
+// }
 
 export async function register(
   email: string,
@@ -87,7 +95,7 @@ export async function register(
   return data.user;
 }
 
-export async function login(credentials: LoginCredentials): Promise<User>  {
+export async function login(credentials: LoginCredentials): Promise<AuthResponse> {
   const data = await request<AuthResponse>("/api/auth/login", {
     method: "POST",
     headers: {
@@ -95,9 +103,19 @@ export async function login(credentials: LoginCredentials): Promise<User>  {
     },
     body: JSON.stringify(credentials),
   });
-  setCookie("accessToken", data.accessToken.split('Bearer ')[1], { expires: 3600 });
-  setCookie("refreshToken", data.refreshToken, { expires: 7 * 24 * 3600 });
-  return data.user;
+
+  const accessToken = data.accessToken.split('Bearer ')[1];
+  const refreshToken = data.refreshToken;
+
+  setCookie("accessToken", accessToken, { expires: 3600 });
+  setCookie("refreshToken", refreshToken, { expires: 7 * 24 * 3600 });
+
+  return {
+    success: data.success,
+    accessToken: data.accessToken,
+    refreshToken: data.refreshToken,
+    user: data.user as User,
+  };
 }
 
 export async function logout(): Promise<string> {
@@ -116,6 +134,7 @@ export async function logout(): Promise<string> {
 
 export async function refreshAccessToken(): Promise<string> {
   const refreshToken = getCookie("refreshToken");
+
   const data = await request<AuthResponse>("/api/auth/token", {
     method: "POST",
     headers: {
