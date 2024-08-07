@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FormEvent, useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { registerUser } from "../../services/authSlice";
+import { registerUser } from "../../services/auth/authSlice";
 import {
   Input,
   Button

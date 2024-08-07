@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { login, logout, register, getUser } from "../utils/api";
-import { AuthResponse, AuthState, LoginCredentials } from "./types";
+import { login, logout, register, getUser } from "../../utils/api";
+import { AuthResponse, AuthState, LoginCredentials } from "../types";
 
 const initialState: AuthState = {
   isAuthenticated: false,

@@ -1,6 +1,6 @@
 import React, { ChangeEvent, FormEvent } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
-import { loginUser } from "../../services/authSlice";
+import { loginUser } from "../../services/auth/authSlice";
 import {
   Input,
   Button,

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { logoutUser } from "../../services/authSlice";
+import { logoutUser } from "../../services/auth/authSlice";
 import {
   Input
 } from "@ya.praktikum/react-developer-burger-ui-components";

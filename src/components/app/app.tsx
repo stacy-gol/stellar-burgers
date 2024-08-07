@@ -14,7 +14,7 @@ import { ProtectedRouteElement } from "../protected-route/protected-route";
 import Header from "../app-header/app-header";
 import { useEffect } from "react";
 import { fetchIngredients } from "../../services/ingredients/ingredientsSlice";
-import { checkAuthStatus } from "../../services/authSlice";
+import { checkAuthStatus } from "../../services/auth/authSlice";
 import { useDispatch } from "../../services/store";
 import { OrderFeedModal } from "../../pages/order-feed-modal/order-feed-modal";
 
