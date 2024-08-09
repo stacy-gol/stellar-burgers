@@ -29,7 +29,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "cypress:open": "./node_modules/.bin/cypress open"
   },
   "eslintConfig": {
     "extends": [
@@ -53,6 +54,8 @@
     "@testing-library/react": "^16.0.0",
     "@types/redux-mock-store": "^1.0.6",
     "@types/uuid": "^10.0.0",
+    "cypress": "^13.13.2",
+    "eslint-plugin-cypress": "^3.4.0",
     "fetch-mock": "^11.0.0",
     "jest-fetch-mock": "^3.0.3",
     "react-test-renderer": "^18.3.1",
