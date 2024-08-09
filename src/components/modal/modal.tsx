@@ -31,15 +31,15 @@ const Modal = ({ isOpen, onClose, children, title }: ModalProps): React.JSX.Elem
 
   const modalContent = (
     <ModalOverlay onClick={handleOverlayClick}>
-      <div className={modalStyles.modal} onClick={(e) => e.stopPropagation()}>
+      <div className={modalStyles.modal} onClick={(e) => e.stopPropagation()} data-cy="modal">
         <div className={modalStyles.modalHeader}>
-        {title && <h1 className="text text_type_main-large ml-4">{title}</h1>}
+        {title && <h1 className="text text_type_main-large ml-4" data-cy="modal-title">{title}</h1>}
 
-          <div onClick={onClose} className={modalStyles.closeButtonContainer}>
+          <div onClick={onClose} className={modalStyles.closeButtonContainer} data-cy="modal-close">
             <CloseIcon type="primary"/>
           </div>
         </div>
-        <div className={modalStyles.modalContent}>{children}</div>
+        <div data-cy="modal-content" className={modalStyles.modalContent}>{children}</div>
       </div>
     </ModalOverlay>
   );
