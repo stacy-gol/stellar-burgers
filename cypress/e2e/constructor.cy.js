@@ -6,7 +6,7 @@ describe("Constructor Page", () => {
       "getIngredients"
     );
    
-    cy.visit("http://localhost:3000");
+    cy.visit("/");
     cy.wait("@getIngredients");
 
     cy.fixture("ingredients.json").then((data) => {

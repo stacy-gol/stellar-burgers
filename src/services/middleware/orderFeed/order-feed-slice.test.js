@@ -1,12 +1,7 @@
-import { orderFeedSlice, wsConnecting, wsOpen, wsClose, wsError, wsMessage } from './order-feed-slice';
+import { orderFeedSlice, wsConnecting, wsOpen, wsClose, wsError, wsMessage, initialState } from './order-feed-slice';
 import { WebsocketStatus } from '../../types';
 
 describe('orderFeedSlice reducer', () => {
-  const initialState = {
-    status: WebsocketStatus.OFFLINE,
-    orders: [],
-    connectionError: null,
-  };
 
   it('should handle initial state', () => {
     expect(orderFeedSlice.reducer(undefined, { type: 'unknown' })).toEqual(initialState);

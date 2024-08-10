@@ -1,12 +1,7 @@
-import { profileFeedSlice, wsConnecting, wsOpen, wsClose, wsError, wsMessage } from './profile-feed-slice';
+import { profileFeedSlice, wsConnecting, wsOpen, wsClose, wsError, wsMessage, initialState } from './profile-feed-slice';
 import { WebsocketStatus } from '../../types';
 
 describe('profileFeedSlice reducer', () => {
-  const initialState = {
-    status: WebsocketStatus.OFFLINE,
-    profileOrders: [],
-    connectionError: null,
-  };
 
   it('should handle initial state', () => {
     expect(profileFeedSlice.reducer(undefined, { type: 'unknown' })).toEqual(initialState);

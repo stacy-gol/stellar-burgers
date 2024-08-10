@@ -4,40 +4,8 @@ import reducer, {
   loginUser,
   logoutUser,
   checkAuthStatus,
+  initialState
 } from "./authSlice";
-
-const initialState = {
-  isAuthenticated: false,
-  isAuthChecked: false,
-  isLoggedIn: false,
-  email: "",
-  name: "",
-  accessToken: "",
-  accessTokenExpired: false,
-  refreshToken: "",
-  isRegistrationInProcess: false,
-  isRegistrationSuccess: false,
-  isRegistrationFailed: false,
-  isAuthorizationInProcess: false,
-  isAuthorizationSuccess: false,
-  isAuthorizationFailed: false,
-
-  isPasswordRecoveryInProcess: false,
-  isPasswordRecoverySuccess: false,
-  isPasswordRecoveryFailed: false,
-
-  isPasswordUpdatingInProcess: false,
-  isPasswordUpdatingFailed: false,
-
-  getUserInfoInProcess: false,
-  getUserInfoSuccess: false,
-  getUserInfoFailed: false,
-
-  updateUserInfoInProcess: false,
-  updateUserInfoInFailed: false,
-  user: null,
-  error: null,
-};
 
 describe("authSlice", () => {
   it("should handle initial state", () => {

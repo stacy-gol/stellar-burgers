@@ -1,11 +1,8 @@
 import reducer, {
     setIngredient,
     clearIngredient,
+    initialState
   } from './currentIngredientSlice';
-  
-  const initialState = {
-    currentIngredient: null,
-  };
   
   describe('currentIngredientSlice', () => {
     it('should handle initial state', () => {

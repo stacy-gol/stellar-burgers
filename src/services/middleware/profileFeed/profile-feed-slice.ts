@@ -7,7 +7,7 @@ export type ProfileFeedStore = {
     connectionError: string | null;
 };
 
-const initialState: ProfileFeedStore = {
+export const initialState: ProfileFeedStore = {
     status: WebsocketStatus.OFFLINE,
     profileOrders: [],
     connectionError: null,

@@ -35,7 +35,7 @@ interface OrderState {
   orderFailed: string | null;
 }
 
-const initialState: OrderState = {
+export const initialState: OrderState = {
   order: null,
   orderRequest: false,
   orderFailed: null,

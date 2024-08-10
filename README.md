@@ -1,1 +1,1 @@
-Проект доступен по ссылке на [GitHub Pages](https://stacy-gol.github.io/).
+Проект доступен по ссылке на [GitHub Pages](https://stacy-gol.github.io/stellar-burgers/).

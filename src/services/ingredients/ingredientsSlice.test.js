@@ -2,13 +2,8 @@ import reducer, {
   resetIngredientsState,
   fetchIngredients,
   selectAllIngredients,
+  initialState
 } from './ingredientsSlice';
-
-const initialState = {
-  allIngredients: [],
-  loading: false,
-  error: null,
-};
 
 describe('ingredientsSlice', () => {
   it('should handle initial state', () => {

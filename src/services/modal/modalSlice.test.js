@@ -5,21 +5,8 @@ import reducer, {
     closeIngredientModal,
     openOrderFeedModal,
     closeOrderFeedModal,
+    initialState
   } from './modalSlice';
-  
-  const initialState = {
-    orderModal: {
-      isOpen: false,
-    },
-    ingredientModal: {
-      isOpen: false,
-      currentIngredient: null,
-    },
-    orderFeedModal: {
-      currentOrder: null,
-      isOpen: false,
-    },
-  };
   
   describe('modalsSlice', () => {
     it('should handle initial state', () => {

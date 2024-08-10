@@ -15,7 +15,7 @@ interface ModalsState {
   };
 }
 
-const initialState: ModalsState = {
+export const initialState: ModalsState = {
   orderModal: {
     isOpen: false,
   },
