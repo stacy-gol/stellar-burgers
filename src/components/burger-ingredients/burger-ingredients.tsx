@@ -162,6 +162,7 @@ function BurgerIngredients() {
               <div
                 key={ingredient._id}
                 className={burgerIngredientsStyles.ingredient}
+                data-cy="ingredient"
               >
                 <DraggableIngredient
                   ingredient={ingredient}

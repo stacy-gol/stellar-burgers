@@ -2,13 +2,13 @@ import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import { request } from "../../utils/api";
 import { BurgerIngredient } from "../types";
 
-interface IngredientsState {
+export interface IngredientsState {
   allIngredients: BurgerIngredient[];
   loading: boolean;
   error: string | null;
 }
 
-const initialState: IngredientsState = {
+export const initialState: IngredientsState = {
   allIngredients: [],
   loading: false,
   error: null,

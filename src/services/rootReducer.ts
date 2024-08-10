@@ -4,7 +4,7 @@ import burgerConstructorReducer from './burgerConstructor/burgerConstructorSlice
 import currentIngredientReducer from './currentIngredient/currentIngredientSlice';
 import orderReducer from './order/orderSlice';
 import modalReducer from './modal/modalSlice';
-import authReducer from './authSlice';
+import authReducer from './auth/authSlice';
 import orderFeedSlice from './middleware/orderFeed/order-feed-slice'
 import profileFeedSlice from './middleware/profileFeed/profile-feed-slice';
 

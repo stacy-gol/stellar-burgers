@@ -1,12 +1,15 @@
 import React from "react";
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDrop } from "react-dnd";
-import { addIngredient, clearConstructor } from "../../services/burgerConstructor/burgerConstructorSlice";
+import {
+  addIngredient,
+  clearConstructor,
+} from "../../services/burgerConstructor/burgerConstructorSlice";
 import {
   ConstructorElement,
   CurrencyIcon,
   Button,
-  DragIcon
+  DragIcon,
 } from "@ya.praktikum/react-developer-burger-ui-components";
 import ConstructorStyles from "./burger-constructor.module.css";
 import Modal from "../modal/modal";
@@ -14,7 +17,10 @@ import OrderDetails from "../order/order";
 import BurgerConstructorElement from "../burger-constructor-element/burger-constructor-element";
 import Preloader from "../preloader/preloader";
 import { createOrder } from "../../services/order/orderSlice";
-import { openOrderModal, closeOrderModal } from "../../services/modal/modalSlice";
+import {
+  openOrderModal,
+  closeOrderModal,
+} from "../../services/modal/modalSlice";
 import { Ingredient } from "../../services/types";
 import { RootState, useDispatch, useSelector } from "../../services/store";
 
@@ -25,7 +31,11 @@ interface PlaceholderProps {
   position?: string;
 }
 
-const Placeholder = ({ text, type, position }: PlaceholderProps): React.JSX.Element => (
+const Placeholder = ({
+  text,
+  type,
+  position,
+}: PlaceholderProps): React.JSX.Element => (
   <div
     className={`${ConstructorStyles.ingredientRow}
       ${type === "ingredient" ? ConstructorStyles.placeholder : ""} 
@@ -40,13 +50,16 @@ function BurgerConstructor() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-  const { bun, ingredients } = useSelector((state: RootState) => state.burgerConstructor);
+  const { bun, ingredients } = useSelector(
+    (state: RootState) => state.burgerConstructor
+  );
   const { order, orderRequest } = useSelector(
     (state: RootState) => state.order
   );
-  const isModalOpen = useSelector((state: RootState) => state.modal.orderModal.isOpen);
+  const isModalOpen = useSelector(
+    (state: RootState) => state.modal.orderModal.isOpen
+  );
   const isLoggedIn = useSelector(selectIsLoggedIn);
-
 
   const bunTop = bun && (
     <div>
@@ -95,23 +108,27 @@ function BurgerConstructor() {
     },
   });
 
-  const ingredientIds = ingredients.map((ingredient: Ingredient) => ingredient._id);
+  const ingredientIds = ingredients.map(
+    (ingredient: Ingredient) => ingredient._id
+  );
   if (bun) {
     ingredientIds.unshift(bun._id);
     ingredientIds.push(bun._id);
-  }  
+  }
 
   const handleCreateOrder = () => {
     if (!isLoggedIn) {
-      navigate('/login', { state: { from: location } });
+      navigate("/login", { state: { from: location } });
       return;
     }
-    dispatch(createOrder(ingredientIds)).then(({ payload }: { payload: any }) => {
-      if (payload) {
-        dispatch(clearConstructor());
-        dispatch(openOrderModal());
+    dispatch(createOrder(ingredientIds)).then(
+      ({ payload }: { payload: any }) => {
+        if (payload) {
+          dispatch(clearConstructor());
+          dispatch(openOrderModal());
+        }
       }
-    });
+    );
   };
 
   const handleCloseModal = () => {
@@ -124,13 +141,16 @@ function BurgerConstructor() {
   );
 
   return (
-    <div className={ConstructorStyles.container + " mt-25 ml-16"}>
+    <div
+      className={ConstructorStyles.container + " mt-25 ml-16"}
+      data-cy="constructor"
+    >
       {orderRequest && <Preloader />}
-      <div className={ConstructorStyles.bunTop} ref={dropBunTopTarget}>
+      <div className={ConstructorStyles.bunTop} ref={dropBunTopTarget} data-cy="bun">
         {bun ? (
           bunTop
         ) : (
-          <Placeholder text="Перетащите булку сверху" position="top" />
+          <Placeholder text="Перетащите верхнюю булку" position="top"/>
         )}
       </div>
 
@@ -144,8 +164,12 @@ function BurgerConstructor() {
               className={ConstructorStyles.ingredientRow}
               key={ingredient.uniqueKey}
             >
-              <DragIcon type="primary"/>
-              <BurgerConstructorElement ingredient={ingredient} index={index} />
+              <DragIcon type="primary" />
+              <BurgerConstructorElement
+                ingredient={ingredient}
+                index={index}
+                data-cy="ingredient"
+              />
             </div>
           ))
         ) : (
@@ -153,11 +177,11 @@ function BurgerConstructor() {
         )}
       </div>
 
-      <div className={ConstructorStyles.bunBottom} ref={dropBunBottomTarget}>
+      <div className={ConstructorStyles.bunBottom} ref={dropBunBottomTarget} data-cy="bun">
         {bun ? (
           bunBottom
         ) : (
-          <Placeholder text="Перетащите булку снизу" position="bottom" />
+          <Placeholder text="Перетащите нижнюю булку" position="bottom"/>
         )}
       </div>
 
@@ -168,6 +192,7 @@ function BurgerConstructor() {
           <span className={ConstructorStyles.totalSpan}>{total}</span>
         </p>
         <Button
+          data-cy="order-button"
           type="primary"
           htmlType="submit"
           size="large"
@@ -178,7 +203,12 @@ function BurgerConstructor() {
         </Button>
       </div>
       {order && (
-        <Modal isOpen={isModalOpen} onClose={handleCloseModal} title="Детали ингредиента">
+        <Modal
+          isOpen={isModalOpen}
+          onClose={handleCloseModal}
+          title="Детали ингредиента"
+          data-cy="modal"
+        >
           <OrderDetails />
         </Modal>
       )}

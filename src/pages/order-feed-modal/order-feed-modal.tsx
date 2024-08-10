@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import Modal from "../../components/modal/modal";
 import OrderDetails from "../../components/order-details/order-details";
-import { useSelector, useDispatch, RootState } from "../../services/store";
+import { useSelector, useDispatch } from "../../services/store";
 import { OrderDetail } from "../../services/types";
 import {
   selectOrders,

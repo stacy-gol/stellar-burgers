@@ -8,7 +8,7 @@ interface IngredientDetailsProps {
 
 function IngredientDetails({ currentIngredient }: IngredientDetailsProps) {
   return (
-    <div>
+    <div data-cy="modal-content">
       <img
         className={burgerIngredientsStyles.modalImage}
         src={currentIngredient.image_large}

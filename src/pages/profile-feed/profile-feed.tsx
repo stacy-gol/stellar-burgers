@@ -10,7 +10,7 @@ import { OrderDetail } from "../../services/types";
 import profileFeedStyles from "./profile-feed.module.css";
 import { getCookie } from "../../utils/cookies";
 import { NavLink, useLocation, useNavigate } from "react-router-dom";
-import { logoutUser } from "../../services/authSlice";
+import { logoutUser } from "../../services/auth/authSlice";
 import { openOrderFeedModal } from "../../services/modal/modalSlice";
 
 export function ProfileFeed() {
